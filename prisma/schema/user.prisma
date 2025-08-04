@@ -1,0 +1,13 @@
+model UserModel {
+  id       String @id @default(uuid()) @db.Uuid
+  name     String
+  email    String @unique
+  type     String @default("common")
+  password String
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
+  @@map("user")
+}

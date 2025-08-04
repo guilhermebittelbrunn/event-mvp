@@ -1,0 +1,12 @@
+{
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "test",
+    "jest.config.js",
+    "dist",
+    "**/*spec.ts",
+    "src/infra/database/seeding",
+    "src/infra/no-sql/seeding"
+  ]
+}
