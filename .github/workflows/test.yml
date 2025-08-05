@@ -22,8 +22,8 @@ jobs:
       POSTGRES_URL: postgresql://postgres:postgres@localhost:5432/event_dev
 
       JWT_SECRET: any-secret
+      JWT_REFRESH_SECRET: any-secret
       CRYPTO_KEY: any-secret
-      ZOOP_WEBHOOK_SECRET: any-secret
 
       AWS_S3_KEY: any-key
       AWS_S3_SECRET: any-secret
@@ -34,8 +34,6 @@ jobs:
       AWS_SQS_REGION: us-east-2
       AWS_SQS_ACCESS_KEY_ID: any-access-key-id
       AWS_SQS_SECRET_ACCESS_KEY: any-secret-access-key
-
-      PIX_EXPIRATION_TIME_IN_MINUTES: 10
 
     services:
       database:
