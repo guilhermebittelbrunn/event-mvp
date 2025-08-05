@@ -1,4 +1,4 @@
-import { IBaseRepository } from '@/shared/core/infra/Repository.interface';
+import { IBaseRepository } from '@/shared/core/infra/repository.interface';
 
 export class FakeBaseRepository<Domain> implements IBaseRepository<Domain> {
   create = jest.fn();

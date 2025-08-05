@@ -96,14 +96,11 @@ export default class EventConfig extends Entity<IEventConfigProps> {
       primaryColor: '#000000',
       secondaryColor: '#000000',
 
+      primaryContrast: '#ffffff',
+      secondaryContrast: '#000000',
+
       backgroundColor: '#ffffff',
       backgroundContrast: '#f2f2f2',
-
-      primary: '#000000',
-      primaryContrast: '#ffffff',
-
-      secondary: '#000000',
-      secondaryContrast: '#000000',
 
       textColorPrimary: '#000000',
       textColorSecondary: '#000000',

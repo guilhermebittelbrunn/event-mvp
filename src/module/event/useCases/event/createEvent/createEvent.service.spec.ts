@@ -9,7 +9,7 @@ import EventSlug from '@/module/event/domain/event/eventSlug';
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
-import GenericErrors from '@/shared/core/logic/GenericErrors';
+import GenericErrors from '@/shared/core/logic/genericErrors';
 import { EventStatusEnum } from '@/shared/types/user/event';
 
 const makePayload = (overrides?: Partial<CreateEventDTO>): CreateEventDTO => {

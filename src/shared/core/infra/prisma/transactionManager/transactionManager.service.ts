@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../../../../infra/database/prisma/prisma.service';
 
-import ITransactionManager from '@/shared/core/infra/TransactionManager.interface';
+import ITransactionManager from '@/shared/core/infra/transactionManager.interface';
 import { Als } from '@/shared/services/als/als.interface';
 
 @Injectable()

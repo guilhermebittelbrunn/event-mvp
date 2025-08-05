@@ -1,5 +1,6 @@
 import ValueObject from '@/shared/core/domain/ValueObject';
 import GenericErrors from '@/shared/core/logic/genericErrors';
+import Guard from '@/shared/core/logic/guard';
 
 export interface EventSlugProps {
   value: string;
@@ -14,11 +15,7 @@ export default class EventSlug extends ValueObject<EventSlugProps> {
     return this.props.value;
   }
 
-  private static isValidSlug(slug: string | null): slug is string {
-    if (!slug) {
-      return false;
-    }
-
+  private static isValidSlug(slug: string): slug is string {
     if (!this.isValidLength(slug)) {
       throw new GenericErrors.InvalidParam('Link de acesso do evento deve ter entre 3 e 50 caracteres');
     }
@@ -43,6 +40,12 @@ export default class EventSlug extends ValueObject<EventSlugProps> {
   }
 
   public static create(slug: string | null): EventSlug {
+    const guardedProps = Guard.againstNullOrUndefined(slug, 'link de acesso');
+
+    if (!guardedProps.succeeded) {
+      throw new GenericErrors.InvalidParam(guardedProps.message);
+    }
+
     const formattedSlug = this.format(slug);
 
     if (!this.isValidSlug(formattedSlug)) {

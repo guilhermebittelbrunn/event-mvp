@@ -1,5 +1,5 @@
 import EventSlug from '@/module/event/domain/event/eventSlug';
-import GenericErrors from '@/shared/core/logic/GenericErrors';
+import GenericErrors from '@/shared/core/logic/genericErrors';
 
 export namespace CreateEventErrors {
   export class SlugAlreadyInUse extends GenericErrors.InvalidParam {

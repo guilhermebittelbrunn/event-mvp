@@ -9,7 +9,7 @@ import EventMapper from '@/module/event/mappers/event.mapper';
 import User from '@/module/user/domain/user/user';
 import ITransactionManager, {
   ITransactionManagerSymbol,
-} from '@/shared/core/infra/TransactionManager.interface';
+} from '@/shared/core/infra/transactionManager.interface';
 import { ValidatedBody } from '@/shared/decorators';
 import { GetUser } from '@/shared/decorators/getUser.decorator';
 import { JwtAuthGuard } from '@/shared/guards/jwtAuth.guard';

@@ -1,6 +1,6 @@
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
-import GenericErrors from '@/shared/core/logic/GenericErrors';
+import GenericErrors from '@/shared/core/logic/genericErrors';
 
 export namespace UpdateEventErrors {
   export class NotFoundError extends GenericErrors.NotFound {
