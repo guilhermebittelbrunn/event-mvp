@@ -1,34 +1,3 @@
-# NestJS Boilerplate
-
-Um boilerplate robusto e escalável para aplicações NestJS, desenvolvido com foco em arquitetura limpa, boas práticas e facilidade de uso para novos projetos.
-
-## 🚀 Características
-
-### ✨ Funcionalidades Principais
-- **Arquitetura Limpa (Clean Architecture)** - Separação clara entre domínio, aplicação e infraestrutura
-- **Autenticação JWT** - Sistema completo de autenticação com refresh tokens
-- **Banco de Dados PostgreSQL** - Configurado com Prisma ORM
-- **Documentação Automática** - Swagger/OpenAPI integrado
-- **Logging Estruturado** - Pino logger com formatação otimizada
-- **Cache Manager** - Sistema de cache configurável
-- **Validação de Dados** - Class-validator integrado
-- **Testes Automatizados** - Jest configurado para testes unitários e e2e
-- **Docker** - Configuração para desenvolvimento e produção
-
-### 🏗️ Infraestrutura
-- **AWS S3** - Armazenamento de arquivos
-- **AWS SQS** - Sistema de mensageria
-- **New Relic** - Monitoramento e APM
-- **Discord** - Sistema de notificações
-- **Fastify** - Servidor HTTP de alta performance
-
-### 🛠️ Ferramentas de Desenvolvimento
-- **TypeScript** - Tipagem estática
-- **ESLint + Prettier** - Linting e formatação de código
-- **Husky** - Git hooks
-- **Commitlint** - Padronização de commits
-- **Prisma Studio** - Interface visual para o banco de dados
-
 ## 📋 Pré-requisitos
 
 - Node.js (versão 18 ou superior)
@@ -173,8 +142,8 @@ pnpm typechecks       # Verifica tipos TypeScript
 O boilerplate inclui um sistema completo de autenticação JWT:
 
 ### Endpoints Disponíveis
-- `POST /v1/auth/signup` - Cadastro de usuário
-- `POST /v1/auth/signin` - Login
+- `POST /v1/auth/sign-up` - Cadastro de usuário
+- `POST /v1/auth/sign-in` - Login
 - `POST /v1/auth/refresh` - Renovação de token
 
 ### Uso dos Guards
@@ -275,42 +244,5 @@ O sistema usa Pino para logging estruturado:
 - **AWS**: ECS, Lambda, EC2
 - **Google Cloud**: App Engine, Cloud Run
 - **Azure**: App Service, Container Instances
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
-## 🆘 Suporte
-
-Se você encontrar algum problema ou tiver dúvidas:
-
-1. Verifique a [documentação](https://docs.nestjs.com/)
-2. Procure por issues similares no repositório
-3. Abra uma nova issue com detalhes do problema
-
-## 🔄 Atualizações
-
-Para manter o boilerplate atualizado:
-
-```bash
-# Atualizar dependências
-pnpm update
-
-# Verificar vulnerabilidades
-pnpm audit
-
-# Atualizar Prisma
-pnpm prisma update
-```
-
----
 
 **Desenvolvido com ❤️ usando NestJS**
