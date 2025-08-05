@@ -1,15 +1,18 @@
-model UserModel {
+model EventModel {
   id       String @id @default(uuid()) @db.Uuid
+  userId   String @map("user_id") @db.Uuid
   name     String
-  email    String @unique
-  type     String @default("common")
-  password String
+  slug     String @unique
+  status   String @default("draft")
+  description String?
+  start_at DateTime
+  end_at DateTime
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
-  events EventModel[]
+  user UserModel @relation(fields: [userId], references: [id])
 
-  @@map("user")
+  @@map("event")
 }
