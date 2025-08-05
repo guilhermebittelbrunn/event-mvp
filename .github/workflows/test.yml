@@ -1,0 +1,79 @@
+name: Check - Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: event_dev
+      POSTGRES_USER: postgres
+      POSTGRES_URL: postgresql://postgres:postgres@localhost:5432/event_dev
+
+      JWT_SECRET: any-secret
+      JWT_REFRESH_SECRET: any-secret
+      CRYPTO_KEY: any-secret
+
+      AWS_S3_KEY: any-key
+      AWS_S3_SECRET: any-secret
+      AWS_S3_REGION: us-east-2
+      AWS_S3_ASSETS_BUCKET: any-bucket
+
+      AWS_SQS_PREFIX: any-prefix
+      AWS_SQS_REGION: us-east-2
+      AWS_SQS_ACCESS_KEY_ID: any-access-key-id
+      AWS_SQS_SECRET_ACCESS_KEY: any-secret-access-key
+
+    services:
+      database:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          JWT_SECRET: ${{ env.JWT_SECRET }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: |
+            - args: [--frozen-lockfile]
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Prisma migrate deploy
+        run: pnpx prisma migrate deploy
+
+      - name: Prisma generate types
+        run: pnpx prisma generate
+
+      - name: Run test
+        run: pnpm test
+
+      - name: Run test e2e
+        run: pnpm test:e2e 

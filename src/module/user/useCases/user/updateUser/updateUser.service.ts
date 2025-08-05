@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { UpdateUserDTO } from './dto/updateUser.dto';
-import UpdateUserErrors from './updateuser.error';
+import UpdateUserErrors from './updateUser.error';
 
 import User from '@/module/user/domain/user/user';
 import UserEmail from '@/module/user/domain/user/userEmail';

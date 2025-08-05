@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker/.';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import UpdateUserErrors from './updateuser.error';
+import UpdateUserErrors from './updateUser.error';
 import { UpdateUserService } from './updateUser.service';
 
 import { fakeUser } from '@/module/user/repositories/tests/entities/fakeUser';

@@ -1,4 +1,4 @@
-import GenericErrors from '@/shared/core/logic/GenericErrors';
+import GenericErrors from '@/shared/core/logic/genericErrors';
 
 export namespace SignUpErrors {
   export class EmailAlreadyInUse extends GenericErrors.Conflict {

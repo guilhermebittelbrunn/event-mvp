@@ -9,5 +9,7 @@ model UserModel {
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
+  events EventModel[]
+
   @@map("user")
 }
