@@ -2,7 +2,7 @@ import { prisma } from '@database/index';
 import { faker } from '@faker-js/faker';
 import { HttpStatus } from '@nestjs/common';
 
-import UpdateUserErrors from './updateuser.error';
+import UpdateUserErrors from './updateUser.error';
 
 import { insertFakeUser } from '@/module/user/repositories/tests/entities/fakeUser';
 import { IAuthenticatedUserData } from '@/shared/test/helpers/getAuthenticatedUser';
