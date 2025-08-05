@@ -10,6 +10,7 @@ export interface ListEventByQuery extends PaginationQuery {
 }
 
 export interface IEventRepository extends IBaseRepository<Event> {
+  save(domain: Event): Promise<Event>;
   findCompleteById(id: GenericId): SingleEntityResponse<Event>;
   list(query?: ListEventByQuery): Promise<PaginatedResult<Event>>;
   findBySlug(slug: string | EventSlug): SingleEntityResponse<Event>;

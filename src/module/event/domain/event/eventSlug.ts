@@ -39,14 +39,16 @@ export default class EventSlug extends ValueObject<EventSlugProps> {
   }
 
   private static format(slug: string): string {
-    return slug.trim().toLowerCase();
+    return slug.trim().toLowerCase().replace(/ /g, '-');
   }
 
   public static create(slug: string | null): EventSlug {
-    if (!this.isValidSlug(slug)) {
+    const formattedSlug = this.format(slug);
+
+    if (!this.isValidSlug(formattedSlug)) {
       throw new GenericErrors.InvalidParam('Link de acesso do evento inválido');
     }
 
-    return new EventSlug({ value: this.format(slug) });
+    return new EventSlug({ value: formattedSlug });
   }
 }

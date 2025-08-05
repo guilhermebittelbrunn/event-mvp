@@ -6,6 +6,7 @@ import Event from '../../domain/event/event';
 import EventSlug from '../../domain/event/eventSlug';
 import EventMapper from '../../mappers/event.mapper';
 import { IEventRepository, ListEventByQuery } from '../event.repository.interface';
+import { IEventConfigRepository } from '../eventConfig.repository.interface';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { PaginatedResult } from '@/shared/core/infra/pagination.interface';
@@ -21,13 +22,30 @@ export class EventRepository
 {
   mapper = EventMapper;
 
-  constructor(prisma: PrismaService, als: Als) {
+  constructor(
+    private readonly eventConfigRepo: IEventConfigRepository,
+    prisma: PrismaService,
+    als: Als,
+  ) {
     super('eventModel', prisma, als);
+  }
+
+  async save(domain: Event): Promise<Event> {
+    const event = await this.create(domain);
+
+    if (!isEmpty(domain.config)) {
+      event.config = await this.eventConfigRepo.create(domain.config);
+    }
+
+    return event;
   }
 
   async findCompleteById(id: GenericId): Promise<Event | null> {
     const event = await this.manager().findUnique({
       where: { id: UniqueEntityID.raw(id) },
+      include: {
+        config: true,
+      },
     });
 
     return this.mapper.toDomainOrNull(event);

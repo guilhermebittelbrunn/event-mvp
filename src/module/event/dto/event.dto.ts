@@ -1,10 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { EventConfigDTO } from './eventConfig.dto';
+
 import { BaseEntityDTO } from '@/shared/core/dto/BaseEntityDTO';
+import { ApiUUIDProperty } from '@/shared/infra/docs/swagger/decorators/apiUUIDProperty.decorator';
 import { EventStatusEnum } from '@/shared/types/user/event';
 
 export class EventDTO extends BaseEntityDTO {
-  @ApiProperty()
+  @ApiUUIDProperty()
   userId: string;
 
   @ApiProperty()
@@ -24,4 +27,7 @@ export class EventDTO extends BaseEntityDTO {
 
   @ApiProperty()
   end_at: Date;
+
+  @ApiProperty({ required: false })
+  config?: EventConfigDTO;
 }

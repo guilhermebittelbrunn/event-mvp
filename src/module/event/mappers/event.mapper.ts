@@ -1,4 +1,6 @@
-import { EventModel } from '@prisma/client';
+import { EventConfigModel, EventModel } from '@prisma/client';
+
+import EventConfigMapper from './eventConfig.mapper';
 
 import Event from '../domain/event/event';
 import EventSlug from '../domain/event/eventSlug';
@@ -9,7 +11,9 @@ import Mapper from '@/shared/core/domain/Mapper';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { EventStatusEnum } from '@/shared/types/user/event';
 
-export interface EventModelWithRelations extends EventModel {}
+export interface EventModelWithRelations extends EventModel {
+  config?: EventConfigModel;
+}
 
 class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
   toDomain(event: EventModelWithRelations): Event {
@@ -25,6 +29,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
         createdAt: event.createdAt,
         updatedAt: event.updatedAt,
         deletedAt: event.deletedAt,
+        config: EventConfigMapper.toDomainOrUndefined(event.config),
       },
       new UniqueEntityID(event.id),
     );
@@ -59,6 +64,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       createdAt: event.createdAt,
       updatedAt: event.updatedAt,
       deletedAt: event.deletedAt,
+      config: EventConfigMapper.toDTOOrUndefined(event.config),
     };
   }
 }
