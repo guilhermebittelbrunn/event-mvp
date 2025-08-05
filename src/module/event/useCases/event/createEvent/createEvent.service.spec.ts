@@ -55,11 +55,11 @@ describe('CreateEventService', () => {
 
     const event = fakeEvent(payload);
 
-    eventRepoMock.create.mockResolvedValueOnce(event);
+    eventRepoMock.save.mockResolvedValueOnce(event);
 
     const result = await service.execute(payload);
 
-    expect(eventRepoMock.create).toHaveBeenCalled();
+    expect(eventRepoMock.save).toHaveBeenCalled();
     expect(result.userId.toValue()).toEqual(event.userId.toValue());
     expect(result.slug.value).toEqual(event.slug.value);
     expect(result.status.value).toEqual(event.status.value);
@@ -71,7 +71,7 @@ describe('CreateEventService', () => {
 
     await expect(service.execute(payload)).rejects.toThrow(GenericErrors.InvalidParam);
 
-    expect(eventRepoMock.create).not.toHaveBeenCalled();
+    expect(eventRepoMock.save).not.toHaveBeenCalled();
   });
 
   it('should throw an error if the event slug is not valid', async () => {
@@ -79,7 +79,7 @@ describe('CreateEventService', () => {
 
     await expect(service.execute(payload)).rejects.toThrow(GenericErrors.InvalidParam);
 
-    expect(eventRepoMock.create).not.toHaveBeenCalled();
+    expect(eventRepoMock.save).not.toHaveBeenCalled();
   });
 
   it('should throw an error if the event start_at is not valid', async () => {
@@ -87,7 +87,7 @@ describe('CreateEventService', () => {
 
     await expect(service.execute(payload)).rejects.toThrow(GenericErrors.InvalidParam);
 
-    expect(eventRepoMock.create).not.toHaveBeenCalled();
+    expect(eventRepoMock.save).not.toHaveBeenCalled();
   });
 
   it('should throw an error if the event slug is already in use', async () => {
@@ -98,6 +98,6 @@ describe('CreateEventService', () => {
     await expect(service.execute(payload)).rejects.toThrow(CreateEventErrors.SlugAlreadyInUse);
 
     expect(eventRepoMock.findBySlug).toHaveBeenCalledWith(EventSlug.create(payload.slug));
-    expect(eventRepoMock.create).not.toHaveBeenCalled();
+    expect(eventRepoMock.save).not.toHaveBeenCalled();
   });
 });

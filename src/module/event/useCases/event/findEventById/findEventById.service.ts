@@ -11,7 +11,7 @@ export class FindEventByIdService {
   constructor(@Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository) {}
 
   async execute(id: string) {
-    const event = await this.eventRepo.findById(id);
+    const event = await this.eventRepo.findCompleteById(id);
 
     if (!event) {
       throw new GenericErrors.NotFound(`Evento com id ${id} não encontrado`);
