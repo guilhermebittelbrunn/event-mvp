@@ -32,7 +32,7 @@ describe('DeleteUserService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should update a user successfully', async () => {
+  it('should delete a user successfully', async () => {
     const user = fakeUser();
 
     userRepoMock.delete.mockResolvedValueOnce(true);
