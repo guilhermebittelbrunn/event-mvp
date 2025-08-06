@@ -15,7 +15,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, JWT_REFRESH_S
     protected readonly config: ConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Refresh'), // Authorization: Refresh <token>
+      jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Refresh'), // authorization: Refresh <token>
       secretOrKey: config.getOrThrow('jwt.refreshSecret'),
     });
   }

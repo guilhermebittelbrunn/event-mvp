@@ -6,6 +6,7 @@ import UpdateEventErrors from './updateEvent.error';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
 import {
   IEventRepository,
   IEventRepositorySymbol,
@@ -15,12 +16,15 @@ import { EventStatusEnum } from '@/shared/types/user/event';
 
 @Injectable()
 export class UpdateEventService {
-  constructor(@Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository) {}
+  constructor(
+    @Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository,
+    private readonly addAccessToEvent: AddAccessToEvent,
+  ) {}
 
   async execute(dto: UpdateEventDTO) {
     const { status, slug } = dto;
 
-    const currentEvent = await this.eventRepo.findById(dto.id);
+    const currentEvent = await this.eventRepo.findCompleteById(dto.id);
 
     if (!currentEvent) {
       throw new UpdateEventErrors.NotFoundError();
@@ -49,7 +53,6 @@ export class UpdateEventService {
 
     const event = Event.create(
       {
-        ...currentEvent,
         userId: currentEvent.userId,
         name: coalesce(dto.name, currentEvent.name),
         description: coalesce(dto.description, currentEvent.description),
@@ -57,9 +60,13 @@ export class UpdateEventService {
         slug: coalesce(eventSlug, currentEvent.slug),
         start_at: coalesce(dto.start_at, currentEvent.start_at),
         end_at: coalesce(dto.end_at, currentEvent.end_at),
+        config: currentEvent.config,
+        accesses: currentEvent.accesses,
       },
       currentEvent.id,
     );
+
+    this.addAccessToEvent.execute({ event });
 
     return this.eventRepo.update(event);
   }

@@ -6,6 +6,7 @@ import { CreateEventService } from './createEvent.service';
 import { CreateEventDTO } from './dto/createEvent.dto';
 
 import EventSlug from '@/module/event/domain/event/eventSlug';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
@@ -26,6 +27,7 @@ const makePayload = (overrides?: Partial<CreateEventDTO>): CreateEventDTO => {
 
 describe('CreateEventService', () => {
   let service: CreateEventService;
+  let addAccessToEvent: AddAccessToEvent;
 
   const eventRepoMock = new FakeEventRepository();
 
@@ -37,12 +39,15 @@ describe('CreateEventService', () => {
           provide: IEventRepositorySymbol,
           useValue: eventRepoMock,
         },
+        AddAccessToEvent,
       ],
     }).compile();
 
     eventRepoMock.findBySlug.mockResolvedValue(null);
 
     service = module.get<CreateEventService>(CreateEventService);
+    addAccessToEvent = module.get<AddAccessToEvent>(AddAccessToEvent);
+
     jest.clearAllMocks();
   });
 
@@ -57,6 +62,8 @@ describe('CreateEventService', () => {
 
     eventRepoMock.save.mockResolvedValueOnce(event);
 
+    const spyAccessService = jest.spyOn(addAccessToEvent, 'execute');
+
     const result = await service.execute(payload);
 
     expect(eventRepoMock.save).toHaveBeenCalled();
@@ -64,6 +71,7 @@ describe('CreateEventService', () => {
     expect(result.slug.value).toEqual(event.slug.value);
     expect(result.status.value).toEqual(event.status.value);
     expect(result.status.value).toEqual(EventStatusEnum.COMPLETED);
+    expect(spyAccessService).toHaveBeenCalled();
   });
 
   it('should throw an error if the event status is not valid', async () => {

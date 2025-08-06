@@ -37,12 +37,18 @@ describe('CreateEventController (e2e)', () => {
         where: {
           id: result.body.data.id,
         },
+        include: {
+          config: true,
+          accesses: true,
+        },
       });
 
       expect(newEvent.name).toBe(result.body.data.name);
       expect(newEvent.description).toBe(result.body.data.description);
       expect(newEvent.start_at.toISOString()).toBe(result.body.data.start_at);
       expect(newEvent.end_at.toISOString()).toBe(result.body.data.end_at);
+      expect(newEvent.config).toBeDefined();
+      expect(newEvent.accesses).toBeDefined();
     });
 
     it('should return 400 when invalid data is provided', async () => {
