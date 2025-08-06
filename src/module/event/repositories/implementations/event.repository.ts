@@ -6,6 +6,7 @@ import Event from '../../domain/event/event';
 import EventSlug from '../../domain/event/eventSlug';
 import EventMapper from '../../mappers/event.mapper';
 import { IEventRepository, ListEventByQuery } from '../event.repository.interface';
+import { IEventAccessRepository } from '../eventAccess.repository.interface';
 import { IEventConfigRepository } from '../eventConfig.repository.interface';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
@@ -21,9 +22,11 @@ export class EventRepository
   implements IEventRepository
 {
   mapper = EventMapper;
+  usesSoftDelete = true;
 
   constructor(
     private readonly eventConfigRepo: IEventConfigRepository,
+    private readonly eventAccessRepo: IEventAccessRepository,
     prisma: PrismaService,
     als: Als,
   ) {
@@ -37,7 +40,20 @@ export class EventRepository
       event.config = await this.eventConfigRepo.create(domain.config);
     }
 
+    if (!isEmpty(domain.accesses)) {
+      await this.eventAccessRepo.saveMany(domain.accesses);
+      event.accesses = domain.accesses;
+    }
+
     return event;
+  }
+
+  async update(domain: Event): Promise<string> {
+    const rawId = await super.update(domain);
+
+    await this.eventAccessRepo.saveMany(domain.accesses);
+
+    return rawId;
   }
 
   async findCompleteById(id: GenericId): Promise<Event | null> {
@@ -45,6 +61,7 @@ export class EventRepository
       where: { id: UniqueEntityID.raw(id) },
       include: {
         config: true,
+        accesses: true,
       },
     });
 

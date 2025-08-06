@@ -15,7 +15,7 @@ export default class EventSlug extends ValueObject<EventSlugProps> {
     return this.props.value;
   }
 
-  private static isValidSlug(slug: string): slug is string {
+  private static isValidSlug(slug: string): boolean {
     if (!this.isValidLength(slug)) {
       throw new GenericErrors.InvalidParam('Link de acesso do evento deve ter entre 3 e 50 caracteres');
     }
