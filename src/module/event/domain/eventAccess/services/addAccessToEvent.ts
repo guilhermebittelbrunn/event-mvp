@@ -11,11 +11,12 @@ import { EventAccessTypeEnum } from '@/shared/types/user/event';
 
 export class AddAccessToEvent {
   execute({ event, type }: AddAccessToEventDTO): EventAccess | undefined {
-    if (isEmpty(event.slug.value)) return;
+    if (isEmpty(event?.slug?.value)) return;
 
     const accessId = UniqueEntityID.create();
 
     const eventType = EventAccessType.create(type ?? EventAccessTypeEnum.GUEST);
+
     const eventUrl = EventAccessUrl.create(this.generateAccessUrl(event, accessId));
 
     const eventAccess = EventAccess.create(
