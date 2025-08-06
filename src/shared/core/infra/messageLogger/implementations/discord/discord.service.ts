@@ -13,7 +13,7 @@ export class DiscordService implements IMessageLogger {
   }
 
   private get infoUrlPath(): string {
-    return '/1375111991299149844/LCrLbuT03fCFdeOr6Dq7J9PFtVhQGcOSkHAu1YOtw3d7ckjWXpmu-AtkM1Puy_S1s0e9';
+    return '';
   }
 
   private buildTemplate(message: string, identifier?: string): string {

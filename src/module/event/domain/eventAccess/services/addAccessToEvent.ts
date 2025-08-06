@@ -6,10 +6,13 @@ import EventAccessType from '../eventAccessType';
 import EventAccessUrl from '../eventAccessUrl';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
+import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
 import { EventAccessTypeEnum } from '@/shared/types/user/event';
 
 export class AddAccessToEvent {
-  async execute({ event, type }: AddAccessToEventDTO): Promise<EventAccess> {
+  execute({ event, type }: AddAccessToEventDTO): EventAccess | undefined {
+    if (isEmpty(event.slug.value)) return;
+
     const accessId = UniqueEntityID.create();
 
     const eventType = EventAccessType.create(type ?? EventAccessTypeEnum.GUEST);
@@ -30,6 +33,6 @@ export class AddAccessToEvent {
   }
 
   private generateAccessUrl(event: Event, accessId: UniqueEntityID): string {
-    return `/${event?.slug?.value}?t=${accessId.toValue()}`;
+    return `/${event.slug.value}?t=${accessId.toValue()}`;
   }
 }
