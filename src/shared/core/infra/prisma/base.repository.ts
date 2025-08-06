@@ -152,7 +152,7 @@ export class BaseRepository<ModelKey extends PrismaModel, Domain extends Entity<
 
   private async softDelete(id: GenericId): Promise<boolean> {
     const data = await (this.manager().update as any)({
-      data: { deleted_at: new Date() },
+      data: { deletedAt: new Date() },
       where: { id: UniqueEntityID.raw(id) },
     });
 
@@ -161,7 +161,7 @@ export class BaseRepository<ModelKey extends PrismaModel, Domain extends Entity<
 
   private async softDeleteBulk(ids: GenericId[]): Promise<boolean> {
     const data = await (this.manager().updateMany as any)({
-      data: { deleted_at: new Date() },
+      data: { deletedAt: new Date() },
       where: { id: { in: ids.map((id) => UniqueEntityID.raw(id)) } },
     });
 

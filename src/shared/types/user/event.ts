@@ -5,3 +5,8 @@ export enum EventStatusEnum {
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
 }
+
+export enum EventAccessTypeEnum {
+  GUEST = 'guest',
+  OWNER = 'owner',
+}

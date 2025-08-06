@@ -16,6 +16,8 @@ model EventModel {
 
   user UserModel @relation(fields: [userId], references: [id])
 
+  accesses EventAccessModel[]
+
   @@map("event")
 }
 
@@ -41,4 +43,19 @@ model EventConfigModel {
   event EventModel @relation(fields: [eventId], references: [id])
 
   @@map("event_config")
+}
+
+model EventAccessModel{
+  id String @id @default(uuid()) @db.Uuid
+  eventId String @map("event_id") @db.Uuid
+  url String @unique
+  type String @default("guest")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
+  event EventModel @relation(fields: [eventId], references: [id])
+
+  @@map("event_access")
 }

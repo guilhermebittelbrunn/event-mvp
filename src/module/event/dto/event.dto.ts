@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { EventAccessDTO } from './eventAccess.dto';
 import { EventConfigDTO } from './eventConfig.dto';
 
 import { BaseEntityDTO } from '@/shared/core/dto/BaseEntityDTO';
@@ -30,4 +31,7 @@ export class EventDTO extends BaseEntityDTO {
 
   @ApiProperty({ required: false })
   config?: EventConfigDTO;
+
+  @ApiProperty({ required: false })
+  guestAccess?: EventAccessDTO;
 }

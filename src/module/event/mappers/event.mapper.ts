@@ -1,10 +1,12 @@
-import { EventConfigModel, EventModel } from '@prisma/client';
+import { EventAccessModel, EventConfigModel, EventModel } from '@prisma/client';
 
+import EventAccessMapper from './eventAccess.mapper';
 import EventConfigMapper from './eventConfig.mapper';
 
 import Event from '../domain/event/event';
 import EventSlug from '../domain/event/eventSlug';
 import EventStatus from '../domain/event/eventStatus';
+import { EventAccesses } from '../domain/eventAccess/eventAccesses';
 import { EventDTO } from '../dto/event.dto';
 
 import Mapper from '@/shared/core/domain/Mapper';
@@ -13,6 +15,7 @@ import { EventStatusEnum } from '@/shared/types/user/event';
 
 export interface EventModelWithRelations extends EventModel {
   config?: EventConfigModel;
+  accesses?: EventAccessModel[];
 }
 
 class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
@@ -30,6 +33,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
         updatedAt: event.updatedAt,
         deletedAt: event.deletedAt,
         config: EventConfigMapper.toDomainOrUndefined(event.config),
+        accesses: EventAccesses.create(event.accesses?.map(EventAccessMapper.toDomain)),
       },
       new UniqueEntityID(event.id),
     );
@@ -65,6 +69,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       updatedAt: event.updatedAt,
       deletedAt: event.deletedAt,
       config: EventConfigMapper.toDTOOrUndefined(event.config),
+      guestAccess: EventAccessMapper.toDTOOrUndefined(event.guestAccess),
     };
   }
 }

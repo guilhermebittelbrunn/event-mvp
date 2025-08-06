@@ -1,4 +1,5 @@
 import { EventRepository } from '../event.repository';
+import { EventAccessRepository } from '../eventAccess.repository';
 import { EventConfigRepository } from '../eventConfig.repository';
 
 import { PrismaService } from '@/shared/infra/database/prisma/prisma.service';
@@ -9,6 +10,7 @@ export const makeEventRepository = () => {
   const als = new Als();
 
   const eventConfigRepo = new EventConfigRepository(prismaService, als);
+  const eventAccessRepo = new EventAccessRepository(prismaService, als);
 
-  return new EventRepository(eventConfigRepo, prismaService, als);
+  return new EventRepository(eventConfigRepo, eventAccessRepo, prismaService, als);
 };

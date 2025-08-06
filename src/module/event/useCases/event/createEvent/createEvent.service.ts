@@ -6,6 +6,7 @@ import { CreateEventDTO } from './dto/createEvent.dto';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
 import EventConfig from '@/module/event/domain/eventConfig';
 import {
   IEventRepository,
@@ -16,7 +17,10 @@ import { EventStatusEnum } from '@/shared/types/user/event';
 
 @Injectable()
 export class CreateEventService {
-  constructor(@Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository) {}
+  constructor(
+    @Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository,
+    private readonly addAccessToEvent: AddAccessToEvent,
+  ) {}
 
   async execute(dto: CreateEventDTO) {
     const { slug, status, userId } = dto;
@@ -38,11 +42,11 @@ export class CreateEventService {
       status: eventStatus,
     });
 
-    const eventConfig = EventConfig.create({
+    event.config = EventConfig.create({
       eventId: event.id,
     });
 
-    event.config = eventConfig;
+    this.addAccessToEvent.execute({ event });
 
     return this.eventRepo.save(event);
   }

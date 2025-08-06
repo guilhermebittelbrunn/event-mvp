@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ISessionUser } from '@/shared/types/user';
+import { UserDTO } from '@/module/user/dto/user.dto';
 
 class Token {
   @ApiProperty()
@@ -13,9 +13,9 @@ class Token {
   expires_at: number;
 }
 
-export class AuthResponseDto {
+export class SignInResponseDTO {
   @ApiProperty()
-  user: ISessionUser;
+  user: UserDTO;
 
   @ApiProperty()
   tokens: Token;

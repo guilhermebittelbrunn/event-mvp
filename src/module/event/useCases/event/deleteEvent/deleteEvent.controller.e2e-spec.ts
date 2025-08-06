@@ -25,6 +25,7 @@ describe('DeleteEventController (e2e)', () => {
       const deletedEvent = await prisma.eventModel.findFirst({
         where: {
           id: event.id,
+          deletedAt: null,
         },
       });
 
