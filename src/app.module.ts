@@ -14,6 +14,7 @@ import { DiscordModule } from './shared/core/infra/messageLogger/implementations
 import { MessageLoggerModule } from './shared/core/infra/messageLogger/messageLogger.module';
 import { TransactionManagerModule } from './shared/core/infra/prisma/transactionManager/transactionManager.module';
 import { HttpExceptionFilter } from './shared/exceptions/httpException.filter';
+import { EventAuthModule } from './shared/guards/eventAuth/eventAuth.module';
 import { PrismaModule } from './shared/infra/database/prisma/prisma.module';
 import { CompositeInterceptor } from './shared/interceptors/composite.interceptor';
 import { LogRequestInterceptor } from './shared/interceptors/logRequest.interceptor';
@@ -37,6 +38,7 @@ import { JwtRefreshStrategy } from './shared/strategies/jwtRefresh.strategy';
     AlsModule,
     JwtModule,
     NestJwtModule,
+    EventAuthModule,
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,

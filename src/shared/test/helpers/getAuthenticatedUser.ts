@@ -50,7 +50,7 @@ export default async function getAuthenticatedUser(): Promise<IAuthenticatedUser
   const { access_token, refresh_token } = await generateToken({
     sub: user.id,
     email: user.email,
-    type: user.type,
+    role: user.type as UserTypeEnum,
     iat: now,
     exp: now + 60 * 60, // 1 hora de expiração
   });

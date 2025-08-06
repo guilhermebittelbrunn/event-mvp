@@ -19,8 +19,8 @@ export function fakeEvent(overrides?: Partial<EventModel>): Event {
     {
       name: faker.lorem.sentence(),
       description: faker.lorem.paragraph(),
-      start_at: faker.date.recent(),
-      end_at: faker.date.future(),
+      startAt: faker.date.recent(),
+      endAt: faker.date.future(),
       ...overrides,
       userId,
       slug,
@@ -46,8 +46,8 @@ export async function insertFakeEvent(overrides: Partial<EventModel> = {}): Prom
       slug: event.slug.value,
       status: event.status.value,
       description: event.description,
-      start_at: event.start_at,
-      end_at: event.end_at,
+      startAt: event.startAt,
+      endAt: event.endAt,
       ...overrides,
     },
   });

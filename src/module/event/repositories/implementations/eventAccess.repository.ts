@@ -6,10 +6,12 @@ import { EventAccesses } from '../../domain/eventAccess/eventAccesses';
 import EventAccessMapper from '../../mappers/eventAccess.mapper';
 import { IEventAccessRepository } from '../eventAccess.repository.interface';
 
+import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { BaseRepository } from '@/shared/core/infra/prisma/base.repository';
 import { filledArray } from '@/shared/core/utils/undefinedHelpers';
 import { PrismaService } from '@/shared/infra/database/prisma/prisma.service';
 import { Als } from '@/shared/services/als/als.interface';
+import { GenericId } from '@/shared/types/common';
 
 @Injectable()
 export class EventAccessRepository
@@ -34,5 +36,14 @@ export class EventAccessRepository
     if (filledArray(accesses.updatedItems)) {
       await this.updateBulk(accesses.updatedItems);
     }
+  }
+
+  async findWithEvent(id: GenericId): Promise<EventAccess | null> {
+    const eventAccess = await this.prisma.eventAccessModel.findUnique({
+      where: { id: UniqueEntityID.raw(id) },
+      include: { event: true },
+    });
+
+    return this.mapper.toDomainOrNull(eventAccess);
   }
 }

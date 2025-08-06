@@ -4,10 +4,12 @@ import { DefaultArgs } from '@prisma/client/runtime/library';
 
 import { AsyncLocalStorage } from 'async_hooks';
 
+import Event from '@/module/event/domain/event/event';
 import User from '@/module/user/domain/user/user';
 
 export interface AlsData {
   user?: User;
+  event?: Event;
   requestId?: string;
   tx?: Omit<
     PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,

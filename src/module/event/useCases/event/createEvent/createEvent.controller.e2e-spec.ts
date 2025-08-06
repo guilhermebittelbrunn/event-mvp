@@ -12,8 +12,8 @@ const makePayload = (overrides: Partial<CreateEventDTO> = {}): CreateEventDTO =>
   name: faker.lorem.words(3),
   description: faker.lorem.paragraph(),
   slug: faker.lorem.slug(),
-  start_at: faker.date.past(),
-  end_at: faker.date.soon(),
+  startAt: faker.date.past(),
+  endAt: faker.date.soon(),
   userId: faker.string.uuid(),
   ...overrides,
 });
@@ -45,8 +45,8 @@ describe('CreateEventController (e2e)', () => {
 
       expect(newEvent.name).toBe(result.body.data.name);
       expect(newEvent.description).toBe(result.body.data.description);
-      expect(newEvent.start_at.toISOString()).toBe(result.body.data.start_at);
-      expect(newEvent.end_at.toISOString()).toBe(result.body.data.end_at);
+      expect(newEvent.startAt.toISOString()).toBe(result.body.data.startAt);
+      expect(newEvent.endAt.toISOString()).toBe(result.body.data.endAt);
       expect(newEvent.config).toBeDefined();
       expect(newEvent.accesses).toBeDefined();
     });
@@ -56,8 +56,8 @@ describe('CreateEventController (e2e)', () => {
         .post(`/v1/event`)
         .set('authorization', `Bearer ${authInfos.access_token}`)
         .send({
-          start_at: faker.date.past(),
-          end_at: faker.date.past(),
+          startAt: faker.date.past(),
+          endAt: faker.date.past(),
         })
         .expect(HttpStatus.BAD_REQUEST);
 

@@ -19,8 +19,8 @@ const makePayload = (overrides?: Partial<CreateEventDTO>): CreateEventDTO => {
     name: faker.person.fullName(),
     slug: faker.string.uuid(),
     status: EventStatusEnum.DRAFT,
-    start_at: new Date(),
-    end_at: new Date(),
+    startAt: new Date(),
+    endAt: new Date(),
     ...overrides,
   };
 };
@@ -90,8 +90,8 @@ describe('CreateEventService', () => {
     expect(eventRepoMock.save).not.toHaveBeenCalled();
   });
 
-  it('should throw an error if the event start_at is not valid', async () => {
-    const payload = makePayload({ start_at: null });
+  it('should throw an error if the event startAt is not valid', async () => {
+    const payload = makePayload({ startAt: null });
 
     await expect(service.execute(payload)).rejects.toThrow(GenericErrors.InvalidParam);
 

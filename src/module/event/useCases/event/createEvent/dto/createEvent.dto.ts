@@ -20,15 +20,15 @@ export class CreateEventDTO {
   description?: string;
 
   @ValidatedDateString('data de início')
-  start_at: Date;
+  startAt: Date;
 
   @ValidatedDateString('data de término')
-  @ValidateIf((o) => o.start_at && o.end_at)
+  @ValidateIf((o) => o.startAt && o.endAt)
   @Validate(
     (value, args) => {
       const object = args.object as CreateEventDTO;
-      if (object.start_at && value) {
-        return new Date(value) > new Date(object.start_at);
+      if (object.startAt && value) {
+        return new Date(value) > new Date(object.startAt);
       }
       return true;
     },
@@ -36,7 +36,7 @@ export class CreateEventDTO {
       message: 'A data de término deve ser posterior à data de início',
     },
   )
-  end_at: Date;
+  endAt: Date;
 
   @ApiHideProperty()
   userId: string;

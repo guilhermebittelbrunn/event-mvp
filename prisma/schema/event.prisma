@@ -5,8 +5,8 @@ model EventModel {
   slug     String @unique
   status   String @default("draft")
   description String?
-  start_at DateTime
-  end_at DateTime
+  startAt DateTime @map("start_at")
+  endAt DateTime @map("end_at")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()

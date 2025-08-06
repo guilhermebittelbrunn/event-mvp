@@ -24,10 +24,10 @@ export class EventDTO extends BaseEntityDTO {
   description?: string;
 
   @ApiProperty()
-  start_at: Date;
+  startAt: Date;
 
   @ApiProperty()
-  end_at: Date;
+  endAt: Date;
 
   @ApiProperty({ required: false })
   config?: EventConfigDTO;

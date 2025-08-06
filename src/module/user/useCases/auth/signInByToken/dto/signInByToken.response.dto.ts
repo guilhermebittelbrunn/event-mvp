@@ -1,22 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { UserDTO } from '@/module/user/dto/user.dto';
+import { EventDTO } from '@/module/event/dto/event.dto';
 
-class Token {
+class SignInByTokenToken {
   @ApiProperty()
   access_token: string;
-  @ApiProperty()
-  refresh_token?: string;
   @ApiProperty()
   expires_in: number;
   @ApiProperty()
   expires_at: number;
 }
 
-export class SignInResponseDTO {
+export class SignInByTokenResponseDTO {
   @ApiProperty()
-  user: UserDTO;
+  event: EventDTO;
 
   @ApiProperty()
-  tokens: Token;
+  token: SignInByTokenToken;
 }
