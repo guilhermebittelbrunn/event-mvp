@@ -71,7 +71,7 @@ export default class IpAddress extends ValueObject<IpAddressProps> {
       return false;
     }
 
-    const version = this.getIpVersion(trimmedIp);
+    const version = IpAddress.getIpVersion(trimmedIp);
 
     if (version === IpVersion.UNKNOWN) {
       return false;
