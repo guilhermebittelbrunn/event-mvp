@@ -5,10 +5,12 @@ import { CreateMemoryService } from './createMemory.service';
 
 import { MemoryRepository } from '@/module/event/repositories/implementations/memory.repository';
 import { IMemoryRepositorySymbol } from '@/module/event/repositories/memory.repository.interface';
+import { AddFileModule } from '@/module/shared/domain/services/addFile.module';
 import { TransactionManagerService } from '@/shared/core/infra/prisma/transactionManager/transactionManager.service';
 import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManager.interface';
 
 @Module({
+  imports: [AddFileModule],
   controllers: [CreateMemoryController],
   providers: [
     CreateMemoryService,

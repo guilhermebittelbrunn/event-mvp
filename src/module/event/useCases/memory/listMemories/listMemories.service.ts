@@ -11,6 +11,6 @@ export class ListMemoriesService {
   constructor(@Inject(IMemoryRepositorySymbol) private readonly memoryRepo: IMemoryRepository) {}
 
   async execute(query?: PaginationQuery) {
-    return this.memoryRepo.list(query);
+    return this.memoryRepo.listWithFiles(query);
   }
 }

@@ -1,5 +1,6 @@
-import { Controller, Post, UseGuards, Inject, Ip } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { FileFieldsInterceptor } from '@nest-lab/fastify-multer';
+import { Controller, Post, UseGuards, Inject, Ip, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { CreateMemoryService } from './createMemory.service';
 import { CreateMemoryDTO } from './dto/createMemory.dto';
@@ -13,24 +14,28 @@ import ITransactionManager, {
 import { ValidatedBody } from '@/shared/decorators';
 import { GetEvent } from '@/shared/decorators/getEvent.decorator';
 import { EventAuthGuard } from '@/shared/guards/eventAuth/eventAuth.guard';
+import { FileValidatorInterceptor } from '@/shared/interceptors/fileValidator.interceptor';
 
 @Controller('/memory')
 @ApiTags('memory')
 @UseGuards(EventAuthGuard)
 export class CreateMemoryController {
   constructor(
-    private readonly useCase: CreateMemoryService,
     @Inject(ITransactionManagerSymbol)
     private readonly transactionManager: ITransactionManager,
+    private readonly useCase: CreateMemoryService,
   ) {}
 
   @Post()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]), FileValidatorInterceptor)
   async handle(
     @GetEvent() event: Event,
     @ValidatedBody() body: CreateMemoryDTO,
     @Ip() ipAddress: string,
+    @UploadedFiles() file: { image: File[] },
   ): Promise<MemoryDTO> {
-    const payload = { eventId: event.id.toValue(), ipAddress, ...body };
+    const payload: CreateMemoryDTO = { eventId: event.id.toValue(), ipAddress, image: file.image[0], ...body };
 
     const result = await this.transactionManager.run(() => this.useCase.execute(payload));
 
