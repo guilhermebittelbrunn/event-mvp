@@ -14,6 +14,7 @@ export interface UploadFilePayload {
 export interface IFileStoreService {
   upload(file: UploadFilePayload): Promise<string>;
   delete(pathname: string): Promise<void>;
+  deleteBulk(paths: string[]): Promise<void>;
 }
 
 export const IFileStoreServiceSymbol = Symbol('IFileStoreService');

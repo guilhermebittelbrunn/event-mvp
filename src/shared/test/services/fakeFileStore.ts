@@ -3,4 +3,5 @@ import { IFileStoreService } from '@/shared/services/fileStore/fileStore.service
 export class FakeFileStoreService implements IFileStoreService {
   upload = jest.fn();
   delete = jest.fn();
+  deleteBulk = jest.fn();
 }

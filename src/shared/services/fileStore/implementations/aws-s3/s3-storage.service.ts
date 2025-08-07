@@ -61,4 +61,10 @@ export class S3StorageService implements OnModuleInit, OnModuleDestroy, IFileSto
 
     await this.client.send(command);
   }
+
+  async deleteBulk(paths: string[]) {
+    for (const path of paths) {
+      await this.delete(path);
+    }
+  }
 }

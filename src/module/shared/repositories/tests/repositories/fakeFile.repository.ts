@@ -4,4 +4,5 @@ import { FakeBaseRepository } from '@/shared/test/fakeBase.repository';
 
 export class FakeFileRepository extends FakeBaseRepository<File> implements IFileRepository {
   findByEntityId = jest.fn();
+  findAllByEntityId = jest.fn();
 }
