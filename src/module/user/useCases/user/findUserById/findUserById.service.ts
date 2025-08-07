@@ -11,7 +11,7 @@ export class FindUserByIdService {
     const user = await this.userRepo.findById(id);
 
     if (!user) {
-      throw new GenericErrors.NotFound(`Usuário com id ${id} não encontrado`);
+      throw new GenericErrors.NotFound(`Usuário não encontrado`);
     }
 
     return user;

@@ -14,7 +14,7 @@ export class FindEventByIdService {
     const event = await this.eventRepo.findCompleteById(id);
 
     if (!event) {
-      throw new GenericErrors.NotFound(`Evento com id ${id} não encontrado`);
+      throw new GenericErrors.NotFound(`Evento não encontrado`);
     }
 
     return event;
