@@ -54,7 +54,6 @@ export class S3StorageService implements OnModuleInit, OnModuleDestroy, IFileSto
   }
 
   async delete(pathname: string) {
-    console.log('pathname :>> ', pathname);
     const command = new DeleteObjectCommand({
       Bucket: this.config.getOrThrow('s3.assetsBucket'),
       Key: pathname,
@@ -64,6 +63,8 @@ export class S3StorageService implements OnModuleInit, OnModuleDestroy, IFileSto
   }
 
   async deleteBulk(paths: string[]) {
-    await Promise.all(paths.map(this.delete));
+    for (const path of paths) {
+      await this.delete(path);
+    }
   }
 }
