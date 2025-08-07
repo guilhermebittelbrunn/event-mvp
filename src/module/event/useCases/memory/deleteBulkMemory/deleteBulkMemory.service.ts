@@ -41,8 +41,8 @@ export class DeleteBulkMemoryService {
 
     if (filledArray(files)) {
       await Promise.all([
-        await this.fileStoreService.deleteBulk(files.map(({ path }) => path)),
-        await this.fileRepo.deleteBulk(files.map(({ id }) => id)),
+        this.fileStoreService.deleteBulk(files.map(({ path }) => path)),
+        this.fileRepo.deleteBulk(files.map(({ id }) => id)),
       ]);
     }
 
