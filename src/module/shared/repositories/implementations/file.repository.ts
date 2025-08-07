@@ -31,4 +31,14 @@ export class FileRepository extends BaseRepository<'fileModel', File, FileModel>
 
     return this.mapper.toDomainOrNull(file);
   }
+
+  async findAllByEntityId(entityIds: GenericId[]): Promise<File[]> {
+    const files = await this.prisma.fileModel.findMany({
+      where: {
+        entityId: { in: entityIds.map((id) => UniqueEntityID.raw(id)) },
+      },
+    });
+
+    return files.map(this.mapper.toDomain);
+  }
 }
