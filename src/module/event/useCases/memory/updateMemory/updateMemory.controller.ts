@@ -32,7 +32,7 @@ export class UpdateMemoryController {
     @ValidatedParams('id') id: string,
     @UploadedFiles() file: { image: File[] },
   ): Promise<UpdateResponseDTO> {
-    const payload: UpdateMemoryDTO = { image: file.image[0], ...body, id };
+    const payload: UpdateMemoryDTO = { image: file?.image?.[0], ...body, id };
 
     const result = await this.transactionManager.run(() => this.useCase.execute(payload));
 
