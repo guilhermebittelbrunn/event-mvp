@@ -27,7 +27,11 @@ export class MemoryRepository
       this.manager('fileModel').findFirst({ where: { entityId: id } }),
     ]);
 
-    return this.mapper.toDomainOrNull({ ...memory, file });
+    if (!memory) {
+      return null;
+    }
+
+    return this.mapper.toDomain({ ...memory, file });
   }
 
   async listWithFiles(query?: PaginationQuery): Promise<PaginatedResult<Memory>> {

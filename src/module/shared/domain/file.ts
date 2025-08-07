@@ -71,9 +71,11 @@ export default class File extends Entity<IFileProps> {
   }
 
   makePath(): void {
-    const uniqueName = `${Date.now()}-${this.file.originalname}`;
-    const completePath = `event/${this.entityId.toValue()}/${uniqueName}`;
-    this.path = completePath;
+    if (this.file) {
+      const uniqueName = `${Date.now()}-${this.file.originalname}`;
+      const completePath = `event/${this.entityId.toValue()}/${uniqueName}`;
+      this.path = completePath;
+    }
   }
 
   public static create(props: IFileProps, id?: UniqueEntityID) {

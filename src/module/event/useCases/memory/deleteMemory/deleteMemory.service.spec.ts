@@ -32,7 +32,7 @@ describe('DeleteMemoryService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should delete a user successfully', async () => {
+  it('should delete a memory successfully', async () => {
     const memory = fakeMemory();
 
     memoryRepoMock.delete.mockResolvedValueOnce(true);
@@ -43,7 +43,7 @@ describe('DeleteMemoryService', () => {
     expect(memoryRepoMock.delete).toHaveBeenCalled();
   });
 
-  it('should throw a not found error if user does not exist', async () => {
+  it('should throw a not found error if memory does not exist', async () => {
     memoryRepoMock.delete.mockResolvedValueOnce(false);
 
     await expect(service.execute(faker.string.uuid())).rejects.toThrow(GenericErrors.NotFound);
