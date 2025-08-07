@@ -21,7 +21,16 @@ export class MemoryRepository
     super('memoryModel', prisma, als);
   }
 
-  async list(query?: PaginationQuery): Promise<PaginatedResult<Memory>> {
+  async findCompleteById(id: string): Promise<Memory> {
+    const [memory, file] = await Promise.all([
+      this.manager().findUnique({ where: { id } }),
+      this.manager('fileModel').findFirst({ where: { entityId: id } }),
+    ]);
+
+    return this.mapper.toDomainOrNull({ ...memory, file });
+  }
+
+  async listWithFiles(query?: PaginationQuery): Promise<PaginatedResult<Memory>> {
     const { page, take, skip } = this.getPaginationParams(query);
 
     const [memories, total] = await Promise.all([
@@ -29,8 +38,20 @@ export class MemoryRepository
       await this.manager().count(),
     ]);
 
+    /**
+     * @todo: improve this query to get the files in a single query, use eager loading
+     */
+    const files = await this.manager('fileModel').findMany({
+      where: { entityId: { in: memories.map(({ id }) => id) } },
+    });
+
+    const memoriesWithFiles = memories.map((memory) => ({
+      ...memory,
+      file: files.find(({ entityId }) => entityId === memory.id),
+    }));
+
     return {
-      data: memories.map(this.mapper.toDomain),
+      data: memoriesWithFiles.map(this.mapper.toDomain),
       meta: this.buildPaginationMeta(total, page, take),
     };
   }

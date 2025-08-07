@@ -4,10 +4,13 @@ import IpAddress from '../domain/ipAddress';
 import Memory from '../domain/memory/memory';
 import { MemoryDTO } from '../dto/memory.dto';
 
+import FileMapper, { FileModelWithRelations } from '@/module/shared/mappers/file.mapper';
 import Mapper from '@/shared/core/domain/Mapper';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 
-export interface MemoryModelWithRelations extends MemoryModel {}
+export interface MemoryModelWithRelations extends MemoryModel {
+  file?: FileModelWithRelations;
+}
 
 class BaseMemoryMapper extends Mapper<Memory, MemoryModelWithRelations, MemoryDTO> {
   toDomain(memory: MemoryModelWithRelations): Memory {
@@ -21,6 +24,7 @@ class BaseMemoryMapper extends Mapper<Memory, MemoryModelWithRelations, MemoryDT
         createdAt: memory.createdAt,
         updatedAt: memory.updatedAt,
         deletedAt: memory.deletedAt,
+        file: FileMapper.toDomainOrNull(memory.file),
       },
       new UniqueEntityID(memory.id),
     );
@@ -50,6 +54,7 @@ class BaseMemoryMapper extends Mapper<Memory, MemoryModelWithRelations, MemoryDT
       createdAt: memory.createdAt,
       updatedAt: memory.updatedAt,
       deletedAt: memory.deletedAt,
+      file: FileMapper.toDTOOrNull(memory.file),
     };
   }
 }
