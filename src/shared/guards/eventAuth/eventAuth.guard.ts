@@ -4,10 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 
 import { ValidateEventAccess } from '@/module/event/domain/event/services/validateEventAccess/validateEventAccess.service';
 
-/**
- * @note Este guard deve ser usado em conjunto com `JwtAuthGuard`.
- */
-
 @Injectable()
 export class EventAuthGuard implements CanActivate {
   constructor(

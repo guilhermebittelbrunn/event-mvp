@@ -17,8 +17,12 @@ async function bootstrap() {
   console.info('🚀 Starting NestJS application...');
 
   try {
+    const adapter = new FastifyAdapter();
+
+    adapter.register(require('@fastify/multipart'));
+
     console.info('📦 Creating NestJS application...');
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
+    const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
       cors: true,
       bufferLogs: true,
     });

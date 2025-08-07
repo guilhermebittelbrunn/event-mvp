@@ -37,9 +37,7 @@ export default class EventAccessType extends ValueObject<EventAccessTypeProps> {
   }
 
   public static create(type: EventAccessTypeEnum): EventAccessType {
-    const guardResult = Guard.againstNullOrUndefinedBulk([
-      { argument: type, argumentName: 'tipo de acesso ao evento' },
-    ]);
+    const guardResult = Guard.againstNullOrUndefined(type, this.userFriendlyName);
 
     if (!guardResult.succeeded) {
       throw new GenericErrors.InvalidParam(guardResult.message);

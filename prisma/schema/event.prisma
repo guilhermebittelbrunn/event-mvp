@@ -17,6 +17,7 @@ model EventModel {
   user UserModel @relation(fields: [userId], references: [id])
 
   accesses EventAccessModel[]
+  memories MemoryModel[]
 
   @@map("event")
 }

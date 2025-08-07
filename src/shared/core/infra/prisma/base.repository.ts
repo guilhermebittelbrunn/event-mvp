@@ -50,18 +50,18 @@ export class BaseRepository<ModelKey extends PrismaModel, Domain extends Entity<
    * - To be able to use with transactions
    * - To be able to consume prisma interface in a more practical way (especially for create/update/delete)
    */
-  manager<T extends PrismaModel = ModelKey>(model?: T): PrismaService[T] {
+  manager<T extends PrismaModel = ModelKey>(modelClient?: T): PrismaService[T] {
     const tx = this.als.getStore()?.tx;
+    const prismaModel = modelClient ?? (this.modelClient as T);
 
-    const currentModel = model ?? this.modelClient;
-    const modelContext = tx ? tx[currentModel] : this.prisma[currentModel];
+    const model = tx ? tx[prismaModel] : this.prisma[prismaModel];
 
-    if (!modelContext) {
-      throw new Error(`ModelKey ${this.modelClient} not found`);
+    if (!model) {
+      throw new Error(`ModelKey ${prismaModel} not found`);
     }
 
     // this proxy is used to intercept the calls to the prisma methods and add the deleted: false to the where clause
-    return new Proxy(modelContext, applyDeletedWhere()) as PrismaService[T];
+    return new Proxy(model, applyDeletedWhere()) as PrismaService[T];
   }
 
   async findById(id: GenericId): Promise<Domain | null> {
