@@ -46,7 +46,7 @@ export default class File extends Entity<IFileProps> {
     return this.props.size;
   }
 
-  get file(): MulterFile {
+  get file(): MulterFile | undefined {
     return this.props.file;
   }
 
