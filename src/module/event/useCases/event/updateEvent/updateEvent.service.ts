@@ -6,6 +6,7 @@ import UpdateEventErrors from './updateEvent.error';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
 import {
   IEventRepository,
   IEventRepositorySymbol,
@@ -19,6 +20,7 @@ export class UpdateEventService {
   constructor(
     @Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository,
     private readonly replaceFileService: ReplaceFileService,
+    private readonly addAccessToEvent: AddAccessToEvent,
   ) {}
 
   async execute(dto: UpdateEventDTO) {
@@ -81,6 +83,8 @@ export class UpdateEventService {
       },
       currentEvent.id,
     );
+
+    this.addAccessToEvent.execute({ event });
 
     await this.eventRepo.update(event);
 
