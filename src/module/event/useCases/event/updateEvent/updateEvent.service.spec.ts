@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker/.';
+import { File } from '@nest-lab/fastify-multer';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import UpdateEventErrors from './updateEvent.error';
@@ -8,13 +9,33 @@ import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/add
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
+import { ReplaceFileService } from '@/module/shared/domain/services/replaceFile/replaceFile.service';
+import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
+import { FakeFileStoreService } from '@/shared/test/services';
 import { EventStatusEnum } from '@/shared/types/user/event';
+
+const makeFile = (overrides?: File) => {
+  return {
+    fieldname: 'file',
+    originalname: 'test.jpg',
+    encoding: '7bit',
+    mimetype: 'image/jpeg',
+    buffer: Buffer.from('test'),
+    size: 100,
+    ...overrides,
+  };
+};
 
 describe('UpdateEventService', () => {
   let service: UpdateEventService;
-  let addAccessToEvent: AddAccessToEvent;
+  let replaceFileService: ReplaceFileService;
 
   const eventRepoMock = new FakeEventRepository();
+
+  const fileRepoMock = new FakeFileRepository();
+  const fileStoreServiceMock = new FakeFileStoreService();
+
+  replaceFileService = new ReplaceFileService(fileRepoMock, fileStoreServiceMock);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,12 +45,16 @@ describe('UpdateEventService', () => {
           provide: IEventRepositorySymbol,
           useValue: eventRepoMock,
         },
+        {
+          provide: ReplaceFileService,
+          useValue: replaceFileService,
+        },
         AddAccessToEvent,
       ],
     }).compile();
 
     service = module.get<UpdateEventService>(UpdateEventService);
-    addAccessToEvent = module.get<AddAccessToEvent>(AddAccessToEvent);
+    replaceFileService = module.get<ReplaceFileService>(ReplaceFileService);
 
     jest.clearAllMocks();
   });
@@ -44,18 +69,19 @@ describe('UpdateEventService', () => {
     eventRepoMock.findCompleteById.mockResolvedValueOnce(event);
     eventRepoMock.update.mockResolvedValueOnce(event.id.toValue());
 
-    const spyAccessService = jest.spyOn(addAccessToEvent, 'execute');
+    const spyReplaceFileService = jest.spyOn(replaceFileService, 'execute');
 
     const result = await service.execute({
       id: event.id.toValue(),
       name: faker.lorem.words(3),
       description: faker.lorem.paragraph(),
       slug: faker.lorem.words(3),
+      image: makeFile(),
     });
 
     expect(result).toBe(event.id.toValue());
     expect(eventRepoMock.update).toHaveBeenCalled();
-    expect(spyAccessService).toHaveBeenCalled();
+    expect(spyReplaceFileService).toHaveBeenCalled();
   });
 
   it('should throw a not found error if event does not exist', async () => {

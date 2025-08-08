@@ -1,3 +1,4 @@
+import { File } from '@nest-lab/fastify-multer';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { IsOptional, ValidateIf, Validate } from 'class-validator';
 
@@ -40,4 +41,7 @@ export class CreateEventDTO {
 
   @ApiHideProperty()
   userId: string;
+
+  @ApiHideProperty()
+  image?: File;
 }

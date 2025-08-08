@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { AddFileDTO } from './addFile.dto';
+import { ReplaceFileDTO } from './replaceFile.dto';
 
-import { IFileRepository, IFileRepositorySymbol } from '../../repositories/file.repository.interface';
-import File from '../file';
+import { IFileRepository, IFileRepositorySymbol } from '../../../repositories/file.repository.interface';
+import File from '../../file';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import {
@@ -12,7 +12,7 @@ import {
 } from '@/shared/services/fileStore/fileStore.service.interface';
 
 @Injectable()
-export class AddFileService {
+export class ReplaceFileService {
   constructor(
     @Inject(IFileRepositorySymbol)
     private readonly fileRepository: IFileRepository,
@@ -20,7 +20,25 @@ export class AddFileService {
     private readonly fileStoreService: IFileStoreService,
   ) {}
 
-  async execute(dto: AddFileDTO) {
+  async execute(dto: ReplaceFileDTO) {
+    if (dto.oldFileId) {
+      await this.deleteFile(dto.oldFileId);
+    }
+
+    const newFile = await this.uploadFile(dto);
+
+    return this.fileRepository.create(newFile);
+  }
+
+  private async deleteFile(fileId: string) {
+    const oldFile = await this.fileRepository.findById(fileId);
+
+    if (oldFile) {
+      await Promise.all([this.fileRepository.delete(oldFile.id), this.fileStoreService.delete(oldFile.path)]);
+    }
+  }
+
+  private async uploadFile(dto: ReplaceFileDTO) {
     const file = File.create({
       entityId: UniqueEntityID.create(dto.entityId),
       name: dto.file.originalname,
@@ -41,6 +59,6 @@ export class AddFileService {
 
     file.url = url;
 
-    return this.fileRepository.create(file);
+    return file;
   }
 }

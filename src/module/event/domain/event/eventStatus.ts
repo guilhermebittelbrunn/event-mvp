@@ -13,6 +13,7 @@ export default class EventStatus extends ValueObject<EventStatusProps> {
   private static userFriendlyTypeName = {
     [EventStatusEnum.DRAFT]: 'Rascunho',
     [EventStatusEnum.PUBLISHED]: 'Publicado',
+    [EventStatusEnum.PENDING_PAYMENT]: 'Aguardando pagamento',
     [EventStatusEnum.IN_PROGRESS]: 'Em andamento',
     [EventStatusEnum.COMPLETED]: 'Concluído',
     [EventStatusEnum.CANCELLED]: 'Cancelado',
