@@ -7,7 +7,7 @@ import { UpdateMemoryService } from './updateMemory.service';
 import { IMemoryRepositorySymbol } from '@/module/event/repositories/memory.repository.interface';
 import { fakeMemory } from '@/module/event/repositories/tests/entities/fakeMemory';
 import { FakeMemoryRepository } from '@/module/event/repositories/tests/repositories/fakeMemory.repository';
-import { AddFileService } from '@/module/shared/domain/services/addFile.service';
+import { ReplaceFileService } from '@/module/shared/domain/services/replaceFile/replaceFile.service';
 import { IFileRepositorySymbol } from '@/module/shared/repositories/file.repository.interface';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
@@ -34,7 +34,7 @@ describe('UpdateMemoryService', () => {
   const fileRepoMock = new FakeFileRepository();
   const fileStoreServiceMock = new FakeFileStoreService();
 
-  const addFileServiceMock = new AddFileService(fileRepoMock, fileStoreServiceMock);
+  const replaceFileService = new ReplaceFileService(fileRepoMock, fileStoreServiceMock);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,8 +53,8 @@ describe('UpdateMemoryService', () => {
           useValue: fileStoreServiceMock,
         },
         {
-          provide: AddFileService,
-          useValue: addFileServiceMock,
+          provide: ReplaceFileService,
+          useValue: replaceFileService,
         },
       ],
     }).compile();
@@ -98,6 +98,8 @@ describe('UpdateMemoryService', () => {
     memoryRepoMock.update.mockResolvedValueOnce(memory.id.toValue());
     memoryRepoMock.findCompleteById.mockResolvedValueOnce(memory);
 
+    const spyReplaceFileService = jest.spyOn(replaceFileService, 'execute');
+
     const result = await service.execute({
       id: memory.id.toValue(),
       message: faker.lorem.words(3),
@@ -108,8 +110,7 @@ describe('UpdateMemoryService', () => {
 
     expect(result).toBe(memory.id.toValue());
     expect(memoryRepoMock.update).toHaveBeenCalled();
-    expect(fileStoreServiceMock.upload).toHaveBeenCalled();
-    expect(fileStoreServiceMock.delete).toHaveBeenCalled();
+    expect(spyReplaceFileService).toHaveBeenCalled();
   });
 
   it('should throw a not found error if memory does not exist', async () => {

@@ -1,5 +1,6 @@
-import { Controller, Post, UseGuards, Inject } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { FileFieldsInterceptor, File } from '@nest-lab/fastify-multer';
+import { Controller, Post, UseGuards, Inject, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { CreateEventService } from './createEvent.service';
 import { CreateEventDTO } from './dto/createEvent.dto';
@@ -13,6 +14,9 @@ import ITransactionManager, {
 import { ValidatedBody } from '@/shared/decorators';
 import { GetUser } from '@/shared/decorators/getUser.decorator';
 import { JwtAuthGuard } from '@/shared/guards/jwtAuth.guard';
+import { FileValidatorInterceptor } from '@/shared/interceptors/fileValidator.interceptor';
+import { UserTypeEnum } from '@/shared/types/user';
+import { EventStatusEnum } from '@/shared/types/user/event';
 
 @Controller('/event')
 @ApiTags('event')
@@ -25,8 +29,21 @@ export class CreateEventController {
   ) {}
 
   @Post()
-  async handle(@GetUser() user: User, @ValidatedBody() body: CreateEventDTO): Promise<EventDTO> {
-    const payload = { ...body, userId: user.id.toValue() };
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]), FileValidatorInterceptor)
+  async handle(
+    @GetUser() user: User,
+    @ValidatedBody() body: CreateEventDTO,
+    @UploadedFiles() file: { image?: File[] },
+  ): Promise<EventDTO> {
+    const isAdmin = user.type.value === UserTypeEnum.ADMIN;
+
+    const payload: CreateEventDTO = {
+      ...body,
+      userId: user.id.toValue(),
+      image: file?.image?.[0],
+      ...(!isAdmin && { status: EventStatusEnum.PENDING_PAYMENT }),
+    };
 
     const result = await this.transactionManager.run(() => this.useCase.execute(payload));
 

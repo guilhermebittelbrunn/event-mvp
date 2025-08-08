@@ -57,15 +57,18 @@ export class EventRepository
   }
 
   async findCompleteById(id: GenericId): Promise<Event | null> {
-    const event = await this.manager().findUnique({
-      where: { id: UniqueEntityID.raw(id) },
-      include: {
-        config: true,
-        accesses: true,
-      },
-    });
+    const rawId = UniqueEntityID.raw(id);
 
-    return this.mapper.toDomainOrNull(event);
+    const [event, file] = await Promise.all([
+      this.manager().findUnique({ where: { id: rawId }, include: { config: true, accesses: true } }),
+      this.manager('fileModel').findFirst({ where: { entityId: rawId } }),
+    ]);
+
+    if (!event) {
+      return null;
+    }
+
+    return this.mapper.toDomain({ ...event, file });
   }
 
   async list(query: ListEventByQuery = {}): Promise<PaginatedResult<Event>> {

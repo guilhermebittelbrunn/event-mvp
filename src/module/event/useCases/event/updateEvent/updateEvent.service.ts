@@ -6,11 +6,11 @@ import UpdateEventErrors from './updateEvent.error';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
 import {
   IEventRepository,
   IEventRepositorySymbol,
 } from '@/module/event/repositories/event.repository.interface';
+import { ReplaceFileService } from '@/module/shared/domain/services/replaceFile/replaceFile.service';
 import { coalesce, isEmpty } from '@/shared/core/utils/undefinedHelpers';
 import { EventStatusEnum } from '@/shared/types/user/event';
 
@@ -18,13 +18,23 @@ import { EventStatusEnum } from '@/shared/types/user/event';
 export class UpdateEventService {
   constructor(
     @Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository,
-    private readonly addAccessToEvent: AddAccessToEvent,
+    private readonly replaceFileService: ReplaceFileService,
   ) {}
 
   async execute(dto: UpdateEventDTO) {
-    const { status, slug } = dto;
+    const updatedEvent = await this.buildEvent(dto);
 
-    const currentEvent = await this.eventRepo.findCompleteById(dto.id);
+    if (!isEmpty(dto.image)) {
+      const oldFileId = updatedEvent.file?.id.toValue();
+
+      await this.replaceFileService.execute({ entityId: dto.id, oldFileId, file: dto.image });
+    }
+
+    return updatedEvent.id.toValue();
+  }
+
+  private async validateAndFetchData({ id }: UpdateEventDTO) {
+    const currentEvent = await this.eventRepo.findCompleteById(id);
 
     if (!currentEvent) {
       throw new UpdateEventErrors.NotFoundError();
@@ -34,15 +44,21 @@ export class UpdateEventService {
       throw new UpdateEventErrors.InvalidParam(currentEvent.status);
     }
 
+    return currentEvent;
+  }
+
+  private async buildEvent(dto: UpdateEventDTO) {
+    const currentEvent = await this.validateAndFetchData(dto);
+
     let eventStatus: EventStatus | undefined;
     let eventSlug: EventSlug | undefined;
 
-    if (!isEmpty(status)) {
-      eventStatus = EventStatus.create(status);
+    if (!isEmpty(dto.status)) {
+      eventStatus = EventStatus.create(dto.status);
     }
 
-    if (!isEmpty(slug)) {
-      eventSlug = EventSlug.create(slug);
+    if (!isEmpty(dto.slug)) {
+      eventSlug = EventSlug.create(dto.slug);
 
       const existingEvent = await this.eventRepo.findBySlug(eventSlug);
 
@@ -66,8 +82,8 @@ export class UpdateEventService {
       currentEvent.id,
     );
 
-    this.addAccessToEvent.execute({ event });
+    await this.eventRepo.update(event);
 
-    return this.eventRepo.update(event);
+    return event;
   }
 }

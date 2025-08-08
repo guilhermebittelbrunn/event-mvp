@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker/.';
+import { File } from '@nest-lab/fastify-multer';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import CreateEventErrors from './createEvent.error';
@@ -10,7 +11,10 @@ import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/add
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
+import { AddFileService } from '@/module/shared/domain/services/addFile/addFile.service';
+import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import GenericErrors from '@/shared/core/logic/genericErrors';
+import { FakeFileStoreService } from '@/shared/test/services';
 import { EventStatusEnum } from '@/shared/types/user/event';
 
 const makePayload = (overrides?: Partial<CreateEventDTO>): CreateEventDTO => {
@@ -21,6 +25,19 @@ const makePayload = (overrides?: Partial<CreateEventDTO>): CreateEventDTO => {
     status: EventStatusEnum.DRAFT,
     startAt: new Date(),
     endAt: new Date(),
+    image: makeFile(),
+    ...overrides,
+  };
+};
+
+const makeFile = (overrides?: File) => {
+  return {
+    fieldname: 'file',
+    originalname: 'test.jpg',
+    encoding: '7bit',
+    mimetype: 'image/jpeg',
+    buffer: Buffer.from('test'),
+    size: 100,
     ...overrides,
   };
 };
@@ -30,6 +47,10 @@ describe('CreateEventService', () => {
   let addAccessToEvent: AddAccessToEvent;
 
   const eventRepoMock = new FakeEventRepository();
+  const fileRepoMock = new FakeFileRepository();
+  const fileStoreServiceMock = new FakeFileStoreService();
+
+  const addFileService = new AddFileService(fileRepoMock, fileStoreServiceMock);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +59,10 @@ describe('CreateEventService', () => {
         {
           provide: IEventRepositorySymbol,
           useValue: eventRepoMock,
+        },
+        {
+          provide: AddFileService,
+          useValue: addFileService,
         },
         AddAccessToEvent,
       ],

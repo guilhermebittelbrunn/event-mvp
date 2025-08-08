@@ -1,4 +1,4 @@
-import { EventAccessModel, EventConfigModel, EventModel } from '@prisma/client';
+import { EventAccessModel, EventConfigModel, EventModel, FileModel } from '@prisma/client';
 
 import EventAccessMapper from './eventAccess.mapper';
 import EventConfigMapper from './eventConfig.mapper';
@@ -9,6 +9,7 @@ import EventStatus from '../domain/event/eventStatus';
 import { EventAccesses } from '../domain/eventAccess/eventAccesses';
 import { EventDTO } from '../dto/event.dto';
 
+import FileMapper from '@/module/shared/mappers/file.mapper';
 import Mapper from '@/shared/core/domain/Mapper';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { EventStatusEnum } from '@/shared/types/user/event';
@@ -16,6 +17,7 @@ import { EventStatusEnum } from '@/shared/types/user/event';
 export interface EventModelWithRelations extends EventModel {
   config?: EventConfigModel;
   accesses?: EventAccessModel[];
+  file?: FileModel;
 }
 
 class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
@@ -34,6 +36,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
         deletedAt: event.deletedAt,
         config: EventConfigMapper.toDomainOrUndefined(event.config),
         accesses: EventAccesses.create(event.accesses?.map(EventAccessMapper.toDomain)),
+        file: FileMapper.toDomainOrUndefined(event.file),
       },
       new UniqueEntityID(event.id),
     );
@@ -70,6 +73,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       deletedAt: event.deletedAt,
       config: EventConfigMapper.toDTOOrUndefined(event.config),
       guestAccess: EventAccessMapper.toDTOOrUndefined(event.guestAccess),
+      file: FileMapper.toDTOOrUndefined(event.file),
     };
   }
 }
