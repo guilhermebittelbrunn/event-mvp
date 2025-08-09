@@ -1,3 +1,5 @@
+import { Readable } from 'stream';
+
 export interface UploadFilePayload {
   fieldname: string;
   originalname: string;
@@ -12,7 +14,7 @@ export interface UploadFilePayload {
 }
 
 export interface IFileStoreService {
-  getFile(pathname: string): Promise<NodeJS.ReadableStream>;
+  getFile(pathname: string): Promise<Readable>;
   upload(file: UploadFilePayload): Promise<string>;
   delete(pathname: string): Promise<void>;
   deleteBulk(paths: string[]): Promise<void>;
