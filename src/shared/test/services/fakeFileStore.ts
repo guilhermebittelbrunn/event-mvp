@@ -4,4 +4,5 @@ export class FakeFileStoreService implements IFileStoreService {
   upload = jest.fn();
   delete = jest.fn();
   deleteBulk = jest.fn();
+  getFile = jest.fn();
 }

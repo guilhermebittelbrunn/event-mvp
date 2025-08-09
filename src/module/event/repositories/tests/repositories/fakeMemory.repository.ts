@@ -5,4 +5,5 @@ import { FakeBaseRepository } from '@/shared/test/fakeBase.repository';
 export class FakeMemoryRepository extends FakeBaseRepository<Memory> implements IMemoryRepository {
   findCompleteById = jest.fn();
   listWithFiles = jest.fn();
+  findAllForDownload = jest.fn();
 }

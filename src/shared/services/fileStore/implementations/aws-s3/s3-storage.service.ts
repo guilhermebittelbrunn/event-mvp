@@ -1,7 +1,9 @@
-import { S3Client, S3ClientConfig, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, S3ClientConfig, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
+import { Readable } from 'stream';
 
 import { IFileStoreService, UploadFilePayload } from '@/shared/services/fileStore/fileStore.service.interface';
 
@@ -33,6 +35,26 @@ export class S3StorageService implements OnModuleInit, OnModuleDestroy, IFileSto
     }
 
     this.client?.destroy();
+  }
+
+  async getFile(pathname: string): Promise<Readable | null> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: this.config.getOrThrow('s3.assetsBucket'),
+        Key: pathname,
+      });
+
+      const result = await this.client.send(command);
+
+      if (!result.Body) {
+        return null;
+      }
+
+      return result.Body as Readable;
+    } catch (error) {
+      this.logger.error(`Error getting file from S3: ${pathname}`, error);
+      return null;
+    }
   }
 
   async upload(input: UploadFilePayload) {
