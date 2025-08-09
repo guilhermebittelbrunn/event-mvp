@@ -12,6 +12,7 @@ export interface UploadFilePayload {
 }
 
 export interface IFileStoreService {
+  getFile(pathname: string): Promise<NodeJS.ReadableStream>;
   upload(file: UploadFilePayload): Promise<string>;
   delete(pathname: string): Promise<void>;
   deleteBulk(paths: string[]): Promise<void>;

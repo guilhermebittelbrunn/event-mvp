@@ -35,7 +35,12 @@ export class CreateMemoryController {
     @Ip() ipAddress: string,
     @UploadedFiles() file: { image: File[] },
   ): Promise<MemoryDTO> {
-    const payload: CreateMemoryDTO = { eventId: event.id.toValue(), ipAddress, image: file.image[0], ...body };
+    const payload: CreateMemoryDTO = {
+      eventId: event.id.toValue(),
+      ipAddress,
+      image: file?.image?.[0],
+      ...body,
+    };
 
     const result = await this.transactionManager.run(() => this.useCase.execute(payload));
 
