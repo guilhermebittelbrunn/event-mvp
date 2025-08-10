@@ -13,6 +13,7 @@ import { v4 as uuid } from 'uuid';
 
 import { SQS_CONSUMER_HANDLER, SqsConsumerHandlerOptions } from './consumerHandler.decorator';
 
+import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { filledArray } from '@/shared/core/utils/undefinedHelpers';
 import { IMessageQueueService, MessageQueuesEnum } from '@/shared/infra/queue/messageQueue.interface';
 import { messageQueuesMap } from '@/shared/infra/queue/messageQueue.interface';
@@ -177,7 +178,7 @@ export class SqsService implements IMessageQueueService, OnModuleInit, OnModuleD
           region: this.config.getOrThrow('sqs.region'),
           sqs: this.sqsClient,
           handleMessage: async (message) => {
-            return this.als?.run({ requestId: uuid() }, async () => {
+            return this.als?.run({ requestId: UniqueEntityID.create() }, async () => {
               /** @note can be ser other log service in the future */
 
               this.logger.log(

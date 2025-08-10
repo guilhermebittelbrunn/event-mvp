@@ -6,8 +6,8 @@ import { v4 as uuid } from 'uuid';
 
 import getAuthenticatedUser from './getAuthenticatedUser';
 
+import { EventAccessTypeEnum, EventStatusEnum } from '@/shared/types/event/event';
 import { ITokenPayloadEvent, ITokenResponse } from '@/shared/types/user';
-import { EventAccessTypeEnum, EventStatusEnum } from '@/shared/types/user/event';
 
 export interface IAuthenticatedEventData {
   eventId: string;

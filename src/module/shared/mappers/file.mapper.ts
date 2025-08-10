@@ -1,6 +1,6 @@
 import { FileModel } from '@prisma/client';
 
-import File from '../domain/file';
+import File from '../domain/file/file';
 import { FileDTO } from '../dto/file.dto';
 
 import Mapper from '@/shared/core/domain/Mapper';

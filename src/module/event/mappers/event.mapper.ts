@@ -12,7 +12,7 @@ import { EventDTO } from '../dto/event.dto';
 import FileMapper from '@/module/shared/mappers/file.mapper';
 import Mapper from '@/shared/core/domain/Mapper';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 export interface EventModelWithRelations extends EventModel {
   config?: EventConfigModel;

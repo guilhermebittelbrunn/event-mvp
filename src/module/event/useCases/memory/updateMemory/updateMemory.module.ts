@@ -5,7 +5,7 @@ import { UpdateMemoryService } from './updateMemory.service';
 
 import { MemoryRepository } from '@/module/event/repositories/implementations/memory.repository';
 import { IMemoryRepositorySymbol } from '@/module/event/repositories/memory.repository.interface';
-import { ReplaceFileModule } from '@/module/shared/domain/services/replaceFile/replaceFile.module';
+import { ReplaceFileModule } from '@/module/shared/domain/file/services/replaceFile/replaceFile.module';
 import { TransactionManagerService } from '@/shared/core/infra/prisma/transactionManager/transactionManager.service';
 import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManager.interface';
 

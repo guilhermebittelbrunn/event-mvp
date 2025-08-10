@@ -6,7 +6,7 @@ import { UpdateEventService } from './updateEvent.service';
 import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { makeEventRepository } from '@/module/event/repositories/implementations/factories/event.repository';
-import { ReplaceFileModule } from '@/module/shared/domain/services/replaceFile/replaceFile.module';
+import { ReplaceFileModule } from '@/module/shared/domain/file/services/replaceFile/replaceFile.module';
 import { TransactionManagerService } from '@/shared/core/infra/prisma/transactionManager/transactionManager.service';
 import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManager.interface';
 

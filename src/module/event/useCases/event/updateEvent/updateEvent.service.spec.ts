@@ -9,10 +9,10 @@ import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/add
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
-import { ReplaceFileService } from '@/module/shared/domain/services/replaceFile/replaceFile.service';
+import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import { FakeFileStoreService } from '@/shared/test/services';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 const makeFile = (overrides?: File) => {
   return {

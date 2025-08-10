@@ -15,8 +15,8 @@ import { ValidatedBody } from '@/shared/decorators';
 import { GetUser } from '@/shared/decorators/getUser.decorator';
 import { JwtAuthGuard } from '@/shared/guards/jwtAuth.guard';
 import { FileValidatorInterceptor } from '@/shared/interceptors/fileValidator.interceptor';
+import { EventStatusEnum } from '@/shared/types/event/event';
 import { UserTypeEnum } from '@/shared/types/user';
-import { EventStatusEnum } from '@/shared/types/user/event';
 
 @Controller('/event')
 @ApiTags('event')

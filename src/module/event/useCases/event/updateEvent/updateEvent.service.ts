@@ -11,9 +11,9 @@ import {
   IEventRepository,
   IEventRepositorySymbol,
 } from '@/module/event/repositories/event.repository.interface';
-import { ReplaceFileService } from '@/module/shared/domain/services/replaceFile/replaceFile.service';
+import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
 import { coalesce, isEmpty } from '@/shared/core/utils/undefinedHelpers';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 @Injectable()
 export class UpdateEventService {

@@ -1,4 +1,4 @@
-import File from '../domain/file';
+import File from '../domain/file/file';
 
 import {
   IBaseRepository,

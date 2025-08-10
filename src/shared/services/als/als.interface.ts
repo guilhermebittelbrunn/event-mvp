@@ -6,11 +6,12 @@ import { AsyncLocalStorage } from 'async_hooks';
 
 import Event from '@/module/event/domain/event/event';
 import User from '@/module/user/domain/user/user';
+import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 
 export interface AlsData {
   user?: User;
   event?: Event;
-  requestId?: string;
+  requestId?: UniqueEntityID;
   tx?: Omit<
     PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
     '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'

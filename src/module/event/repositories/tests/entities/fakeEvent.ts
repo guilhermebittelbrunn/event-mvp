@@ -8,7 +8,7 @@ import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
 import { insertFakeUser } from '@/module/user/repositories/tests/entities/fakeUser';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 export function fakeEvent(overrides?: Partial<EventModel>): Event {
   const slug = EventSlug.create(overrides?.slug ?? faker.lorem.slug());

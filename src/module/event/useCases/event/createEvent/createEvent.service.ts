@@ -12,10 +12,10 @@ import {
   IEventRepository,
   IEventRepositorySymbol,
 } from '@/module/event/repositories/event.repository.interface';
-import { AddFileService } from '@/module/shared/domain/services/addFile/addFile.service';
+import { AddFileService } from '@/module/shared/domain/file/services/addFile/addFile.service';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 @Injectable()
 export class CreateEventService {

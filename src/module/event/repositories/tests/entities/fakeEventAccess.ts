@@ -9,7 +9,7 @@ import EventAccessType from '@/module/event/domain/eventAccess/eventAccessType';
 import EventAccessUrl from '@/module/event/domain/eventAccess/eventAccessUrl';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
-import { EventAccessTypeEnum } from '@/shared/types/user/event';
+import { EventAccessTypeEnum } from '@/shared/types/event/event';
 
 export function fakeEventAccess(overrides?: Partial<EventAccessModel>): EventAccess {
   return EventAccess.create(

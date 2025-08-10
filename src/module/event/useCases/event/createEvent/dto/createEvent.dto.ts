@@ -3,7 +3,7 @@ import { ApiHideProperty } from '@nestjs/swagger';
 import { IsOptional, ValidateIf, Validate } from 'class-validator';
 
 import { ValidatedDateString, ValidatedEnum, ValidatedString } from '@/shared/decorators';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 export class CreateEventDTO {
   @ValidatedString('nome')

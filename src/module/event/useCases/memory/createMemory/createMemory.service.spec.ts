@@ -8,7 +8,7 @@ import { CreateMemoryDTO } from './dto/createMemory.dto';
 import { IMemoryRepositorySymbol } from '@/module/event/repositories/memory.repository.interface';
 import { fakeMemory } from '@/module/event/repositories/tests/entities/fakeMemory';
 import { FakeMemoryRepository } from '@/module/event/repositories/tests/repositories/fakeMemory.repository';
-import { AddFileService } from '@/module/shared/domain/services/addFile/addFile.service';
+import { AddFileService } from '@/module/shared/domain/file/services/addFile/addFile.service';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import GenericErrors from '@/shared/core/logic/genericErrors';

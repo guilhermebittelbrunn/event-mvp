@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FileModel } from '@prisma/client';
 
-import File from '../../domain/file';
+import File from '../../domain/file/file';
 import FileMapper from '../../mappers/file.mapper';
 import { IFileRepository } from '../file.repository.interface';
 

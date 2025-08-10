@@ -7,7 +7,7 @@ import { IEventRepositorySymbol } from '@/module/event/repositories/event.reposi
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
 import GenericErrors from '@/shared/core/logic/genericErrors';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 describe('DeleteEventService', () => {
   let service: DeleteEventService;

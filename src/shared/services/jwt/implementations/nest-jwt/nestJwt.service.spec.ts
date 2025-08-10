@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 import { NestJwtService } from './nestJwt.service';
 
-import { EventAccessTypeEnum } from '@/shared/types/user/event';
+import { EventAccessTypeEnum } from '@/shared/types/event/event';
 import { UserTypeEnum } from '@/shared/types/user/user';
 import { ACCESS_TOKEN_EXPIRE_DAYS, EXPIRE_TOKEN_TIME, REFRESH_TOKEN_EXPIRE_DAYS } from '@/shared/utils';
 

@@ -1,6 +1,6 @@
 import IpAddress from '../ipAddress';
 
-import File from '@/module/shared/domain/file';
+import File from '@/module/shared/domain/file/file';
 import Entity from '@/shared/core/domain/Entity';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import GenericErrors from '@/shared/core/logic/genericErrors';
@@ -67,9 +67,7 @@ export default class Memory extends Entity<IMemoryProps> {
   }
 
   public static create(props: IMemoryProps, id?: UniqueEntityID) {
-    const guardedProps = Guard.againstNullOrUndefinedBulk([
-      { argument: props.eventId, argumentName: 'id do evento' },
-    ]);
+    const guardedProps = Guard.againstNullOrUndefined(props.eventId, 'id do evento');
 
     if (!guardedProps.succeeded) {
       throw new GenericErrors.InvalidParam(guardedProps.message);

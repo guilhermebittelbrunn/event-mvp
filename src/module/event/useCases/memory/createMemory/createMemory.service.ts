@@ -8,7 +8,7 @@ import {
   IMemoryRepository,
   IMemoryRepositorySymbol,
 } from '@/module/event/repositories/memory.repository.interface';
-import { AddFileService } from '@/module/shared/domain/services/addFile/addFile.service';
+import { AddFileService } from '@/module/shared/domain/file/services/addFile/addFile.service';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
