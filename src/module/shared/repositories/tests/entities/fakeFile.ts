@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { FileModel } from '@prisma/client';
 
 import { insertFakeMemory } from '@/module/event/repositories/tests/entities/fakeMemory';
-import File from '@/module/shared/domain/file';
+import File from '@/module/shared/domain/file/file';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
 

@@ -4,7 +4,7 @@ import { AddAccessToEvent } from './addAccessToEvent';
 import { AddAccessToEventDTO } from './addAccessToEvent.dto';
 
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
-import { EventAccessTypeEnum } from '@/shared/types/user/event';
+import { EventAccessTypeEnum } from '@/shared/types/event/event';
 
 const makePayload = (overrides?: Partial<AddAccessToEventDTO>): AddAccessToEventDTO => {
   return {

@@ -7,7 +7,7 @@ import {
   IEventRepositorySymbol,
 } from '@/module/event/repositories/event.repository.interface';
 import { Als } from '@/shared/services/als/als.interface';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 @Injectable()
 export class ValidateEventAccess {

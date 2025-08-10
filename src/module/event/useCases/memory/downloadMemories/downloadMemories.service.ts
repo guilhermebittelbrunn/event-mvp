@@ -8,6 +8,7 @@ import {
   IMemoryRepository,
   IMemoryRepositorySymbol,
 } from '@/module/event/repositories/memory.repository.interface';
+import { RegisterLogService } from '@/module/shared/domain/log/service/registerLog/registerLog.service';
 import { filledArray } from '@/shared/core/utils/undefinedHelpers';
 import {
   IFileStoreService,
@@ -21,9 +22,12 @@ export class DownloadMemoriesService {
   constructor(
     @Inject(IMemoryRepositorySymbol) private readonly memoryRepo: IMemoryRepository,
     @Inject(IFileStoreServiceSymbol) private readonly fileStoreService: IFileStoreService,
+    private readonly registerLogService: RegisterLogService,
   ) {}
 
-  async execute({ memoryIds }: DownloadMemoriesDTO): Promise<archiver.Archiver> {
+  async execute(dto: DownloadMemoriesDTO): Promise<archiver.Archiver> {
+    const { memoryIds } = dto;
+
     if (memoryIds.length > MAX_MEMORY_IDS_TO_DOWNLOAD) {
       throw new DownloadMemoriesErrors.MaxMemoryIdsToDownloadExceeded(MAX_MEMORY_IDS_TO_DOWNLOAD);
     }
@@ -56,7 +60,8 @@ export class DownloadMemoriesService {
         filesAdded++;
       } catch (error) {
         // Log error but continue with other files
-        console.error(`Error downloading file for memory ${memory.id.toValue()}:`, error);
+        const customMessage = `Error downloading file for memory ${memory.id.toValue()}:`;
+        await this.registerLogService.execute({ error, payload: { ...dto }, customMessage });
       }
     }
 

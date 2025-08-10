@@ -7,7 +7,7 @@ import {
   IMemoryRepository,
   IMemoryRepositorySymbol,
 } from '@/module/event/repositories/memory.repository.interface';
-import { ReplaceFileService } from '@/module/shared/domain/services/replaceFile/replaceFile.service';
+import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import { coalesce, isEmpty } from '@/shared/core/utils/undefinedHelpers';
 

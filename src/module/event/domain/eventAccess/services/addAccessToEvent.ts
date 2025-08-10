@@ -7,7 +7,7 @@ import EventAccessUrl from '../eventAccessUrl';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
-import { EventAccessTypeEnum } from '@/shared/types/user/event';
+import { EventAccessTypeEnum } from '@/shared/types/event/event';
 
 export class AddAccessToEvent {
   execute({ event, type }: AddAccessToEventDTO): EventAccess | undefined {

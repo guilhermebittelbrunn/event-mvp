@@ -1,7 +1,7 @@
 import EventAccess from './eventAccess';
 
 import Aggregate from '@/shared/core/domain/Aggregate';
-import { EventAccessTypeEnum } from '@/shared/types/user/event';
+import { EventAccessTypeEnum } from '@/shared/types/event/event';
 
 export class EventAccesses extends Aggregate<EventAccess> {
   private constructor(initialItems?: Array<EventAccess>) {

@@ -7,7 +7,7 @@ import { UpdateMemoryService } from './updateMemory.service';
 import { IMemoryRepositorySymbol } from '@/module/event/repositories/memory.repository.interface';
 import { fakeMemory } from '@/module/event/repositories/tests/entities/fakeMemory';
 import { FakeMemoryRepository } from '@/module/event/repositories/tests/repositories/fakeMemory.repository';
-import { ReplaceFileService } from '@/module/shared/domain/services/replaceFile/replaceFile.service';
+import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
 import { IFileRepositorySymbol } from '@/module/shared/repositories/file.repository.interface';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';

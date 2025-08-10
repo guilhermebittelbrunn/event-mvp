@@ -1,6 +1,8 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, HttpException } from '@nestjs/common';
 import { AxiosError } from 'axios';
 
+import LogError from '@/module/shared/domain/log/logError';
+import { RegisterLogService } from '@/module/shared/domain/log/service/registerLog/registerLog.service';
 import GenericAppError from '@/shared/core/logic/genericAppError';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 
@@ -9,6 +11,8 @@ const shouldLogError = !isTestEnvironment;
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private readonly registerLogService: RegisterLogService) {}
+
   async catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
@@ -37,12 +41,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     if (shouldLogError) {
-      console.info({
-        payload: { statusCode, message },
-        error: exception,
-        errorMessage: String(message),
-        errorStatus: statusCode,
-      });
+      try {
+        const logError = LogError.create(exception);
+
+        await this.registerLogService.execute({
+          payload: { statusCode, message },
+          logError,
+        });
+      } catch (error) {
+        console.info(error);
+      }
     }
 
     response.status(statusCode).send({ message, statusCode });

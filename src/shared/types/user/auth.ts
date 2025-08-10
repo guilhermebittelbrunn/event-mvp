@@ -1,5 +1,6 @@
-import { EventAccessTypeEnum } from './event';
 import { UserTypeEnum } from './user';
+
+import { EventAccessTypeEnum } from '../event/event';
 
 export const JWT_DEFAULT_STRATEGY = 'jwt';
 

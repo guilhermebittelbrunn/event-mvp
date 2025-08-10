@@ -7,7 +7,7 @@ import { EventAccessDTO } from '../dto/eventAccess.dto';
 
 import Mapper from '@/shared/core/domain/Mapper';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
-import { EventAccessTypeEnum } from '@/shared/types/user/event';
+import { EventAccessTypeEnum } from '@/shared/types/event/event';
 
 export interface EventAccessModelWithRelations extends EventAccessModel {}
 

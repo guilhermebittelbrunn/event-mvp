@@ -14,7 +14,7 @@ import GenericErrors from '@/shared/core/logic/genericErrors';
 import { IJwtServiceSymbol } from '@/shared/services/jwt/jwt.interface';
 import { FakeAlsService, FakeConfigService } from '@/shared/test/services';
 import { FakeJwtService } from '@/shared/test/services/fakeJwtService';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 describe('SignInByTokenService', () => {
   let service: SignInByTokenService;

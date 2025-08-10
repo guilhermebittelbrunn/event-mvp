@@ -1,7 +1,7 @@
 import ValueObject from '@/shared/core/domain/ValueObject';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import Guard, { IGuardResult } from '@/shared/core/logic/guard';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 export interface EventStatusProps {
   value: EventStatusEnum;

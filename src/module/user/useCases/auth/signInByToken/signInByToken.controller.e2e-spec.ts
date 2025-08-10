@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { insertFakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { insertFakeEventAccess } from '@/module/event/repositories/tests/entities/fakeEventAccess';
 import { request } from '@/shared/test/utils';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 describe('SignInByTokenController (e2e)', () => {
   describe('POST /v1/auth/sign-in-by-token', () => {

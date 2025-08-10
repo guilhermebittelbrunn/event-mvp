@@ -6,7 +6,7 @@ import {
   IEventRepository,
   IEventRepositorySymbol,
 } from '@/module/event/repositories/event.repository.interface';
-import { EventStatusEnum } from '@/shared/types/user/event';
+import { EventStatusEnum } from '@/shared/types/event/event';
 
 @Injectable()
 export class DeleteEventService {
