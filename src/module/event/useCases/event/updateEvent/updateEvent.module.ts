@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { UpdateEventController } from './updateEvent.controller';
 import { UpdateEventService } from './updateEvent.service';
 
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { makeEventRepository } from '@/module/event/repositories/implementations/factories/event.repository';
 import { ReplaceFileModule } from '@/module/shared/domain/file/services/replaceFile/replaceFile.module';

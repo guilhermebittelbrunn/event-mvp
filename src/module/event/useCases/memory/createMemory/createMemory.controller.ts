@@ -33,7 +33,7 @@ export class CreateMemoryController {
     @GetEvent() event: Event,
     @ValidatedBody() body: CreateMemoryDTO,
     @Ip() ipAddress: string,
-    @UploadedFiles() file: { image: File[] },
+    @UploadedFiles() file: { image?: File[] },
   ): Promise<MemoryDTO> {
     const payload: CreateMemoryDTO = {
       eventId: event.id.toValue(),

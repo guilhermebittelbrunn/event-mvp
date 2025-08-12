@@ -6,7 +6,7 @@ import UpdateEventErrors from './updateEvent.error';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
 import {
   IEventRepository,
   IEventRepositorySymbol,
@@ -24,10 +24,12 @@ export class UpdateEventService {
   ) {}
 
   async execute(dto: UpdateEventDTO) {
-    const updatedEvent = await this.buildEvent(dto);
+    const currentEvent = await this.validateAndFetchData(dto);
+
+    const updatedEvent = await this.buildEvent(dto, currentEvent);
 
     if (!isEmpty(dto.image)) {
-      const oldFileId = updatedEvent.file?.id.toValue();
+      const oldFileId = currentEvent.file?.id.toValue();
 
       await this.replaceFileService.execute({ entityId: dto.id, oldFileId, file: dto.image });
     }
@@ -49,9 +51,7 @@ export class UpdateEventService {
     return currentEvent;
   }
 
-  private async buildEvent(dto: UpdateEventDTO) {
-    const currentEvent = await this.validateAndFetchData(dto);
-
+  private async buildEvent(dto: UpdateEventDTO, currentEvent: Event) {
     let eventStatus: EventStatus | undefined;
     let eventSlug: EventSlug | undefined;
 

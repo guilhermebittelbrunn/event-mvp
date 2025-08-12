@@ -1,9 +1,9 @@
 import { AddAccessToEventDTO } from './addAccessToEvent.dto';
 
-import Event from '../../event/event';
-import EventAccess from '../eventAccess';
-import EventAccessType from '../eventAccessType';
-import EventAccessUrl from '../eventAccessUrl';
+import Event from '../../../event/event';
+import EventAccess from '../../eventAccess';
+import EventAccessType from '../../eventAccessType';
+import EventAccessUrl from '../../eventAccessUrl';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';

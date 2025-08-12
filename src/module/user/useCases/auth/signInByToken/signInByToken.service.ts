@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { SignInByTokenDTO } from './dto/signInByToken.dto';
+import SignInByTokenErrors from './signInByToken.error';
 
 import { ValidateEventAccess } from '@/module/event/domain/event/services/validateEventAccess/validateEventAccess.service';
 import { IEventAccessRepository } from '@/module/event/repositories/eventAccess.repository.interface';
 import { IEventAccessRepositorySymbol } from '@/module/event/repositories/eventAccess.repository.interface';
-import GenericErrors from '@/shared/core/logic/genericErrors';
 import { IJwtService, IJwtServiceSymbol } from '@/shared/services/jwt/jwt.interface';
 
 @Injectable()
@@ -20,13 +20,13 @@ export class SignInByTokenService {
     const eventAccess = await this.eventAccessRepo.findById(dto.token);
 
     if (!eventAccess) {
-      throw new GenericErrors.NotAuthorized();
+      throw new SignInByTokenErrors.InvalidToken();
     }
 
     const event = await this.validateEventAccess.execute(eventAccess.eventId.toValue());
 
     if (!event) {
-      throw new GenericErrors.NotAuthorized();
+      throw new SignInByTokenErrors.InvalidToken();
     }
 
     const token = await this.jwtService.generateEventToken({

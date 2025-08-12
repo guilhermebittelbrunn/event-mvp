@@ -6,6 +6,7 @@ import { IFileRepository, IFileRepositorySymbol } from '../../../../repositories
 import File from '../../file';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
+import GenericErrors from '@/shared/core/logic/genericErrors';
 import {
   IFileStoreService,
   IFileStoreServiceSymbol,
@@ -39,26 +40,30 @@ export class ReplaceFileService {
   }
 
   private async uploadFile(dto: ReplaceFileDTO) {
-    const file = File.create({
-      entityId: UniqueEntityID.create(dto.entityId),
-      name: dto.file.originalname,
-      path: dto.file.path,
-      url: dto.file.path,
-      size: dto.file.size,
-      file: dto.file,
-    });
+    try {
+      const file = File.create({
+        entityId: UniqueEntityID.create(dto.entityId),
+        name: dto.file.originalname,
+        path: dto.file.path,
+        url: dto.file.path,
+        size: dto.file.size,
+        file: dto.file,
+      });
 
-    const url = await this.fileStoreService.upload({
-      fieldname: 'file',
-      originalname: dto.file.originalname,
-      encoding: file.file.encoding,
-      mimetype: file.file.mimetype,
-      buffer: file.file.buffer,
-      path: file.path,
-    });
+      const url = await this.fileStoreService.upload({
+        fieldname: 'file',
+        originalname: dto.file.originalname,
+        encoding: file.file.encoding,
+        mimetype: file.file.mimetype,
+        buffer: file.file.buffer,
+        path: file.path,
+      });
 
-    file.url = url;
+      file.url = url;
 
-    return file;
+      return file;
+    } catch (error) {
+      throw new GenericErrors.Unexpected('Erro ao substituir foto, tente novamente mais tarde');
+    }
   }
 }

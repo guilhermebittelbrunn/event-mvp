@@ -6,6 +6,7 @@ import { IFileRepository, IFileRepositorySymbol } from '../../../../repositories
 import File from '../../file';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
+import GenericErrors from '@/shared/core/logic/genericErrors';
 import {
   IFileStoreService,
   IFileStoreServiceSymbol,
@@ -24,23 +25,27 @@ export class AddFileService {
     const file = File.create({
       entityId: UniqueEntityID.create(dto.entityId),
       name: dto.file.originalname,
-      path: dto.file.path,
-      url: dto.file.path,
+      path: '', // will be set by makePath() method
+      url: '', // will be set after upload
       size: dto.file.size,
       file: dto.file,
     });
 
-    const url = await this.fileStoreService.upload({
-      fieldname: 'file',
-      originalname: dto.file.originalname,
-      encoding: file.file.encoding,
-      mimetype: file.file.mimetype,
-      buffer: file.file.buffer,
-      path: file.path,
-    });
+    try {
+      const url = await this.fileStoreService.upload({
+        fieldname: 'file',
+        originalname: dto.file.originalname,
+        encoding: file.file.encoding,
+        mimetype: file.file.mimetype,
+        buffer: file.file.buffer,
+        path: file.path,
+      });
 
-    file.url = url;
+      file.url = url;
 
-    return this.fileRepository.create(file);
+      return this.fileRepository.create(file);
+    } catch (error) {
+      throw new GenericErrors.Unexpected('Erro ao salvar foto, tente novamente mais tarde');
+    }
   }
 }
