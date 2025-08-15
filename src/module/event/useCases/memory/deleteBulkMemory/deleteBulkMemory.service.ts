@@ -38,7 +38,7 @@ export class DeleteBulkMemoryService {
     const fileIds = memories.map(({ fileId }) => fileId);
 
     if (filledArray(fileIds)) {
-      const paths = memories.map(({ file }) => file?.path);
+      const paths = memories.map(({ file }) => file?.path).filter(Boolean);
 
       await Promise.all([
         this.fileRepo.deleteBulk(fileIds),

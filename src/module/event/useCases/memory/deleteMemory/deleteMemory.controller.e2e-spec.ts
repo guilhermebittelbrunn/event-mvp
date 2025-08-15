@@ -1,5 +1,5 @@
 import { prisma } from '@database/index';
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { HttpStatus } from '@nestjs/common';
 
 import { insertFakeMemory } from '@/module/event/repositories/tests/entities/fakeMemory';

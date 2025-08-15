@@ -1,5 +1,5 @@
 import { prisma } from '@database/index';
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { HttpStatus } from '@nestjs/common';
 
 import { insertFakeUser } from '@/module/user/repositories/tests/entities/fakeUser';
