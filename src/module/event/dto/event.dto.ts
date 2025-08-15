@@ -12,6 +12,9 @@ export class EventDTO extends BaseEntityDTO {
   @ApiUUIDProperty()
   userId: string;
 
+  @ApiUUIDProperty()
+  fileId?: string | null;
+
   @ApiProperty()
   slug: string;
 

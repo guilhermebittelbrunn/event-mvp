@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { File } from '@nest-lab/fastify-multer';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -7,11 +7,12 @@ import { CreateEventService } from './createEvent.service';
 import { CreateEventDTO } from './dto/createEvent.dto';
 
 import EventSlug from '@/module/event/domain/event/eventSlug';
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
 import { AddFileService } from '@/module/shared/domain/file/services/addFile/addFile.service';
+import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import { FakeFileStoreService } from '@/shared/test/services';
@@ -72,6 +73,8 @@ describe('CreateEventService', () => {
 
     service = module.get<CreateEventService>(CreateEventService);
     addAccessToEvent = module.get<AddAccessToEvent>(AddAccessToEvent);
+
+    fileRepoMock.create.mockResolvedValue(fakeFile());
 
     jest.clearAllMocks();
   });

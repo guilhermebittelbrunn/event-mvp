@@ -1,4 +1,4 @@
-import Event from '../../event/event';
+import Event from '../../../event/event';
 
 import { EventAccessTypeEnum } from '@/shared/types/event/event';
 

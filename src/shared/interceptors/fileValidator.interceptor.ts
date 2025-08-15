@@ -21,6 +21,10 @@ export class FileValidatorInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const files = request.files;
 
+    if (!files) {
+      return next.handle();
+    }
+
     Object.entries(files).forEach(([key, fileArray]: [string, any]) => {
       fileArray.forEach((file: File) => {
         if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {

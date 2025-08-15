@@ -14,6 +14,7 @@ export function fakeEvent(overrides?: Partial<EventModel>): Event {
   const slug = EventSlug.create(overrides?.slug ?? faker.lorem.slug());
   const status = EventStatus.create((overrides?.status as EventStatusEnum) ?? EventStatusEnum.DRAFT);
   const userId = new UniqueEntityID(overrides?.userId ?? faker.string.uuid());
+  const fileId = overrides?.fileId ? new UniqueEntityID(overrides.fileId) : undefined;
 
   return Event.create(
     {
@@ -25,6 +26,7 @@ export function fakeEvent(overrides?: Partial<EventModel>): Event {
       userId,
       slug,
       status,
+      fileId,
     },
     UniqueEntityID.create(),
   );
@@ -41,6 +43,7 @@ export async function insertFakeEvent(overrides: Partial<EventModel> = {}): Prom
   return prisma.eventModel.create({
     data: {
       id: event.id.toValue(),
+      fileId: event.fileId?.toValue(),
       userId: event.userId.toValue(),
       name: event.name,
       slug: event.slug.value,

@@ -8,6 +8,9 @@ export class MemoryDTO extends BaseEntityDTO {
   @ApiUUIDProperty()
   eventId: string;
 
+  @ApiUUIDProperty()
+  fileId: string | null;
+
   @ApiProperty()
   identifier?: string;
 

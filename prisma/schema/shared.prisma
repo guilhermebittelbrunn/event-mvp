@@ -1,15 +1,16 @@
 model FileModel {
-  id       String @id @default(uuid()) @db.Uuid
-  // for now, only used for memory
-  entityId String @map("entity_id") @db.Uuid
-  name     String
-  path     String
-  url      String
-  size     Int
+  id   String @id @default(uuid()) @db.Uuid
+  name String
+  path String
+  url  String
+  size Int
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
+  event  EventModel?
+  memory MemoryModel?
 }
 
 model LogModel {

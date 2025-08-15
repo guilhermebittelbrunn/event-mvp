@@ -29,11 +29,11 @@ describe('DownloadMemoriesController (e2e)', () => {
 
   describe('POST /v1/memory/download', () => {
     it('should download memories successfully', async () => {
-      const memory1 = await insertFakeMemory();
-      const memory2 = await insertFakeMemory();
+      const file1 = await insertFakeFile();
+      const file2 = await insertFakeFile();
 
-      await insertFakeFile({ entityId: memory1.id });
-      await insertFakeFile({ entityId: memory2.id });
+      const memory1 = await insertFakeMemory({ fileId: file1.id });
+      const memory2 = await insertFakeMemory({ fileId: file2.id });
 
       const memories = [memory1, memory2];
 

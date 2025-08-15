@@ -3,17 +3,11 @@ import { Module } from '@nestjs/common';
 import { DeleteEventController } from './deleteEvent.controller';
 import { DeleteEventService } from './deleteEvent.service';
 
-import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
-import { makeEventRepository } from '@/module/event/repositories/implementations/factories/event.repository';
+import { EventRepositoryFactory } from '@/module/event/repositories/implementations/factories/event.repository.module';
 
 @Module({
+  imports: [EventRepositoryFactory],
   controllers: [DeleteEventController],
-  providers: [
-    DeleteEventService,
-    {
-      provide: IEventRepositorySymbol,
-      useValue: makeEventRepository(),
-    },
-  ],
+  providers: [DeleteEventService],
 })
 export class DeleteEventModule {}

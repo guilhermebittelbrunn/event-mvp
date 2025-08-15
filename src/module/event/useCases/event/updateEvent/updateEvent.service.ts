@@ -6,7 +6,7 @@ import UpdateEventErrors from './updateEvent.error';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
 import {
   IEventRepository,
   IEventRepositorySymbol,
@@ -24,15 +24,11 @@ export class UpdateEventService {
   ) {}
 
   async execute(dto: UpdateEventDTO) {
-    const updatedEvent = await this.buildEvent(dto);
+    const currentEvent = await this.validateAndFetchData(dto);
 
-    if (!isEmpty(dto.image)) {
-      const oldFileId = updatedEvent.file?.id.toValue();
+    const event = await this.buildEvent(dto, currentEvent);
 
-      await this.replaceFileService.execute({ entityId: dto.id, oldFileId, file: dto.image });
-    }
-
-    return updatedEvent.id.toValue();
+    return this.eventRepo.update(event);
   }
 
   private async validateAndFetchData({ id }: UpdateEventDTO) {
@@ -49,9 +45,7 @@ export class UpdateEventService {
     return currentEvent;
   }
 
-  private async buildEvent(dto: UpdateEventDTO) {
-    const currentEvent = await this.validateAndFetchData(dto);
-
+  private async buildEvent(dto: UpdateEventDTO, currentEvent: Event) {
     let eventStatus: EventStatus | undefined;
     let eventSlug: EventSlug | undefined;
 
@@ -86,7 +80,13 @@ export class UpdateEventService {
 
     this.addAccessToEvent.execute({ event });
 
-    await this.eventRepo.update(event);
+    if (!isEmpty(dto.image)) {
+      const oldFileId = currentEvent.file?.id.toValue();
+
+      const { id } = await this.replaceFileService.execute({ oldFileId, file: dto.image });
+
+      event.fileId = id;
+    }
 
     return event;
   }

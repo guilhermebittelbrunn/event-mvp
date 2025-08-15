@@ -6,7 +6,7 @@ import { CreateEventDTO } from './dto/createEvent.dto';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
 import EventConfig from '@/module/event/domain/eventConfig';
 import {
   IEventRepository,
@@ -26,16 +26,6 @@ export class CreateEventService {
   ) {}
 
   async execute(dto: CreateEventDTO) {
-    const event = await this.buildEvent(dto);
-
-    if (!isEmpty(dto.image)) {
-      await this.addFileService.execute({ entityId: event.id.toValue(), file: dto.image });
-    }
-
-    return event;
-  }
-
-  private async buildEvent(dto: CreateEventDTO) {
     const { slug, status, userId } = dto;
 
     const eventSlug = EventSlug.create(slug);
@@ -60,6 +50,12 @@ export class CreateEventService {
     });
 
     this.addAccessToEvent.execute({ event });
+
+    if (!isEmpty(dto.image)) {
+      const file = await this.addFileService.execute({ file: dto.image });
+
+      event.fileId = file.id;
+    }
 
     return this.eventRepo.save(event);
   }

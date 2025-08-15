@@ -23,64 +23,44 @@ export class MemoryRepository
     super('memoryModel', prisma, als);
   }
 
-  async findCompleteById(id: string): Promise<Memory> {
-    const rawId = UniqueEntityID.raw(id);
+  async findAllByIds(ids: GenericId[]): Promise<Memory[]> {
+    const memories = await this.manager().findMany({
+      where: { id: { in: ids.map(UniqueEntityID.raw) } },
+      include: { file: true },
+    });
+    return memories.map(this.mapper.toDomain);
+  }
 
-    const [memory, file] = await Promise.all([
-      this.manager().findUnique({ where: { id: rawId } }),
-      this.manager('fileModel').findFirst({ where: { entityId: rawId } }),
-    ]);
-
-    if (!memory) {
-      return null;
-    }
-
-    return this.mapper.toDomain({ ...memory, file });
+  async findCompleteById(id: GenericId): Promise<Memory> {
+    const memory = await this.manager().findUnique({
+      where: { id: UniqueEntityID.raw(id) },
+      include: {
+        file: true,
+      },
+    });
+    return this.mapper.toDomainOrNull(memory);
   }
 
   async listWithFiles(query?: PaginationQuery): Promise<PaginatedResult<Memory>> {
     const { page, take, skip } = this.getPaginationParams(query);
 
     const [memories, total] = await Promise.all([
-      await this.manager().findMany({ skip, take }),
+      await this.manager().findMany({ skip, take, include: { file: true } }),
       await this.manager().count(),
     ]);
 
-    /**
-     * @todo: improve this query to get the files in a single query, use eager loading
-     */
-    const files = await this.manager('fileModel').findMany({
-      where: { entityId: { in: memories.map(({ id }) => id) } },
-    });
-
-    const memoriesWithFiles = memories.map((memory) => ({
-      ...memory,
-      file: files.find(({ entityId }) => entityId === memory.id),
-    }));
-
     return {
-      data: memoriesWithFiles.map(this.mapper.toDomain),
+      data: memories.map(this.mapper.toDomain),
       meta: this.buildPaginationMeta(total, page, take),
     };
   }
 
   async findAllForDownload(ids: GenericId[]): Promise<Memory[]> {
-    const rawIds = ids.map(UniqueEntityID.raw);
-
-    const memories = await this.manager().findMany({ where: { id: { in: rawIds } } });
-
-    /**
-     * @todo: improve this query to get the files in a single query, use eager loading
-     */
-    const files = await this.manager('fileModel').findMany({
-      where: { entityId: { in: rawIds } },
+    const memories = await this.manager().findMany({
+      where: { id: { in: ids.map(UniqueEntityID.raw) } },
+      include: { file: true },
     });
 
-    const memoriesWithFiles = memories.map((memory) => ({
-      ...memory,
-      file: files.find(({ entityId }) => entityId === memory.id),
-    }));
-
-    return memoriesWithFiles.map(this.mapper.toDomain);
+    return memories.map(this.mapper.toDomain);
   }
 }

@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { File } from '@nest-lab/fastify-multer';
 import { Test, TestingModule } from '@nestjs/testing';
 

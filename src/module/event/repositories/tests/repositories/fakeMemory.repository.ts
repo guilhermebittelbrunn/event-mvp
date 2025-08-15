@@ -3,6 +3,7 @@ import { IMemoryRepository } from '@/module/event/repositories/memory.repository
 import { FakeBaseRepository } from '@/shared/test/fakeBase.repository';
 
 export class FakeMemoryRepository extends FakeBaseRepository<Memory> implements IMemoryRepository {
+  findAllByIds = jest.fn();
   findCompleteById = jest.fn();
   listWithFiles = jest.fn();
   findAllForDownload = jest.fn();

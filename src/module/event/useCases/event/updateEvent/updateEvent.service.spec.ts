@@ -1,15 +1,16 @@
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { File } from '@nest-lab/fastify-multer';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import UpdateEventErrors from './updateEvent.error';
 import { UpdateEventService } from './updateEvent.service';
 
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
 import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
+import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import { FakeFileStoreService } from '@/shared/test/services';
 import { EventStatusEnum } from '@/shared/types/event/event';
@@ -55,6 +56,8 @@ describe('UpdateEventService', () => {
 
     service = module.get<UpdateEventService>(UpdateEventService);
     replaceFileService = module.get<ReplaceFileService>(ReplaceFileService);
+
+    fileRepoMock.create.mockResolvedValueOnce(fakeFile());
 
     jest.clearAllMocks();
   });

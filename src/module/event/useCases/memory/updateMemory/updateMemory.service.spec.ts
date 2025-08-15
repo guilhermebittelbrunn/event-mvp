@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { File } from '@nest-lab/fastify-multer';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -91,9 +91,10 @@ describe('UpdateMemoryService', () => {
   });
 
   it('should replace the file if a new one is provided', async () => {
-    const memory = fakeMemory();
+    const file = fakeFile();
+    const memory = fakeMemory({ fileId: file.id.toValue() });
 
-    memory.file = fakeFile({ entityId: memory.id.toValue() });
+    memory.file = file;
 
     memoryRepoMock.update.mockResolvedValueOnce(memory.id.toValue());
     memoryRepoMock.findCompleteById.mockResolvedValueOnce(memory);

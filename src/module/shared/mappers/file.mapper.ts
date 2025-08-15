@@ -12,7 +12,6 @@ class BaseFileMapper extends Mapper<File, FileModelWithRelations, FileDTO> {
   toDomain(file: FileModelWithRelations): File {
     return File.create(
       {
-        entityId: new UniqueEntityID(file.entityId),
         name: file.name,
         path: file.path,
         size: file.size,
@@ -28,7 +27,6 @@ class BaseFileMapper extends Mapper<File, FileModelWithRelations, FileDTO> {
   toPersistence(file: File): FileModel {
     return {
       id: file.id.toValue(),
-      entityId: file.entityId.toValue(),
       name: file.name,
       path: file.path,
       size: file.size,
@@ -42,7 +40,6 @@ class BaseFileMapper extends Mapper<File, FileModelWithRelations, FileDTO> {
   toDTO(file: File): FileDTO {
     return {
       id: file.id.toValue(),
-      entityId: file.entityId.toValue(),
       name: file.name,
       path: file.path,
       size: file.size,

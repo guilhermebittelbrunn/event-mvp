@@ -56,36 +56,36 @@ describe('DeleteBulkMemoryService', () => {
   it('should delete a memory successfully', async () => {
     const memory = fakeMemory();
 
-    memoryRepoMock.findByIds.mockResolvedValueOnce([memory]);
+    memoryRepoMock.findAllByIds.mockResolvedValueOnce([memory]);
 
     await service.execute({ memoryIds: [memory.id.toValue()] });
 
-    expect(memoryRepoMock.findByIds).toHaveBeenCalled();
-    expect(fileRepoMock.findAllByEntityId).toHaveBeenCalled();
+    expect(memoryRepoMock.findAllByIds).toHaveBeenCalled();
 
     expect(memoryRepoMock.deleteBulk).toHaveBeenCalled();
   });
 
   it('should delete multiple memories successfully', async () => {
-    const memory1 = fakeMemory();
-    const memory2 = fakeMemory();
+    const memory1 = fakeMemory({ fileId: fakeFile().id.toValue() });
+    const memory2 = fakeMemory({ fileId: fakeFile().id.toValue() });
 
     const memories = [memory1, memory2];
 
-    const file1 = fakeFile({ entityId: memory1.id.toValue() });
-    const file2 = fakeFile({ entityId: memory2.id.toValue() });
+    const file1 = fakeFile({ id: memory1.fileId?.toValue() });
+    const file2 = fakeFile({ id: memory2.fileId?.toValue() });
+
+    memory1.file = file1;
+    memory2.file = file2;
 
     const files = [file1, file2];
 
-    memoryRepoMock.findByIds.mockResolvedValueOnce(memories);
-    fileRepoMock.findAllByEntityId.mockResolvedValueOnce(files);
+    memoryRepoMock.findAllByIds.mockResolvedValueOnce(memories);
 
     await service.execute({ memoryIds: memories.map(({ id }) => id.toValue()) });
 
-    expect(memoryRepoMock.findByIds).toHaveBeenCalled();
-    expect(fileRepoMock.findAllByEntityId).toHaveBeenCalled();
+    expect(memoryRepoMock.findAllByIds).toHaveBeenCalled();
     expect(fileStoreServiceMock.deleteBulk).toHaveBeenCalled();
-    expect(memoryRepoMock.deleteBulk).toHaveBeenCalledWith(memories.map(({ id }) => id));
+    expect(memoryRepoMock.deleteBulk).toHaveBeenCalledWith(memories.map(({ id }) => id.toValue()));
     expect(fileRepoMock.deleteBulk).toHaveBeenCalledWith(files.map(({ id }) => id));
     expect(fileStoreServiceMock.deleteBulk).toHaveBeenCalledWith(files.map(({ path }) => path));
   });
@@ -97,8 +97,7 @@ describe('DeleteBulkMemoryService', () => {
       DeleteBulkMemoryErrors.MaxMemoryIdsToDeleteExceeded,
     );
 
-    expect(memoryRepoMock.findByIds).not.toHaveBeenCalled();
-    expect(fileRepoMock.findAllByEntityId).not.toHaveBeenCalled();
+    expect(memoryRepoMock.findAllByIds).not.toHaveBeenCalled();
     expect(fileStoreServiceMock.deleteBulk).not.toHaveBeenCalled();
     expect(memoryRepoMock.deleteBulk).not.toHaveBeenCalled();
   });
@@ -109,12 +108,11 @@ describe('DeleteBulkMemoryService', () => {
 
     const memoryIds = [memory1.id.toValue(), memory2.id.toValue()];
 
-    memoryRepoMock.findByIds.mockResolvedValueOnce([memory1]);
+    memoryRepoMock.findAllByIds.mockResolvedValueOnce([memory1]);
 
     await expect(service.execute({ memoryIds })).rejects.toThrow(DeleteBulkMemoryErrors.MemoriesNotFound);
 
-    expect(memoryRepoMock.findByIds).toHaveBeenCalled();
-    expect(fileRepoMock.findAllByEntityId).not.toHaveBeenCalled();
+    expect(memoryRepoMock.findAllByIds).toHaveBeenCalled();
     expect(fileStoreServiceMock.deleteBulk).not.toHaveBeenCalled();
     expect(memoryRepoMock.deleteBulk).not.toHaveBeenCalled();
   });

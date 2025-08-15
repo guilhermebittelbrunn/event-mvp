@@ -17,6 +17,7 @@ class BaseMemoryMapper extends Mapper<Memory, MemoryModelWithRelations, MemoryDT
     return Memory.create(
       {
         eventId: new UniqueEntityID(memory.eventId),
+        fileId: UniqueEntityID.createOrUndefined(memory.fileId),
         identifier: memory.identifier,
         description: memory.description,
         ipAddress: IpAddress.create(memory.ipAddress),
@@ -34,6 +35,7 @@ class BaseMemoryMapper extends Mapper<Memory, MemoryModelWithRelations, MemoryDT
     return {
       id: memory.id.toValue(),
       eventId: memory.eventId.toValue(),
+      fileId: memory.fileId?.toValue(),
       identifier: memory.identifier,
       description: memory.description,
       ipAddress: memory.ipAddress.value,
@@ -48,6 +50,7 @@ class BaseMemoryMapper extends Mapper<Memory, MemoryModelWithRelations, MemoryDT
     return {
       id: memory.id.toValue(),
       eventId: memory.eventId.toValue(),
+      fileId: memory.fileId?.toValue(),
       identifier: memory.identifier,
       description: memory.description,
       message: memory.message,

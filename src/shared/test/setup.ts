@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import helmet from '@fastify/helmet';
 import { VersioningType } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -23,6 +24,8 @@ beforeAll(async () => {
   });
 
   app.register(helmet);
+
+  app.getHttpAdapter().getInstance().register(require('@fastify/multipart'));
 
   app.enableVersioning({
     type: VersioningType.URI,

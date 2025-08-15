@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import SignInByTokenErrors from './signInByToken.error';
 import { SignInByTokenService } from './signInByToken.service';
 
 import { ValidateEventAccess } from '@/module/event/domain/event/services/validateEventAccess/validateEventAccess.service';
@@ -10,7 +11,6 @@ import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent'
 import { fakeEventAccess } from '@/module/event/repositories/tests/entities/fakeEventAccess';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
 import { FakeEventAccessRepository } from '@/module/event/repositories/tests/repositories/fakeEventAccess.repository';
-import GenericErrors from '@/shared/core/logic/genericErrors';
 import { IJwtServiceSymbol } from '@/shared/services/jwt/jwt.interface';
 import { FakeAlsService, FakeConfigService } from '@/shared/test/services';
 import { FakeJwtService } from '@/shared/test/services/fakeJwtService';
@@ -93,7 +93,9 @@ describe('SignInByTokenService', () => {
   it('should throw a not found error if event access does not exist', async () => {
     eventAccessRepoMock.findById.mockResolvedValueOnce(null);
 
-    await expect(service.execute({ token: faker.string.uuid() })).rejects.toThrow(GenericErrors.NotAuthorized);
+    await expect(service.execute({ token: faker.string.uuid() })).rejects.toThrow(
+      SignInByTokenErrors.InvalidToken,
+    );
   });
 
   it('should throw a not authorized error if validate event access fails', async () => {
@@ -103,7 +105,7 @@ describe('SignInByTokenService', () => {
     validateEventAccessMock.execute = jest.fn().mockResolvedValueOnce(null);
 
     await expect(service.execute({ token: eventAccess.id.toValue() })).rejects.toThrow(
-      GenericErrors.NotAuthorized,
+      SignInByTokenErrors.InvalidToken,
     );
 
     expect(validateEventAccessMock.execute).toHaveBeenCalledWith(eventAccess.eventId.toValue());
