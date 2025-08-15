@@ -6,6 +6,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { CreateEventDTO } from './dto/createEvent.dto';
 
+import { S3StorageService } from '@/shared/services/fileStore/implementations/aws-s3/s3-storage.service';
 import { IAuthenticatedUserData } from '@/shared/test/helpers/getAuthenticatedUser';
 import getAuthenticatedUser from '@/shared/test/helpers/getAuthenticatedUser';
 import { request } from '@/shared/test/utils';
@@ -37,6 +38,9 @@ describe('CreateEventController (e2e)', () => {
 
   beforeAll(async () => {
     authInfos = await getAuthenticatedUser();
+
+    jest.spyOn(S3StorageService.prototype, 'upload').mockResolvedValue(faker.internet.url());
+    jest.spyOn(S3StorageService.prototype, 'delete').mockResolvedValue(undefined);
   });
 
   describe('POST /v1/event', () => {
