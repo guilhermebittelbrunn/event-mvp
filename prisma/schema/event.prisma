@@ -1,12 +1,13 @@
 model EventModel {
-  id       String @id @default(uuid()) @db.Uuid
-  userId   String @map("user_id") @db.Uuid
-  name     String
-  slug     String @unique
-  status   String @default("draft")
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  fileId      String?  @unique @map("file_id") @db.Uuid
+  name        String
+  slug        String   @unique
+  status      String   @default("draft")
   description String?
-  startAt DateTime @map("start_at")
-  endAt DateTime @map("end_at")
+  startAt     DateTime @map("start_at")
+  endAt       DateTime @map("end_at")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
@@ -14,7 +15,8 @@ model EventModel {
 
   config EventConfigModel?
 
-  user UserModel @relation(fields: [userId], references: [id])
+  user UserModel  @relation(fields: [userId], references: [id])
+  file FileModel? @relation(fields: [fileId], references: [id])
 
   accesses EventAccessModel[]
   memories MemoryModel[]
@@ -22,35 +24,33 @@ model EventModel {
   @@map("event")
 }
 
-
 model EventConfigModel {
-  id       String @id @default(uuid()) @db.Uuid
-  eventId  String @unique @map("event_id") @db.Uuid
-  primaryColor String @default("#000000") @map("primary_color")
-  primaryContrast String @default("#000000") @map("primary_contrast")
-  secondaryColor String @default("#000000") @map("secondary_color")
-  secondaryContrast String @default("#000000") @map("secondary_contrast")
-  backgroundColor String @default("#000000") @map("background_color")
+  id                 String @id @default(uuid()) @db.Uuid
+  eventId            String @unique @map("event_id") @db.Uuid
+  primaryColor       String @default("#000000") @map("primary_color")
+  primaryContrast    String @default("#000000") @map("primary_contrast")
+  secondaryColor     String @default("#000000") @map("secondary_color")
+  secondaryContrast  String @default("#000000") @map("secondary_contrast")
+  backgroundColor    String @default("#000000") @map("background_color")
   backgroundContrast String @default("#000000") @map("background_contrast")
-  textColorPrimary String @default("#000000") @map("text_color_primary")
+  textColorPrimary   String @default("#000000") @map("text_color_primary")
   textColorSecondary String @default("#000000") @map("text_color_secondary")
-  welcomeMessage String @default("Bem-vindo ao nosso evento!") @map("welcome_message")
-  
+  welcomeMessage     String @default("Bem-vindo ao nosso evento!") @map("welcome_message")
+
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
-
 
   event EventModel @relation(fields: [eventId], references: [id])
 
   @@map("event_config")
 }
 
-model EventAccessModel{
-  id String @id @default(uuid()) @db.Uuid
+model EventAccessModel {
+  id      String @id @default(uuid()) @db.Uuid
   eventId String @map("event_id") @db.Uuid
-  url String @unique
-  type String @default("guest")
+  url     String @unique
+  type    String @default("guest")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()

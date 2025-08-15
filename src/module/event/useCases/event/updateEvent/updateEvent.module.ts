@@ -4,21 +4,16 @@ import { UpdateEventController } from './updateEvent.controller';
 import { UpdateEventService } from './updateEvent.service';
 
 import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
-import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
-import { makeEventRepository } from '@/module/event/repositories/implementations/factories/event.repository';
+import { EventRepositoryFactory } from '@/module/event/repositories/implementations/factories/event.repository.module';
 import { ReplaceFileModule } from '@/module/shared/domain/file/services/replaceFile/replaceFile.module';
 import { TransactionManagerService } from '@/shared/core/infra/prisma/transactionManager/transactionManager.service';
 import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManager.interface';
 
 @Module({
-  imports: [ReplaceFileModule],
+  imports: [ReplaceFileModule, EventRepositoryFactory],
   controllers: [UpdateEventController],
   providers: [
     UpdateEventService,
-    {
-      provide: IEventRepositorySymbol,
-      useValue: makeEventRepository(),
-    },
     {
       provide: ITransactionManagerSymbol,
       useClass: TransactionManagerService,

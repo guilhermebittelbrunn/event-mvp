@@ -30,6 +30,7 @@ export class UpdateMemoryService {
         ...currentMemory,
         ipAddress: currentMemory.ipAddress,
         eventId: currentMemory.eventId,
+        fileId: currentMemory.fileId,
         message: coalesce(dto.message, currentMemory.message),
         identifier: coalesce(dto.identifier, currentMemory.identifier),
         description: coalesce(dto.description, currentMemory.description),
@@ -39,7 +40,9 @@ export class UpdateMemoryService {
 
     if (!isEmpty(dto.image)) {
       const oldFileId = currentMemory.file?.id.toValue();
-      await this.replaceFileService.execute({ entityId: memory.id.toValue(), file: dto.image, oldFileId });
+      const newFile = await this.replaceFileService.execute({ file: dto.image, oldFileId });
+
+      memory.fileId = newFile.id;
     }
 
     return this.memoryRepo.update(memory);

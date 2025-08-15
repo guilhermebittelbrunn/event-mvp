@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { EventModel, Prisma } from '@prisma/client';
 import { isEmpty } from 'class-validator';
 
@@ -6,8 +6,8 @@ import Event from '../../domain/event/event';
 import EventSlug from '../../domain/event/eventSlug';
 import EventMapper from '../../mappers/event.mapper';
 import { IEventRepository, ListEventByQuery } from '../event.repository.interface';
-import { IEventAccessRepository } from '../eventAccess.repository.interface';
-import { IEventConfigRepository } from '../eventConfig.repository.interface';
+import { IEventAccessRepository, IEventAccessRepositorySymbol } from '../eventAccess.repository.interface';
+import { IEventConfigRepository, IEventConfigRepositorySymbol } from '../eventConfig.repository.interface';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { PaginatedResult } from '@/shared/core/infra/pagination.interface';
@@ -25,16 +25,16 @@ export class EventRepository
   usesSoftDelete = true;
 
   constructor(
-    private readonly eventConfigRepo: IEventConfigRepository,
-    private readonly eventAccessRepo: IEventAccessRepository,
-    prisma: PrismaService,
+    @Inject(IEventConfigRepositorySymbol) private readonly eventConfigRepo: IEventConfigRepository,
+    @Inject(IEventAccessRepositorySymbol) private readonly eventAccessRepo: IEventAccessRepository,
+    protected readonly prisma: PrismaService,
     als: Als,
   ) {
     super('eventModel', prisma, als);
   }
 
   async save(domain: Event): Promise<Event> {
-    const event = await this.create(domain);
+    const event = await super.create(domain);
 
     if (!isEmpty(domain.config)) {
       event.config = await this.eventConfigRepo.create(domain.config);

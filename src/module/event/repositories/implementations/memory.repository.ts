@@ -23,6 +23,14 @@ export class MemoryRepository
     super('memoryModel', prisma, als);
   }
 
+  async findAllByIds(ids: GenericId[]): Promise<Memory[]> {
+    const memories = await this.manager().findMany({
+      where: { id: { in: ids.map(UniqueEntityID.raw) } },
+      include: { file: true },
+    });
+    return memories.map(this.mapper.toDomain);
+  }
+
   async findCompleteById(id: GenericId): Promise<Memory> {
     const memory = await this.manager().findUnique({
       where: { id: UniqueEntityID.raw(id) },

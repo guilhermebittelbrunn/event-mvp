@@ -37,13 +37,15 @@ describe('UpdateEventController (e2e)', () => {
   describe('PUT /v1/event/:id', () => {
     it('should update a event successfully', async () => {
       const filePayload = makeFile();
-      const event = await insertFakeEvent();
+      const file = await insertFakeFile();
+
+      const event = await insertFakeEvent({ fileId: file.id });
+
       const access = await insertFakeEventAccess({ eventId: event.id });
 
       const rawSlug = `${faker.person.firstName()} ${faker.person.lastName()}`; // to avoid slug conflict with prefix as Dr. Mr. Sr. etc.
       const newSlug = rawSlug.trim().toLowerCase().replace(/ /g, '-');
       const newDescription = faker.lorem.paragraph();
-      const file = await insertFakeFile({ entityId: event.id });
 
       const result = await request()
         .put(`/v1/event/${event.id}`)
@@ -65,9 +67,9 @@ describe('UpdateEventController (e2e)', () => {
         },
       });
 
-      const uploadedFile = await prisma.fileModel.findFirst({
+      const uploadedFile = await prisma.fileModel.findUnique({
         where: {
-          entityId: event.id,
+          id: updatedEvent.fileId,
         },
       });
 
@@ -88,7 +90,7 @@ describe('UpdateEventController (e2e)', () => {
       expect(uploadedFile.path).toBeDefined();
       expect(uploadedFile.url).toBeDefined();
       expect(uploadedFile.name).toBeDefined();
-      expect(uploadedFile.entityId).toBe(event.id);
+      expect(uploadedFile.id).not.toBe(event.fileId);
 
       expect(deletedFile).toBeNull();
     });

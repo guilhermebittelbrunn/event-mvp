@@ -26,16 +26,6 @@ export class CreateEventService {
   ) {}
 
   async execute(dto: CreateEventDTO) {
-    const event = await this.buildEvent(dto);
-
-    if (!isEmpty(dto.image)) {
-      await this.addFileService.execute({ entityId: event.id.toValue(), file: dto.image });
-    }
-
-    return event;
-  }
-
-  private async buildEvent(dto: CreateEventDTO) {
     const { slug, status, userId } = dto;
 
     const eventSlug = EventSlug.create(slug);
@@ -60,6 +50,12 @@ export class CreateEventService {
     });
 
     this.addAccessToEvent.execute({ event });
+
+    if (!isEmpty(dto.image)) {
+      const file = await this.addFileService.execute({ file: dto.image });
+
+      event.fileId = file.id;
+    }
 
     return this.eventRepo.save(event);
   }

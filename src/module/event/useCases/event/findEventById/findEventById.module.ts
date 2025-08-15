@@ -3,17 +3,11 @@ import { Module } from '@nestjs/common';
 import { FindEventByIdController } from './findEventById.controller';
 import { FindEventByIdService } from './findEventById.service';
 
-import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
-import { makeEventRepository } from '@/module/event/repositories/implementations/factories/event.repository';
+import { EventRepositoryFactory } from '@/module/event/repositories/implementations/factories/event.repository.module';
 
 @Module({
+  imports: [EventRepositoryFactory],
   controllers: [FindEventByIdController],
-  providers: [
-    FindEventByIdService,
-    {
-      provide: IEventRepositorySymbol,
-      useValue: makeEventRepository(),
-    },
-  ],
+  providers: [FindEventByIdService],
 })
 export class FindEventByIdModule {}

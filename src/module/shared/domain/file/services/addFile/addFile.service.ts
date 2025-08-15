@@ -5,7 +5,6 @@ import { AddFileDTO } from './addFile.dto';
 import { IFileRepository, IFileRepositorySymbol } from '../../../../repositories/file.repository.interface';
 import File from '../../file';
 
-import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import {
   IFileStoreService,
@@ -23,7 +22,6 @@ export class AddFileService {
 
   async execute(dto: AddFileDTO) {
     const file = File.create({
-      entityId: UniqueEntityID.create(dto.entityId),
       name: dto.file.originalname,
       path: '', // will be set by makePath() method
       url: '', // will be set after upload

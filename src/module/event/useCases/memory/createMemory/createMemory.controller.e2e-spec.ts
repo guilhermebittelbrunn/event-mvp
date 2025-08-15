@@ -60,9 +60,9 @@ describe('CreateMemoryController (e2e)', () => {
           id: result.body.data.id,
         },
       });
-      const newFile = await prisma.fileModel.findFirst({
+      const newFile = await prisma.fileModel.findUnique({
         where: {
-          entityId: newMemory.id,
+          id: newMemory.fileId,
         },
       });
 
@@ -72,7 +72,7 @@ describe('CreateMemoryController (e2e)', () => {
       expect(newFile.path).toBeDefined();
       expect(newFile.url).toBeDefined();
       expect(newFile.name).toBeDefined();
-      expect(newFile.entityId).toBe(newMemory.id);
+      expect(newFile.id).toBe(newMemory.fileId);
     });
   });
 });

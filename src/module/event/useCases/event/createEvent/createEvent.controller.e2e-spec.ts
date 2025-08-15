@@ -65,9 +65,9 @@ describe('CreateEventController (e2e)', () => {
         },
       });
 
-      const newFile = await prisma.fileModel.findFirst({
+      const newFile = await prisma.fileModel.findUnique({
         where: {
-          entityId: newEvent.id,
+          id: newEvent.fileId,
         },
       });
 
@@ -92,7 +92,7 @@ describe('CreateEventController (e2e)', () => {
       expect(newFile.path).toBeDefined();
       expect(newFile.url).toBeDefined();
       expect(newFile.name).toBeDefined();
-      expect(newFile.entityId).toBe(newEvent.id);
+      expect(newFile.id).toBe(newEvent.fileId);
     });
 
     it('should return 400 when invalid data is provided', async () => {

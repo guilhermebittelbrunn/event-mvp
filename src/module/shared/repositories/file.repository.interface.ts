@@ -1,15 +1,7 @@
 import File from '../domain/file/file';
 
-import {
-  IBaseRepository,
-  MultiEntityResponse,
-  SingleEntityResponse,
-} from '@/shared/core/infra/repository.interface';
-import { GenericId } from '@/shared/types/common';
+import { IBaseRepository } from '@/shared/core/infra/repository.interface';
 
-export interface IFileRepository extends IBaseRepository<File> {
-  findByEntityId(entityId: GenericId): SingleEntityResponse<File>;
-  findAllByEntityId(entityIds: GenericId[]): MultiEntityResponse<File>;
-}
+export interface IFileRepository extends IBaseRepository<File> {}
 
 export const IFileRepositorySymbol = Symbol('IFileRepository');

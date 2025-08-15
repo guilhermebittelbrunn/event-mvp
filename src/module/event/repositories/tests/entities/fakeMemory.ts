@@ -10,6 +10,8 @@ import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
 
 export function fakeMemory(overrides?: Partial<MemoryModel>): Memory {
+  const fileId = overrides?.fileId ? new UniqueEntityID(overrides.fileId) : undefined;
+
   return Memory.create(
     {
       identifier: faker.string.uuid(),
@@ -18,6 +20,7 @@ export function fakeMemory(overrides?: Partial<MemoryModel>): Memory {
       ...overrides,
       eventId: UniqueEntityID.create(overrides?.eventId ?? faker.string.uuid()),
       ipAddress: IpAddress.create(overrides?.ipAddress ?? faker.internet.ip()),
+      fileId,
     },
     new UniqueEntityID(overrides?.id ?? faker.string.uuid()),
   );
@@ -35,6 +38,7 @@ export async function insertFakeMemory(overrides: Partial<MemoryModel> = {}): Pr
     data: {
       id: memory.id.toValue(),
       eventId: memory.eventId.toValue(),
+      fileId: memory.fileId?.toValue(),
       identifier: memory.identifier,
       description: memory.description,
       ipAddress: memory.ipAddress.value,

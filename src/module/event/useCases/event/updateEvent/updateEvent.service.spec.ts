@@ -10,6 +10,7 @@ import { IEventRepositorySymbol } from '@/module/event/repositories/event.reposi
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
 import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
+import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import { FakeFileStoreService } from '@/shared/test/services';
 import { EventStatusEnum } from '@/shared/types/event/event';
@@ -55,6 +56,8 @@ describe('UpdateEventService', () => {
 
     service = module.get<UpdateEventService>(UpdateEventService);
     replaceFileService = module.get<ReplaceFileService>(ReplaceFileService);
+
+    fileRepoMock.create.mockResolvedValueOnce(fakeFile());
 
     jest.clearAllMocks();
   });

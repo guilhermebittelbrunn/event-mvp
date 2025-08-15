@@ -29,24 +29,24 @@ export class DeleteBulkMemoryService {
       throw new DeleteBulkMemoryErrors.MaxMemoryIdsToDeleteExceeded(MAX_MEMORY_IDS_TO_DELETE);
     }
 
-    const memories = await this.memoryRepo.findByIds(memoryIds);
+    const memories = await this.memoryRepo.findAllByIds(memoryIds);
 
     if (memories.length !== memoryIds.length) {
       throw new DeleteBulkMemoryErrors.MemoriesNotFound();
     }
 
-    const memoryRawIds = memories.map(({ id }) => id);
+    const fileIds = memories.map(({ fileId }) => fileId);
 
-    const files = await this.fileRepo.findAllByEntityId(memoryRawIds);
+    if (filledArray(fileIds)) {
+      const paths = memories.map(({ file }) => file?.path);
 
-    if (filledArray(files)) {
       await Promise.all([
-        this.fileStoreService.deleteBulk(files.map(({ path }) => path)),
-        this.fileRepo.deleteBulk(files.map(({ id }) => id)),
+        this.fileRepo.deleteBulk(fileIds),
+        ...(filledArray(paths) && [this.fileStoreService.deleteBulk(paths)]),
       ]);
     }
 
-    const allDeleted = await this.memoryRepo.deleteBulk(memoryRawIds);
+    const allDeleted = await this.memoryRepo.deleteBulk(memoryIds);
 
     if (!allDeleted) {
       throw new DeleteBulkMemoryErrors.MemoriesNotDeleted();

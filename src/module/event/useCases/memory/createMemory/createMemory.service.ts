@@ -33,10 +33,10 @@ export class CreateMemoryService {
       ipAddress,
     });
 
-    const savedMemory = await this.memoryRepo.create(memory);
+    const file = await this.addFileService.execute({ file: dto.image });
 
-    await this.addFileService.execute({ entityId: memory.id.toValue(), file: dto.image });
+    memory.fileId = file.id;
 
-    return savedMemory;
+    return this.memoryRepo.create(memory);
   }
 }

@@ -69,9 +69,10 @@ describe('UpdateMemoryController (e2e)', () => {
           id: memory.id,
         },
       });
-      const newFile = await prisma.fileModel.findFirst({
+
+      const newFile = await prisma.fileModel.findUnique({
         where: {
-          entityId: memory.id,
+          id: updatedMemory.fileId,
         },
       });
       expect(result.body.data.id).toBe(memory.id);

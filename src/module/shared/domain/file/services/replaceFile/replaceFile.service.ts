@@ -5,7 +5,6 @@ import { ReplaceFileDTO } from './replaceFile.dto';
 import { IFileRepository, IFileRepositorySymbol } from '../../../../repositories/file.repository.interface';
 import File from '../../file';
 
-import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import {
   IFileStoreService,
@@ -42,7 +41,6 @@ export class ReplaceFileService {
   private async uploadFile(dto: ReplaceFileDTO) {
     try {
       const file = File.create({
-        entityId: UniqueEntityID.create(dto.entityId),
         name: dto.file.originalname,
         path: dto.file.path,
         url: dto.file.path,

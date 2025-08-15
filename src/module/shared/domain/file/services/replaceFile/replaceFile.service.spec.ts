@@ -4,7 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ReplaceFileService } from './replaceFile.service';
 
-import { fakeMemory } from '@/module/event/repositories/tests/entities/fakeMemory';
 import { IFileRepositorySymbol } from '@/module/shared/repositories/file.repository.interface';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
@@ -54,17 +53,15 @@ describe('ReplaceFileService', () => {
   });
 
   it('should replace a file successfully', async () => {
-    const memory = fakeMemory();
     const url = faker.internet.url();
-    const file = fakeFile({ entityId: memory.id.toValue(), url });
-    const oldFile = fakeFile({ entityId: memory.id.toValue(), url: faker.internet.url() });
+    const file = fakeFile({ url });
+    const oldFile = fakeFile({ url: faker.internet.url() });
 
     fileStoreServiceMock.upload.mockResolvedValueOnce(url);
     fileRepoMock.create.mockResolvedValueOnce(file);
     fileRepoMock.findById.mockResolvedValueOnce(oldFile);
 
     const result = await service.execute({
-      entityId: memory.id.toValue(),
       file: makeFile(),
       oldFileId: oldFile.id.toValue(),
     });
@@ -75,20 +72,17 @@ describe('ReplaceFileService', () => {
     expect(result).toBe(file);
     expect(fileRepoMock.delete).toHaveBeenCalledWith(oldFile.id);
     expect(fileStoreServiceMock.delete).toHaveBeenCalledWith(oldFile.path);
-    expect(result.entityId.toValue()).toBe(memory.id.toValue());
     expect(result.url).toBe(url);
   });
 
   it('should only upload the new file if no old file is provided', async () => {
-    const memory = fakeMemory();
     const url = faker.internet.url();
-    const file = fakeFile({ entityId: memory.id.toValue(), url });
+    const file = fakeFile({ url });
 
     fileStoreServiceMock.upload.mockResolvedValueOnce(url);
     fileRepoMock.create.mockResolvedValueOnce(file);
 
     const result = await service.execute({
-      entityId: memory.id.toValue(),
       file: makeFile(),
     });
 
@@ -96,7 +90,6 @@ describe('ReplaceFileService', () => {
     expect(fileRepoMock.delete).not.toHaveBeenCalled();
     expect(fileStoreServiceMock.upload).toHaveBeenCalled();
     expect(result).toBe(file);
-    expect(result.entityId.toValue()).toBe(memory.id.toValue());
     expect(result.url).toBe(url);
   });
 });

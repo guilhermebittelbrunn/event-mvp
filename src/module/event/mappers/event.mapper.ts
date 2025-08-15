@@ -26,6 +26,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       {
         name: event.name,
         userId: new UniqueEntityID(event.userId),
+        fileId: UniqueEntityID.createOrUndefined(event.fileId),
         slug: EventSlug.create(event.slug),
         status: EventStatus.create(event.status as EventStatusEnum),
         description: event.description,
@@ -46,6 +47,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
     return {
       id: event.id.toValue(),
       userId: event.userId.toValue(),
+      fileId: event.fileId?.toValue(),
       name: event.name,
       slug: event.slug.value,
       status: event.status.value,
@@ -62,6 +64,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
     return {
       id: event.id.toValue(),
       userId: event.userId.toValue(),
+      fileId: event.fileId?.toValue(),
       name: event.name,
       slug: event.slug.value,
       status: event.status.value,
