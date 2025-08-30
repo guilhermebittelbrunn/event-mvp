@@ -58,7 +58,7 @@ export class UpdateEventService {
 
       const existingEvent = await this.eventRepo.findBySlug(eventSlug);
 
-      if (existingEvent) {
+      if (existingEvent && !existingEvent.id.equals(currentEvent.id)) {
         throw new UpdateEventErrors.SlugAlreadyInUse(eventSlug);
       }
     }

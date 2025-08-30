@@ -1,12 +1,12 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { ListEventsDTO } from './dto/listEvents.dto';
 import { ListEventsService } from './listEvents.service';
 
 import { EventDTO } from '@/module/event/dto/event.dto';
 import EventMapper from '@/module/event/mappers/event.mapper';
 import User from '@/module/user/domain/user/user';
-import { PaginationQuery } from '@/shared/core/infra/pagination.interface';
 import { ValidatedQuery } from '@/shared/decorators';
 import { GetUser } from '@/shared/decorators/getUser.decorator';
 import { JwtAuthGuard } from '@/shared/guards/jwtAuth.guard';
@@ -24,7 +24,7 @@ export class ListEventsController {
   @ApiListResponse(EventDTO)
   async handle(
     @GetUser() user: User,
-    @ValidatedQuery() query?: PaginationQuery,
+    @ValidatedQuery() query?: ListEventsDTO,
   ): Promise<ListResponseDTO<EventDTO>> {
     const isAdmin = user.type.value === UserTypeEnum.ADMIN;
 

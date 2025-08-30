@@ -11,7 +11,7 @@ import { ITokenPayloadEvent, ITokenResponse } from '@/shared/types/user';
 
 export interface IAuthenticatedEventData {
   eventId: string;
-  access_token: string;
+  accessToken: string;
 }
 
 const jwtService = new JwtService({
@@ -20,12 +20,12 @@ const jwtService = new JwtService({
 
 async function generateToken(payload: ITokenPayloadEvent): Promise<ITokenResponse> {
   return {
-    access_token: await jwtService.signAsync({
+    accessToken: await jwtService.signAsync({
       sub: payload.id,
       ...payload,
     }),
-    expires_in: Date.now() + 1000,
-    expires_at: Date.now() + 1000,
+    expiresIn: Date.now() + 1000,
+    expiresAt: Date.now() + 1000,
   };
 }
 
@@ -54,7 +54,7 @@ export default async function getAuthenticatedEvent(): Promise<IAuthenticatedEve
 
   const now = Math.floor(Date.now() / 1000);
 
-  const { access_token } = await generateToken({
+  const { accessToken } = await generateToken({
     id: event.id,
     type: EventAccessTypeEnum.GUEST,
     slug: event.slug,
@@ -64,6 +64,6 @@ export default async function getAuthenticatedEvent(): Promise<IAuthenticatedEve
 
   return {
     eventId: event.id,
-    access_token,
+    accessToken,
   };
 }

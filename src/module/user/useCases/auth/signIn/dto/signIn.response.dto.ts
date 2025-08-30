@@ -4,13 +4,13 @@ import { UserDTO } from '@/module/user/dto/user.dto';
 
 class Token {
   @ApiProperty()
-  access_token: string;
+  accessToken: string;
   @ApiProperty()
-  refresh_token?: string;
+  refreshToken?: string;
   @ApiProperty()
-  expires_in: number;
+  expiresIn: number;
   @ApiProperty()
-  expires_at: number;
+  expiresAt: number;
 }
 
 export class SignInResponseDTO {

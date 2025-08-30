@@ -26,7 +26,7 @@ cp .env.example .env
 4. **Configure as variáveis no arquivo .env**
 ```env
 # Database
-POSTGRES_URL=postgresql://user:password@localhost:5436/database
+POSTGRES_URL=postgresql://user:password@localhost:5438/database
 POSTGRES_PASSWORD=your_password
 POSTGRES_DB=your_database
 POSTGRES_VOLUME_PATH=./postgres-data

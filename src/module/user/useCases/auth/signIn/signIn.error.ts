@@ -3,7 +3,7 @@ import GenericErrors from '@/shared/core/logic/genericErrors';
 export namespace SignInErrors {
   export class NotFoundError extends GenericErrors.NotFound {
     constructor() {
-      super(`Usuário não encontrado`);
+      super(`Não existe nenhum usuário com o email informado`);
     }
   }
 

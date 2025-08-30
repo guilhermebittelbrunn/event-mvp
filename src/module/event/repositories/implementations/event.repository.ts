@@ -66,11 +66,18 @@ export class EventRepository
   }
 
   async list(query: ListEventByQuery = {}): Promise<PaginatedResult<Event>> {
-    const { userId } = query;
+    const { userId, term } = query;
     const { page, take, skip } = this.getPaginationParams(query);
 
     const where: Prisma.EventModelWhereInput = {
-      ...(!isEmpty(userId) && { userId }),
+      ...(!isEmpty(userId) && { userId: UniqueEntityID.raw(userId) }),
+      ...(!isEmpty(term) && {
+        OR: [
+          { name: { contains: term, mode: 'insensitive' } },
+          { slug: { contains: term, mode: 'insensitive' } },
+          { description: { contains: term, mode: 'insensitive' } },
+        ],
+      }),
     };
 
     const [events, total] = await Promise.all([

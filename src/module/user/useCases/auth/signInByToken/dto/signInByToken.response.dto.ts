@@ -4,11 +4,11 @@ import { EventDTO } from '@/module/event/dto/event.dto';
 
 class SignInByTokenToken {
   @ApiProperty()
-  access_token: string;
+  accessToken: string;
   @ApiProperty()
-  expires_in: number;
+  expiresIn: number;
   @ApiProperty()
-  expires_at: number;
+  expiresAt: number;
 }
 
 export class SignInByTokenResponseDTO {

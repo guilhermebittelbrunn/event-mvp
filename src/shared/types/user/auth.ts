@@ -23,8 +23,8 @@ export interface ITokenPayloadEvent {
 }
 
 export interface ITokenResponse {
-  access_token: string;
-  refresh_token?: string;
-  expires_in: number;
-  expires_at: number;
+  accessToken: string;
+  refreshToken?: string;
+  expiresIn: number;
+  expiresAt: number;
 }

@@ -20,18 +20,18 @@ export class NestJwtService implements IJwtService {
     };
 
     return {
-      access_token: await this.jwtService.signAsync(payload, {
+      accessToken: await this.jwtService.signAsync(payload, {
         expiresIn: `${ACCESS_TOKEN_EXPIRE_DAYS}d`,
         secret: this.configService.getOrThrow('jwt.secret'),
       }),
-      refresh_token: await this.jwtService.signAsync(payload, {
+      refreshToken: await this.jwtService.signAsync(payload, {
         expiresIn: `${REFRESH_TOKEN_EXPIRE_DAYS}d`,
         secret: this.configService.getOrThrow('jwt.refreshSecret'),
       }),
       /** Refers to the access_token */
-      expires_in: EXPIRE_TOKEN_TIME,
+      expiresIn: EXPIRE_TOKEN_TIME,
       /** Refers to the access_token */
-      expires_at: new Date().setTime(new Date().getTime() + EXPIRE_TOKEN_TIME),
+      expiresAt: new Date().setTime(new Date().getTime() + EXPIRE_TOKEN_TIME),
     };
   }
 
@@ -51,12 +51,12 @@ export class NestJwtService implements IJwtService {
     const finalExpirationTime = Math.max(eventExpirationTime, minExpirationTime);
 
     return {
-      access_token: await this.jwtService.signAsync(payload, {
+      accessToken: await this.jwtService.signAsync(payload, {
         expiresIn: Math.floor(finalExpirationTime / 1000),
         secret: this.configService.getOrThrow('jwt.secret'),
       }),
-      expires_in: finalExpirationTime,
-      expires_at: expiresAt + eightHoursInMs,
+      expiresIn: finalExpirationTime,
+      expiresAt: expiresAt + eightHoursInMs,
     };
   }
 }
