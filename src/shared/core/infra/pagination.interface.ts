@@ -67,6 +67,5 @@ export class PaginationOrderDateQuery<T extends object = object> extends Paginat
 
   @ApiPropertyOptional()
   @IsOptional()
-  @Transform(({ value }) => new Date(value))
   dateType?: keyof T;
 }

@@ -8,7 +8,7 @@ import { NestJwtService } from './nestJwt.service';
 
 import { EventAccessTypeEnum } from '@/shared/types/event/event';
 import { UserTypeEnum } from '@/shared/types/user/user';
-import { accessToken_EXPIRE_DAYS, EXPIRE_TOKEN_TIME, REFRESH_TOKEN_EXPIRE_DAYS } from '@/shared/utils';
+import { ACCESS_TOKEN_EXPIRE_DAYS, EXPIRE_TOKEN_TIME, REFRESH_TOKEN_EXPIRE_DAYS } from '@/shared/utils';
 
 describe('NestJwtService', () => {
   let service: NestJwtService;
@@ -74,7 +74,7 @@ describe('NestJwtService', () => {
       expect(jwtService.signAsync).toHaveBeenCalledWith(
         { sub: mockPayload.id, email: mockPayload.email, role: mockPayload.role },
         {
-          expiresIn: `${accessToken_EXPIRE_DAYS}d`,
+          expiresIn: `${ACCESS_TOKEN_EXPIRE_DAYS}d`,
           secret: mockJwtSecret,
         },
       );

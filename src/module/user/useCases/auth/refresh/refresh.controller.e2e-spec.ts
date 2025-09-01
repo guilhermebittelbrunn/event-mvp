@@ -12,14 +12,14 @@ describe('RefreshController (e2e)', () => {
     it('should refresh token of a user successfully', async () => {
       const result = await request()
         .post('/v1/auth/refresh')
-        .set('authorization', `Refresh ${authInfos.refresh_token}`)
+        .set('refresh-token', `${authInfos.refreshToken}`)
         .send({
           id: authInfos.userId,
         });
 
-      expect(result.body.data.user.id).toBe(authInfos.userId);
-      expect(result.body.data.tokens.accessToken).toBeDefined();
-      expect(result.body.data.tokens.refresh_token).toBeDefined();
+      expect(result.body.data.id).toBe(authInfos.userId);
+      expect(result.body.meta.tokens.accessToken).toBeDefined();
+      expect(result.body.meta.tokens.refreshToken).toBeDefined();
     });
   });
 });

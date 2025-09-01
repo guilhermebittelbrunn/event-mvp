@@ -69,7 +69,9 @@ export class EventRepository
     const { userId, term, orderBy, order, dateType, startDate, endDate } = query;
     const { page, take, skip } = this.getPaginationParams(query);
 
-    let where: Prisma.EventModelWhereInput = {
+    const filterDate = dateType && Object.keys(Prisma.EventModelScalarFieldEnum).includes(dateType);
+
+    const where: Prisma.EventModelWhereInput = {
       ...(!isEmpty(userId) && { userId: UniqueEntityID.raw(userId) }),
       ...(!isEmpty(term) && {
         OR: [
@@ -78,15 +80,11 @@ export class EventRepository
           { description: { contains: term, mode: 'insensitive' } },
         ],
       }),
-    };
-
-    if (dateType && Object.keys(Prisma.EventModelScalarFieldEnum).includes(dateType)) {
-      where = {
-        ...where,
+      ...(filterDate && {
         ...(startDate && { [dateType]: { gte: startDate } }),
         ...(endDate && { [dateType]: { lte: endDate } }),
-      };
-    }
+      }),
+    };
 
     let ordination: Prisma.EventModelOrderByWithRelationInput;
 

@@ -38,7 +38,10 @@ export class UpdateEventService {
       throw new UpdateEventErrors.NotFoundError();
     }
 
-    if ([EventStatusEnum.IN_PROGRESS, EventStatusEnum.COMPLETED].includes(currentEvent.status.value)) {
+    if (
+      currentEvent.status &&
+      [(EventStatusEnum.IN_PROGRESS, EventStatusEnum.COMPLETED)].includes(currentEvent.status.value)
+    ) {
       throw new UpdateEventErrors.InvalidParam(currentEvent.status);
     }
 

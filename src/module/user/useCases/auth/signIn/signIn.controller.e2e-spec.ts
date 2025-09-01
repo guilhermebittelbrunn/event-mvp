@@ -23,9 +23,9 @@ describe('SignInController (e2e)', () => {
         })
         .expect(HttpStatus.CREATED);
 
-      expect(result.body.data.user.id).toBe(user.id);
-      expect(result.body.data.tokens.accessToken).toBeDefined();
-      expect(result.body.data.tokens.refresh_token).toBeDefined();
+      expect(result.body.data.id).toBe(user.id);
+      expect(result.body.meta.tokens.accessToken).toBeDefined();
+      expect(result.body.meta.tokens.refreshToken).toBeDefined();
     });
 
     it('should return 404 when user does not exist', async () => {
