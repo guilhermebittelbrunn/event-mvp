@@ -1,11 +1,13 @@
+import { EventModel } from '@prisma/client';
+
 import Event from '../domain/event/event';
 import EventSlug from '../domain/event/eventSlug';
 
-import { PaginatedResult, PaginationQuery } from '@/shared/core/infra/pagination.interface';
+import { PaginatedResult, PaginationOrderDateQuery } from '@/shared/core/infra/pagination.interface';
 import { IBaseRepository, SingleEntityResponse } from '@/shared/core/infra/repository.interface';
 import { GenericId } from '@/shared/types/common';
 
-export interface ListEventByQuery extends PaginationQuery {
+export interface ListEventByQuery extends PaginationOrderDateQuery<EventModel> {
   userId?: string;
 }
 

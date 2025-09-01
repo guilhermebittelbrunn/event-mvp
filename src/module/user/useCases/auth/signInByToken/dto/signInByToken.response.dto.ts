@@ -13,8 +13,10 @@ class SignInByTokenToken {
 
 export class SignInByTokenResponseDTO {
   @ApiProperty()
-  event: EventDTO;
+  data: EventDTO;
 
   @ApiProperty()
-  token: SignInByTokenToken;
+  meta: {
+    token: SignInByTokenToken;
+  };
 }

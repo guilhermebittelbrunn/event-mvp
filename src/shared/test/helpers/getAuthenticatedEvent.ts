@@ -21,7 +21,7 @@ const jwtService = new JwtService({
 async function generateToken(payload: ITokenPayloadEvent): Promise<ITokenResponse> {
   return {
     accessToken: await jwtService.signAsync({
-      sub: payload.id,
+      sub: payload.sub,
       ...payload,
     }),
     expiresIn: Date.now() + 1000,
@@ -55,7 +55,7 @@ export default async function getAuthenticatedEvent(): Promise<IAuthenticatedEve
   const now = Math.floor(Date.now() / 1000);
 
   const { accessToken } = await generateToken({
-    id: event.id,
+    sub: event.id,
     type: EventAccessTypeEnum.GUEST,
     slug: event.slug,
     iat: now,

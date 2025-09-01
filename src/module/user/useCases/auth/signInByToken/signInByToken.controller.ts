@@ -17,6 +17,6 @@ export class SignInByTokenController {
   async handle(@ValidatedBody() body: SignInByTokenDTO): Promise<SignInByTokenResponseDTO> {
     const { event, token } = await this.useCase.execute(body);
 
-    return { event: EventMapper.toDTO(event), token };
+    return { data: EventMapper.toDTO(event), meta: { token } };
   }
 }

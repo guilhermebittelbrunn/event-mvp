@@ -68,7 +68,7 @@ describe('NestJwtService', () => {
 
       const result = await service.generateTokens(mockPayload);
 
-      expect(configService.getOrThrow).toHaveBeenCalledWith('jwt.secret');
+      expect(configService.getOrThrow).toHaveBeenCalledWith('jwt.eventSecret');
       expect(configService.getOrThrow).toHaveBeenCalledWith('jwt.refreshSecret');
 
       expect(jwtService.signAsync).toHaveBeenCalledWith(
@@ -88,16 +88,16 @@ describe('NestJwtService', () => {
       );
 
       expect(result).toEqual({
-        access_token: mockAccessToken,
-        refresh_token: mockRefreshToken,
-        expires_in: EXPIRE_TOKEN_TIME,
-        expires_at: expect.any(Number),
+        accessToken: mockAccessToken,
+        refreshToken: mockRefreshToken,
+        expiresIn: EXPIRE_TOKEN_TIME,
+        expiresAt: expect.any(Number),
       });
 
       // Verify expiresAt is calculated correctly
       const now = Date.now();
-      expect(result.expires_at).toBeGreaterThan(now);
-      expect(result.expires_at).toBeLessThanOrEqual(now + EXPIRE_TOKEN_TIME);
+      expect(result.expiresAt).toBeGreaterThan(now);
+      expect(result.expiresAt).toBeLessThanOrEqual(now + EXPIRE_TOKEN_TIME);
     });
 
     it('should handle config service errors', async () => {
@@ -138,7 +138,7 @@ describe('NestJwtService', () => {
 
       const result = await service.generateEventToken(mockPayload);
 
-      expect(configService.getOrThrow).toHaveBeenCalledWith('jwt.secret');
+      expect(configService.getOrThrow).toHaveBeenCalledWith('jwt.eventSecret');
 
       // Verify the payload structure
       expect(jwtService.signAsync).toHaveBeenCalledWith(
@@ -168,13 +168,13 @@ describe('NestJwtService', () => {
 
       expect(result).toEqual({
         access_token: mockAccessToken,
-        expires_in: expect.any(Number),
-        expires_at: mockPayload.expiresAt + eightHoursInMs,
+        expiresIn: expect.any(Number),
+        expiresAt: mockPayload.expiresAt + eightHoursInMs,
       });
 
-      // Verify expires_in is calculated correctly (within 1 second tolerance)
-      expect(result.expires_in).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
-      expect(result.expires_in).toBeLessThanOrEqual(expectedExpirationTime + 1000);
+      // Verify expiresIn is calculated correctly (within 1 second tolerance)
+      expect(result.expiresIn).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
+      expect(result.expiresIn).toBeLessThanOrEqual(expectedExpirationTime + 1000);
     });
 
     it('should ensure minimum expiration time of 1 minute', async () => {
@@ -202,8 +202,8 @@ describe('NestJwtService', () => {
         }),
       );
 
-      expect(result.expires_in).toBe(60 * 1000); // 1 minute in milliseconds
-      expect(result.expires_at).toBe(mockPayload.expiresAt + 8 * 60 * 60 * 1000); // 8 hours after event end
+      expect(result.expiresIn).toBe(60 * 1000); // 1 minute in milliseconds
+      expect(result.expiresAt).toBe(mockPayload.expiresAt + 8 * 60 * 60 * 1000); // 8 hours after event end
     });
 
     it('should handle event that ends in the future', async () => {
@@ -227,9 +227,9 @@ describe('NestJwtService', () => {
       const expectedExpirationTime = mockPayload.expiresAt + eightHoursInMs - now;
 
       // Verify with tolerance for timing differences
-      expect(result.expires_in).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
-      expect(result.expires_in).toBeLessThanOrEqual(expectedExpirationTime + 1000);
-      expect(result.expires_at).toBe(mockPayload.expiresAt + eightHoursInMs);
+      expect(result.expiresIn).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
+      expect(result.expiresIn).toBeLessThanOrEqual(expectedExpirationTime + 1000);
+      expect(result.expiresAt).toBe(mockPayload.expiresAt + eightHoursInMs);
     });
 
     it('should handle config service errors', async () => {

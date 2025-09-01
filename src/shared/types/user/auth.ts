@@ -6,6 +6,8 @@ export const JWT_DEFAULT_STRATEGY = 'jwt';
 
 export const JWT_REFRESH_STRATEGY = 'jwt-refresh';
 
+export const JWT_EVENT_STRATEGY = 'jwt-event';
+
 export interface ITokenPayload {
   sub: string;
   email: string;
@@ -15,7 +17,7 @@ export interface ITokenPayload {
 }
 
 export interface ITokenPayloadEvent {
-  id: string;
+  sub: string;
   type: EventAccessTypeEnum;
   slug: string;
   iat: number;

@@ -4,7 +4,8 @@ export interface IGenerateTokenPayload extends Pick<ITokenPayload, 'email' | 'ro
   id: string;
 }
 
-export interface IGenerateEventTokenPayload extends Pick<ITokenPayloadEvent, 'id' | 'type' | 'slug'> {
+export interface IGenerateEventTokenPayload extends Pick<ITokenPayloadEvent, 'type' | 'slug'> {
+  id: string;
   expiresAt: number;
 }
 

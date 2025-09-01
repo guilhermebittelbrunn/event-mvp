@@ -15,7 +15,6 @@ import { DiscordModule } from './shared/core/infra/messageLogger/implementations
 import { MessageLoggerModule } from './shared/core/infra/messageLogger/messageLogger.module';
 import { TransactionManagerModule } from './shared/core/infra/prisma/transactionManager/transactionManager.module';
 import { HttpExceptionFilter } from './shared/exceptions/httpException.filter';
-import { EventAuthModule } from './shared/guards/eventAuth/eventAuth.module';
 import { PrismaModule } from './shared/infra/database/prisma/prisma.module';
 import { CompositeInterceptor } from './shared/interceptors/composite.interceptor';
 import { LogRequestInterceptor } from './shared/interceptors/logRequest.interceptor';
@@ -24,6 +23,7 @@ import { AlsMiddleware } from './shared/services/als/als.middleware';
 import { AlsModule } from './shared/services/als/als.module';
 import { NestJwtModule } from './shared/services/jwt/implementations/nest-jwt/nestJwt.module';
 import { JwtStrategy } from './shared/strategies/jwt.strategy';
+import { JwtEventStrategy } from './shared/strategies/jwtEvent.strategy';
 import { JwtRefreshStrategy } from './shared/strategies/jwtRefresh.strategy';
 
 @Module({
@@ -39,7 +39,6 @@ import { JwtRefreshStrategy } from './shared/strategies/jwtRefresh.strategy';
     AlsModule,
     JwtModule,
     NestJwtModule,
-    EventAuthModule,
     RegisterLogModule,
     ConfigModule.forRoot({
       cache: true,
@@ -83,6 +82,7 @@ import { JwtRefreshStrategy } from './shared/strategies/jwtRefresh.strategy';
     AppService,
     JwtStrategy,
     JwtRefreshStrategy,
+    JwtEventStrategy,
   ],
 })
 export class AppModule implements NestModule {
