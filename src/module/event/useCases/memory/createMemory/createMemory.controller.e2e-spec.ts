@@ -48,7 +48,7 @@ describe('CreateMemoryController (e2e)', () => {
 
       const result = await request()
         .post(`/v1/memory`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .field('identifier', payload.identifier)
         .field('description', payload.description)
         .field('message', payload.message)

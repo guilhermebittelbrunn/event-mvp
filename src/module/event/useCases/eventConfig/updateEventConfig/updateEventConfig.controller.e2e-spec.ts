@@ -23,7 +23,7 @@ describe('UpdateEventConfigController (e2e)', () => {
 
       const result = await request()
         .put(`/v1/event/${event.id}/config/${eventConfig.id}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .send({ welcomeMessage: newWelcomeMessage })
         .expect(HttpStatus.OK);
 

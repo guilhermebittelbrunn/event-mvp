@@ -18,7 +18,7 @@ describe('RefreshController (e2e)', () => {
         });
 
       expect(result.body.data.user.id).toBe(authInfos.userId);
-      expect(result.body.data.tokens.access_token).toBeDefined();
+      expect(result.body.data.tokens.accessToken).toBeDefined();
       expect(result.body.data.tokens.refresh_token).toBeDefined();
     });
   });

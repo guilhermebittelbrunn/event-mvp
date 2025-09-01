@@ -39,7 +39,7 @@ describe('UpdateMemoryController (e2e)', () => {
 
       const result = await request()
         .put(`/v1/memory/${memory.id}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .field('message', newMessage)
         .expect(HttpStatus.OK);
 
@@ -59,7 +59,7 @@ describe('UpdateMemoryController (e2e)', () => {
 
       const result = await request()
         .put(`/v1/memory/${memory.id}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .field('message', newMessage)
         .attach('image', file.buffer, file.originalname)
         .expect(HttpStatus.OK);

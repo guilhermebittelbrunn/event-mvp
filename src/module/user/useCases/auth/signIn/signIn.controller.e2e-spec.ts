@@ -24,7 +24,7 @@ describe('SignInController (e2e)', () => {
         .expect(HttpStatus.CREATED);
 
       expect(result.body.data.user.id).toBe(user.id);
-      expect(result.body.data.tokens.access_token).toBeDefined();
+      expect(result.body.data.tokens.accessToken).toBeDefined();
       expect(result.body.data.tokens.refresh_token).toBeDefined();
     });
 

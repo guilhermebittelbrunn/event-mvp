@@ -49,7 +49,7 @@ describe('UpdateEventController (e2e)', () => {
 
       const result = await request()
         .put(`/v1/event/${event.id}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .field('slug', rawSlug)
         .field('description', newDescription)
         .attach('image', filePayload.buffer, filePayload.originalname)

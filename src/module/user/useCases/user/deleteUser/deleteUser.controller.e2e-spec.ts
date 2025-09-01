@@ -20,7 +20,7 @@ describe('DeleteUserController (e2e)', () => {
 
       await request()
         .delete(`/v1/user/${user.id}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .expect(HttpStatus.NO_CONTENT);
 
       const deletedUser = await prisma.userModel.findFirst({
@@ -35,7 +35,7 @@ describe('DeleteUserController (e2e)', () => {
     it('should return 404 when user does not exist', async () => {
       const response = await request()
         .delete(`/v1/user/${faker.string.uuid()}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .expect(HttpStatus.NOT_FOUND);
 
       expect(response.body.message).toBe('Usuário não encontrado');

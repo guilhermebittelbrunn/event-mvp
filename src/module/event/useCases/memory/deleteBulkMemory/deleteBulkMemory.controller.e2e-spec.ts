@@ -23,7 +23,7 @@ describe('DeleteBulkMemoryController (e2e)', () => {
 
       await request()
         .post(`/v1/memory/delete-bulk`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .send({
           memoryIds: [memory1.id, memory2.id],
         })
@@ -49,7 +49,7 @@ describe('DeleteBulkMemoryController (e2e)', () => {
 
       await request()
         .post(`/v1/memory/delete-bulk`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .send({
           memoryIds: [memory1.id, memory2.id],
         })

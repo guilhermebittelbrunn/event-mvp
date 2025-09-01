@@ -50,7 +50,7 @@ describe('CreateEventController (e2e)', () => {
 
       const result = await request()
         .post(`/v1/event`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .field('name', payload.name)
         .field('description', payload.description)
         .field('startAt', payload.startAt.toISOString())
@@ -102,7 +102,7 @@ describe('CreateEventController (e2e)', () => {
     it('should return 400 when invalid data is provided', async () => {
       const response = await request()
         .post(`/v1/event`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .send({
           startAt: faker.date.past(),
           endAt: faker.date.past(),
