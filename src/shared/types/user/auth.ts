@@ -18,6 +18,7 @@ export interface ITokenPayload {
 
 export interface ITokenPayloadEvent {
   sub: string;
+  tokenId: string;
   type: EventAccessTypeEnum;
   slug: string;
   iat: number;

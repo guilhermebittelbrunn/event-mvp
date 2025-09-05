@@ -56,6 +56,7 @@ export default async function getAuthenticatedEvent(): Promise<IAuthenticatedEve
 
   const { accessToken } = await generateToken({
     sub: event.id,
+    tokenId: event.id,
     type: EventAccessTypeEnum.GUEST,
     slug: event.slug,
     iat: now,

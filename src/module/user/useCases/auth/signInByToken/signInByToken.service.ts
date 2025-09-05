@@ -31,6 +31,7 @@ export class SignInByTokenService {
 
     const token = await this.jwtService.generateEventToken({
       id: event.id?.toValue(),
+      tokenId: eventAccess.id.toValue(),
       slug: event.slug?.value,
       type: eventAccess.type?.value,
       expiresAt: event.endAt?.getTime(),

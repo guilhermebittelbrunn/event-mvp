@@ -7,6 +7,7 @@ export interface IGenerateTokenPayload extends Pick<ITokenPayload, 'email' | 'ro
 export interface IGenerateEventTokenPayload extends Pick<ITokenPayloadEvent, 'type' | 'slug'> {
   id: string;
   expiresAt: number;
+  tokenId: string;
 }
 
 export interface IJwtService {
