@@ -54,7 +54,7 @@ export class MemoryRepository
 
     let ordination: Prisma.MemoryModelOrderByWithRelationInput;
 
-    if (orderBy && Object.keys(Prisma.EventModelScalarFieldEnum).includes(orderBy)) {
+    if (orderBy && Object.keys(Prisma.MemoryModelScalarFieldEnum).includes(orderBy)) {
       ordination = { ...(orderBy && order && { [orderBy]: order }) };
     }
 
