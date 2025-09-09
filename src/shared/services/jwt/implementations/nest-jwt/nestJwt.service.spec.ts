@@ -123,11 +123,13 @@ describe('NestJwtService', () => {
   describe('generateEventToken', () => {
     it('should generate event token with expiration based on event end time + 8 hours', async () => {
       const now = Date.now();
+      const tokenId = uuid();
       const mockPayload = {
         id: uuid(),
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: now + 24 * 60 * 60 * 1000, // 24 hours from now
+        tokenId,
       };
 
       const mockAccessToken = 'mock.event.token';
@@ -142,7 +144,7 @@ describe('NestJwtService', () => {
 
       // Verify the payload structure
       expect(jwtService.signAsync).toHaveBeenCalledWith(
-        { sub: mockPayload.id, slug: mockPayload.slug, type: mockPayload.type },
+        { sub: mockPayload.id, slug: mockPayload.slug, type: mockPayload.type, tokenId },
         expect.objectContaining({
           secret: mockJwtSecret,
         }),
@@ -184,6 +186,7 @@ describe('NestJwtService', () => {
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: now - 10 * 60 * 60 * 1000, // Event ended 10 hours ago
+        tokenId: uuid(),
       };
 
       const mockAccessToken = 'mock.event.token';
@@ -213,6 +216,7 @@ describe('NestJwtService', () => {
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: now + 2 * 60 * 60 * 1000, // 2 hours from now
+        tokenId: uuid(),
       };
 
       const mockAccessToken = 'mock.event.token';
@@ -238,6 +242,7 @@ describe('NestJwtService', () => {
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: Date.now() + 1000,
+        tokenId: uuid(),
       };
 
       jest.spyOn(configService, 'getOrThrow').mockImplementation(() => {
@@ -253,6 +258,7 @@ describe('NestJwtService', () => {
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: Date.now() + 1000,
+        tokenId: uuid(),
       };
 
       jest.spyOn(configService, 'getOrThrow').mockReturnValue('jwt-secret');

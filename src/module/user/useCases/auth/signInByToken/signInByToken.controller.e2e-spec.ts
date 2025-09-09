@@ -18,9 +18,9 @@ describe('SignInByTokenController (e2e)', () => {
         })
         .expect(HttpStatus.CREATED);
 
-      expect(result.body.data.event.id).toBeDefined();
-      expect(result.body.data.token.accessToken).toBeDefined();
-      expect(result.body.data.token.expires_in).toBeDefined();
+      expect(result.body.data.id).toBeDefined();
+      expect(result.body.meta.token.accessToken).toBeDefined();
+      expect(result.body.meta.token.expiresIn).toBeDefined();
     });
   });
 });
