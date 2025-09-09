@@ -7,11 +7,11 @@ import {
 import GenericErrors from '@/shared/core/logic/genericErrors';
 
 @Injectable()
-export class FindEventBySlugService {
+export class FindEventByIdForGuestService {
   constructor(@Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository) {}
 
-  async execute(slug: string) {
-    const event = await this.eventRepo.findBySlug(slug);
+  async execute(id: string) {
+    const event = await this.eventRepo.findById(id);
 
     if (!event) {
       throw new GenericErrors.NotFound(`Evento não encontrado`);

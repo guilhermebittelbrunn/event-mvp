@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { JWT_EVENT_STRATEGY } from '../types/user';
@@ -13,25 +13,19 @@ import { JWT_EVENT_STRATEGY } from '../types/user';
 
 @Injectable()
 export class JwtEventAuthGuard extends AuthGuard(JWT_EVENT_STRATEGY) {
-  // canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-  //   const request = context.switchToHttp().getRequest();
-  //   console.log('request :>> ', request.headers);
-  //   try {
-  //     return super.canActivate(context);
-  //   } catch (error) {
-  //     console.log('error :>> ', error);
-  //     return false;
-  //   }
-  // }
   override handleRequest(err: any, event: any, _: any, context: ExecutionContext) {
-    const request = context.switchToHttp().getRequest();
+    try {
+      const request = context.switchToHttp().getRequest();
 
-    if (err || !event) {
-      throw err || new Error('Event authentication failed');
+      if (err || !event) {
+        throw err || new Error('Event authentication failed');
+      }
+
+      request.event = event;
+
+      return event;
+    } catch (error) {
+      throw new HttpException('Event authentication failed', HttpStatus.UNAUTHORIZED);
     }
-
-    request.event = event;
-
-    return event;
   }
 }

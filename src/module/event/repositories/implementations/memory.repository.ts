@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { MemoryModel } from '@prisma/client';
+import { MemoryModel, Prisma } from '@prisma/client';
 
 import Memory from '../../domain/memory/memory';
 import MemoryMapper from '../../mappers/memory.mapper';
-import { IMemoryRepository } from '../memory.repository.interface';
+import { IMemoryRepository, ListMemoriesWithFilesByQuery } from '../memory.repository.interface';
 
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
-import { PaginatedResult, PaginationQuery } from '@/shared/core/infra/pagination.interface';
+import { PaginatedResult } from '@/shared/core/infra/pagination.interface';
 import { BaseRepository } from '@/shared/core/infra/prisma/base.repository';
 import { PrismaService } from '@/shared/infra/database/prisma/prisma.service';
 import { Als } from '@/shared/services/als/als.interface';
@@ -41,12 +41,26 @@ export class MemoryRepository
     return this.mapper.toDomainOrNull(memory);
   }
 
-  async listWithFiles(query?: PaginationQuery): Promise<PaginatedResult<Memory>> {
+  async listWithFiles(
+    eventId: GenericId,
+    query?: ListMemoriesWithFilesByQuery,
+  ): Promise<PaginatedResult<Memory>> {
+    const { orderBy, order } = query;
     const { page, take, skip } = this.getPaginationParams(query);
 
+    const where: Prisma.MemoryModelWhereInput = {
+      eventId: UniqueEntityID.raw(eventId),
+    };
+
+    let ordination: Prisma.MemoryModelOrderByWithRelationInput;
+
+    if (orderBy && Object.keys(Prisma.EventModelScalarFieldEnum).includes(orderBy)) {
+      ordination = { ...(orderBy && order && { [orderBy]: order }) };
+    }
+
     const [memories, total] = await Promise.all([
-      await this.manager().findMany({ skip, take, include: { file: true } }),
-      await this.manager().count(),
+      await this.manager().findMany({ skip, take, where, include: { file: true }, orderBy: ordination }),
+      await this.manager().count({ where }),
     ]);
 
     return {
