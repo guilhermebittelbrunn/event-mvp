@@ -39,7 +39,7 @@ describe('DownloadMemoriesController (e2e)', () => {
 
       const result = await request()
         .post(`/v1/memory/download`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .send({
           memoryIds: memories.map(({ id }) => id),
         })

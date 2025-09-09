@@ -18,8 +18,8 @@ export class SignInController {
     const { user, tokens } = await this.useCase.execute(body);
 
     return {
-      tokens,
-      user: UserMapper.toDTO(user),
+      data: UserMapper.toDTO(user),
+      meta: { tokens },
     };
   }
 }

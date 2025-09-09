@@ -13,6 +13,7 @@ export default () => ({
   jwt: {
     secret: process.env.JWT_SECRET,
     refreshSecret: process.env.JWT_REFRESH_SECRET,
+    eventSecret: process.env.JWT_EVENT_SECRET,
   },
   s3: {
     region: process.env.AWS_S3_REGION,

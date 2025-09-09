@@ -18,6 +18,6 @@ export class RefreshController {
   async handle(@GetUser() user: User) {
     const { tokens, user: userData } = await this.useCase.execute(user.id?.toValue());
 
-    return { tokens, user: UserMapper.toDTO(userData) };
+    return { data: UserMapper.toDTO(userData), meta: { tokens } };
   }
 }

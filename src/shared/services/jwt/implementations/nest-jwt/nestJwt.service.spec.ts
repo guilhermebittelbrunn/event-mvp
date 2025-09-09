@@ -88,16 +88,16 @@ describe('NestJwtService', () => {
       );
 
       expect(result).toEqual({
-        access_token: mockAccessToken,
-        refresh_token: mockRefreshToken,
-        expires_in: EXPIRE_TOKEN_TIME,
-        expires_at: expect.any(Number),
+        accessToken: mockAccessToken,
+        refreshToken: mockRefreshToken,
+        expiresIn: EXPIRE_TOKEN_TIME,
+        expiresAt: expect.any(Number),
       });
 
       // Verify expiresAt is calculated correctly
       const now = Date.now();
-      expect(result.expires_at).toBeGreaterThan(now);
-      expect(result.expires_at).toBeLessThanOrEqual(now + EXPIRE_TOKEN_TIME);
+      expect(result.expiresAt).toBeGreaterThan(now);
+      expect(result.expiresAt).toBeLessThanOrEqual(now + EXPIRE_TOKEN_TIME);
     });
 
     it('should handle config service errors', async () => {
@@ -123,11 +123,13 @@ describe('NestJwtService', () => {
   describe('generateEventToken', () => {
     it('should generate event token with expiration based on event end time + 8 hours', async () => {
       const now = Date.now();
+      const tokenId = uuid();
       const mockPayload = {
         id: uuid(),
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: now + 24 * 60 * 60 * 1000, // 24 hours from now
+        tokenId,
       };
 
       const mockAccessToken = 'mock.event.token';
@@ -138,11 +140,11 @@ describe('NestJwtService', () => {
 
       const result = await service.generateEventToken(mockPayload);
 
-      expect(configService.getOrThrow).toHaveBeenCalledWith('jwt.secret');
+      expect(configService.getOrThrow).toHaveBeenCalledWith('jwt.eventSecret');
 
       // Verify the payload structure
       expect(jwtService.signAsync).toHaveBeenCalledWith(
-        { sub: mockPayload.id, slug: mockPayload.slug, type: mockPayload.type },
+        { sub: mockPayload.id, slug: mockPayload.slug, type: mockPayload.type, tokenId },
         expect.objectContaining({
           secret: mockJwtSecret,
         }),
@@ -167,14 +169,14 @@ describe('NestJwtService', () => {
       expect(actualExpiresIn).toBeLessThanOrEqual(expectedExpirationSeconds + 1);
 
       expect(result).toEqual({
-        access_token: mockAccessToken,
-        expires_in: expect.any(Number),
-        expires_at: mockPayload.expiresAt + eightHoursInMs,
+        accessToken: mockAccessToken,
+        expiresIn: expect.any(Number),
+        expiresAt: mockPayload.expiresAt + eightHoursInMs,
       });
 
-      // Verify expires_in is calculated correctly (within 1 second tolerance)
-      expect(result.expires_in).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
-      expect(result.expires_in).toBeLessThanOrEqual(expectedExpirationTime + 1000);
+      // Verify expiresIn is calculated correctly (within 1 second tolerance)
+      expect(result.expiresIn).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
+      expect(result.expiresIn).toBeLessThanOrEqual(expectedExpirationTime + 1000);
     });
 
     it('should ensure minimum expiration time of 1 minute', async () => {
@@ -184,6 +186,7 @@ describe('NestJwtService', () => {
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: now - 10 * 60 * 60 * 1000, // Event ended 10 hours ago
+        tokenId: uuid(),
       };
 
       const mockAccessToken = 'mock.event.token';
@@ -202,8 +205,8 @@ describe('NestJwtService', () => {
         }),
       );
 
-      expect(result.expires_in).toBe(60 * 1000); // 1 minute in milliseconds
-      expect(result.expires_at).toBe(mockPayload.expiresAt + 8 * 60 * 60 * 1000); // 8 hours after event end
+      expect(result.expiresIn).toBe(60 * 1000); // 1 minute in milliseconds
+      expect(result.expiresAt).toBe(mockPayload.expiresAt + 8 * 60 * 60 * 1000); // 8 hours after event end
     });
 
     it('should handle event that ends in the future', async () => {
@@ -213,6 +216,7 @@ describe('NestJwtService', () => {
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: now + 2 * 60 * 60 * 1000, // 2 hours from now
+        tokenId: uuid(),
       };
 
       const mockAccessToken = 'mock.event.token';
@@ -227,9 +231,9 @@ describe('NestJwtService', () => {
       const expectedExpirationTime = mockPayload.expiresAt + eightHoursInMs - now;
 
       // Verify with tolerance for timing differences
-      expect(result.expires_in).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
-      expect(result.expires_in).toBeLessThanOrEqual(expectedExpirationTime + 1000);
-      expect(result.expires_at).toBe(mockPayload.expiresAt + eightHoursInMs);
+      expect(result.expiresIn).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
+      expect(result.expiresIn).toBeLessThanOrEqual(expectedExpirationTime + 1000);
+      expect(result.expiresAt).toBe(mockPayload.expiresAt + eightHoursInMs);
     });
 
     it('should handle config service errors', async () => {
@@ -238,6 +242,7 @@ describe('NestJwtService', () => {
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: Date.now() + 1000,
+        tokenId: uuid(),
       };
 
       jest.spyOn(configService, 'getOrThrow').mockImplementation(() => {
@@ -253,6 +258,7 @@ describe('NestJwtService', () => {
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
         expiresAt: Date.now() + 1000,
+        tokenId: uuid(),
       };
 
       jest.spyOn(configService, 'getOrThrow').mockReturnValue('jwt-secret');

@@ -13,7 +13,7 @@ class Token {
   expiresAt: number;
 }
 
-export class SignInResponseDTO {
+export class RefreshResponseDTO {
   @ApiProperty()
   data: UserDTO;
 

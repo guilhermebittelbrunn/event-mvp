@@ -7,8 +7,8 @@ import { ITokenPayload, ITokenResponse, UserTypeEnum } from '@/shared/types/user
 
 export interface IAuthenticatedUserData {
   userId: string;
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 const jwtService = new JwtService({
@@ -21,10 +21,10 @@ const jwtRefreshService = new JwtService({
 
 async function generateToken(payload: ITokenPayload): Promise<ITokenResponse> {
   return {
-    access_token: await jwtService.signAsync(payload),
-    refresh_token: await jwtRefreshService.signAsync(payload),
-    expires_in: Date.now() + 1000,
-    expires_at: Date.now() + 1000,
+    accessToken: await jwtService.signAsync(payload),
+    refreshToken: await jwtRefreshService.signAsync(payload),
+    expiresIn: Date.now() + 1000,
+    expiresAt: Date.now() + 1000,
   };
 }
 
@@ -47,7 +47,7 @@ export default async function getAuthenticatedUser(): Promise<IAuthenticatedUser
   });
 
   const now = Math.floor(Date.now() / 1000);
-  const { access_token, refresh_token } = await generateToken({
+  const { accessToken, refreshToken } = await generateToken({
     sub: user.id,
     email: user.email,
     role: user.type as UserTypeEnum,
@@ -57,7 +57,7 @@ export default async function getAuthenticatedUser(): Promise<IAuthenticatedUser
 
   return {
     userId: user.id,
-    access_token,
-    refresh_token,
+    accessToken,
+    refreshToken,
   };
 }

@@ -108,9 +108,10 @@ describe('UpdateEventService', () => {
 
   it('should throw a slug already in use error if event slug is already in use', async () => {
     const event = fakeEvent();
+    const otherEvent = fakeEvent();
 
     eventRepoMock.findCompleteById.mockResolvedValueOnce(event);
-    eventRepoMock.findBySlug.mockResolvedValueOnce(event);
+    eventRepoMock.findBySlug.mockResolvedValueOnce(otherEvent);
 
     await expect(service.execute({ id: event.id.toValue(), slug: event.slug.value })).rejects.toThrow(
       UpdateEventErrors.SlugAlreadyInUse,

@@ -14,4 +14,6 @@ model MemoryModel {
 
   event EventModel @relation(fields: [eventId], references: [id])
   file  FileModel? @relation(fields: [fileId], references: [id])
+
+  @@map("memory")
 }

@@ -66,15 +66,34 @@ export class EventRepository
   }
 
   async list(query: ListEventByQuery = {}): Promise<PaginatedResult<Event>> {
-    const { userId } = query;
+    const { userId, term, orderBy, order, dateType, startDate, endDate } = query;
     const { page, take, skip } = this.getPaginationParams(query);
 
+    const filterDate = dateType && Object.keys(Prisma.EventModelScalarFieldEnum).includes(dateType);
+
     const where: Prisma.EventModelWhereInput = {
-      ...(!isEmpty(userId) && { userId }),
+      ...(!isEmpty(userId) && { userId: UniqueEntityID.raw(userId) }),
+      ...(!isEmpty(term) && {
+        OR: [
+          { name: { contains: term, mode: 'insensitive' } },
+          { slug: { contains: term, mode: 'insensitive' } },
+          { description: { contains: term, mode: 'insensitive' } },
+        ],
+      }),
+      ...(filterDate && {
+        ...(startDate && { [dateType]: { gte: startDate } }),
+        ...(endDate && { [dateType]: { lte: endDate } }),
+      }),
     };
 
+    let ordination: Prisma.EventModelOrderByWithRelationInput;
+
+    if (orderBy && Object.keys(Prisma.EventModelScalarFieldEnum).includes(orderBy)) {
+      ordination = { ...(orderBy && order && { [orderBy]: order }) };
+    }
+
     const [events, total] = await Promise.all([
-      await this.manager().findMany({ skip, take, where, include: { file: true } }),
+      await this.manager().findMany({ skip, take, where, include: { file: true }, orderBy: ordination }),
       await this.manager().count({ where }),
     ]);
 
@@ -89,6 +108,7 @@ export class EventRepository
 
     const event = await this.manager().findUnique({
       where: { slug: slugRaw },
+      include: { config: true, accesses: true, file: true },
     });
 
     return this.mapper.toDomainOrNull(event);

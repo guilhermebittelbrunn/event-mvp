@@ -20,7 +20,7 @@ describe('DeleteMemoryController (e2e)', () => {
 
       await request()
         .delete(`/v1/memory/${memory.id}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .expect(HttpStatus.NO_CONTENT);
 
       const deletedMemory = await prisma.memoryModel.findFirst({
@@ -35,7 +35,7 @@ describe('DeleteMemoryController (e2e)', () => {
     it('should return 404 when memory does not exist', async () => {
       const response = await request()
         .delete(`/v1/memory/${faker.string.uuid()}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .expect(HttpStatus.NOT_FOUND);
 
       expect(response.body.message).toBe('Memória não encontrada');

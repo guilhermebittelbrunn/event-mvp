@@ -11,6 +11,8 @@ model FileModel {
 
   event  EventModel?
   memory MemoryModel?
+
+  @@map("file")
 }
 
 model LogModel {

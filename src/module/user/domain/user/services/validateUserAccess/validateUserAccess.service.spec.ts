@@ -50,7 +50,7 @@ describe('ValidateUserAccessService', () => {
 
     userRepoMock.findById.mockResolvedValueOnce(user);
 
-    const result = await service.validate(user.id.toValue());
+    const result = await service.execute(user.id.toValue());
 
     expect(userRepoMock.findById).toHaveBeenCalledWith(user.id.toValue());
     expect(result).toBe(user);
@@ -58,7 +58,7 @@ describe('ValidateUserAccessService', () => {
   });
 
   it('should return null if userId is not provided', async () => {
-    const result = await service.validate();
+    const result = await service.execute();
 
     expect(userRepoMock.findById).not.toHaveBeenCalled();
     expect(result).toBeNull();
@@ -68,7 +68,7 @@ describe('ValidateUserAccessService', () => {
     const id = faker.string.uuid();
 
     userRepoMock.findById.mockResolvedValueOnce(null);
-    const result = await service.validate(id);
+    const result = await service.execute(id);
 
     expect(userRepoMock.findById).toHaveBeenCalledWith(id);
     expect(result).toBeNull();

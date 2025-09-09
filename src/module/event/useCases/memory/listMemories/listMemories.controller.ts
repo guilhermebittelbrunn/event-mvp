@@ -1,11 +1,11 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { ListMemoriesDTO } from './dto/listMemories.dto';
 import { ListMemoriesService } from './listMemories.service';
 
 import { MemoryDTO } from '@/module/event/dto/memory.dto';
 import MemoryMapper from '@/module/event/mappers/memory.mapper';
-import { PaginationQuery } from '@/shared/core/infra/pagination.interface';
 import { ValidatedQuery } from '@/shared/decorators';
 import { JwtAuthGuard } from '@/shared/guards/jwtAuth.guard';
 import { ApiListResponse } from '@/shared/infra/docs/swagger/decorators/apiListResponse.decorator';
@@ -19,7 +19,7 @@ export class ListMemoriesController {
 
   @Get()
   @ApiListResponse(MemoryDTO)
-  async handle(@ValidatedQuery() query?: PaginationQuery): Promise<ListResponseDTO<MemoryDTO>> {
+  async handle(@ValidatedQuery() query?: ListMemoriesDTO): Promise<ListResponseDTO<MemoryDTO>> {
     const result = await this.useCase.execute(query);
 
     return {

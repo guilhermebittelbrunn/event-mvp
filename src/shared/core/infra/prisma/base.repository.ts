@@ -172,8 +172,9 @@ export class BaseRepository<ModelKey extends PrismaModel, Domain extends Entity<
     const page = query.page && Number(query.page) > 0 ? Number(query.page) : 1;
     const take = query.limit && Number(query.limit) > 0 ? Number(query.limit) : 10;
     const skip = (page - 1) * take;
+    const term = query.term;
 
-    return { page, take, skip };
+    return { page, take, skip, term };
   }
 
   buildPaginationMeta(total: number, page: number, limit: number): ServerResponseMetaPagination {

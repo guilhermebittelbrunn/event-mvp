@@ -19,7 +19,7 @@ describe('DeleteEventController (e2e)', () => {
 
       await request()
         .delete(`/v1/event/${event.id}`)
-        .set('authorization', `Bearer ${authInfos.access_token}`)
+        .set('authorization', `Bearer ${authInfos.accessToken}`)
         .expect(HttpStatus.NO_CONTENT);
 
       const deletedEvent = await prisma.eventModel.findFirst({

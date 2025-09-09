@@ -21,6 +21,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, JWT_DEFAULT_STRATEGY
   }
 
   validate({ sub }: ITokenPayload): Promise<User> {
-    return this.validateUserAccess.validate(sub);
+    return this.validateUserAccess.execute(sub);
   }
 }

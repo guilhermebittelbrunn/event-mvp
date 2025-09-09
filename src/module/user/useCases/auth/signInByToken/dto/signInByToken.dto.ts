@@ -1,7 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
+
+import { ValidatedUUID } from '@/shared/decorators';
 
 export class SignInByTokenDTO {
   @IsNotEmpty()
-  @IsString()
+  @ValidatedUUID()
   token: string;
 }

@@ -11,7 +11,7 @@ export class ValidateUserAccess {
     @Inject(IUserRepositorySymbol) private readonly userRepo: IUserRepository,
   ) {}
 
-  async validate(userId?: string) {
+  async execute(userId?: string) {
     if (isEmpty(userId)) {
       return null;
     }

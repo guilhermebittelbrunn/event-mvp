@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { IGenerateEventTokenPayload, IGenerateTokenPayload, IJwtService } from '../../jwt.interface';
 
+import { ITokenPayload, ITokenPayloadEvent } from '@/shared/types';
 import { ACCESS_TOKEN_EXPIRE_DAYS, EXPIRE_TOKEN_TIME, REFRESH_TOKEN_EXPIRE_DAYS } from '@/shared/utils';
 
 @Injectable()
@@ -14,29 +15,29 @@ export class NestJwtService implements IJwtService {
   ) {}
 
   async generateTokens({ id, ...rest }: IGenerateTokenPayload) {
-    const payload = {
+    const payload: Omit<ITokenPayload, 'iat' | 'exp'> = {
       sub: id,
       ...rest,
     };
 
     return {
-      access_token: await this.jwtService.signAsync(payload, {
+      accessToken: await this.jwtService.signAsync(payload, {
         expiresIn: `${ACCESS_TOKEN_EXPIRE_DAYS}d`,
         secret: this.configService.getOrThrow('jwt.secret'),
       }),
-      refresh_token: await this.jwtService.signAsync(payload, {
+      refreshToken: await this.jwtService.signAsync(payload, {
         expiresIn: `${REFRESH_TOKEN_EXPIRE_DAYS}d`,
         secret: this.configService.getOrThrow('jwt.refreshSecret'),
       }),
       /** Refers to the access_token */
-      expires_in: EXPIRE_TOKEN_TIME,
+      expiresIn: EXPIRE_TOKEN_TIME,
       /** Refers to the access_token */
-      expires_at: new Date().setTime(new Date().getTime() + EXPIRE_TOKEN_TIME),
+      expiresAt: new Date().setTime(new Date().getTime() + EXPIRE_TOKEN_TIME),
     };
   }
 
   async generateEventToken({ id, expiresAt, ...rest }: IGenerateEventTokenPayload) {
-    const payload = {
+    const payload: Omit<ITokenPayloadEvent, 'iat' | 'exp'> = {
       sub: id,
       ...rest,
     };
@@ -51,12 +52,12 @@ export class NestJwtService implements IJwtService {
     const finalExpirationTime = Math.max(eventExpirationTime, minExpirationTime);
 
     return {
-      access_token: await this.jwtService.signAsync(payload, {
+      accessToken: await this.jwtService.signAsync(payload, {
         expiresIn: Math.floor(finalExpirationTime / 1000),
-        secret: this.configService.getOrThrow('jwt.secret'),
+        secret: this.configService.getOrThrow('jwt.eventSecret'),
       }),
-      expires_in: finalExpirationTime,
-      expires_at: expiresAt + eightHoursInMs,
+      expiresIn: finalExpirationTime,
+      expiresAt: expiresAt + eightHoursInMs,
     };
   }
 }

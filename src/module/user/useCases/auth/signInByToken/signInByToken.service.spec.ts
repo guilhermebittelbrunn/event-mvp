@@ -73,7 +73,7 @@ describe('SignInByTokenService', () => {
     validateEventAccessMock.execute = jest.fn().mockResolvedValueOnce(mockEvent);
 
     jwtServiceMock.generateEventToken.mockResolvedValueOnce({
-      access_token: 'mock.jwt.token',
+      accessToken: 'mock.jwt.token',
       expires_in: 3600000,
       expires_at: mockEndAt.getTime() + eightHoursInMs,
     });
@@ -83,7 +83,7 @@ describe('SignInByTokenService', () => {
     expect(result).toEqual({
       event: mockEvent,
       token: {
-        access_token: 'mock.jwt.token',
+        accessToken: 'mock.jwt.token',
         expires_in: 3600000,
         expires_at: mockEndAt.getTime() + eightHoursInMs,
       },
