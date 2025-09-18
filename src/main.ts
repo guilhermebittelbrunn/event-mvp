@@ -23,7 +23,10 @@ async function bootstrap() {
 
     console.info('📦 Creating NestJS application...');
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
-      cors: true,
+      cors: {
+        origin: true,
+        credentials: true,
+      },
       bufferLogs: true,
     });
 

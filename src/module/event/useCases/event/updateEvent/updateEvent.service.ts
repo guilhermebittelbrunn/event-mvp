@@ -13,7 +13,6 @@ import {
 } from '@/module/event/repositories/event.repository.interface';
 import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
 import { coalesce, isEmpty } from '@/shared/core/utils/undefinedHelpers';
-import { EventStatusEnum } from '@/shared/types/event/event';
 
 @Injectable()
 export class UpdateEventService {
@@ -38,9 +37,12 @@ export class UpdateEventService {
       throw new UpdateEventErrors.NotFoundError();
     }
 
-    if ([EventStatusEnum.IN_PROGRESS, EventStatusEnum.COMPLETED].includes(currentEvent.status.value)) {
-      throw new UpdateEventErrors.InvalidParam(currentEvent.status);
-    }
+    /**
+     * @note: for now, we are not allowing to update the status of an event that is in progress or completed
+     */
+    // if ([EventStatusEnum.IN_PROGRESS, EventStatusEnum.COMPLETED].includes(currentEvent.status.value)) {
+    //   throw new UpdateEventErrors.InvalidParam(currentEvent.status);
+    // }
 
     return currentEvent;
   }

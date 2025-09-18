@@ -28,7 +28,7 @@ export default class EventStatus extends ValueObject<EventStatusProps> {
   }
 
   get friendlyName(): string {
-    return EventStatus.userFriendlyName[this.value];
+    return EventStatus.userFriendlyTypeName[this.value];
   }
 
   private static isValid(type: string): IGuardResult {

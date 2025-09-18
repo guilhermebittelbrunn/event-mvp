@@ -68,10 +68,10 @@ jobs:
           cache: 'pnpm'
 
       - name: Prisma migrate deploy
-        run: pnpx prisma migrate deploy
+        run: pnpx prisma@6.9.0 migrate deploy
 
       - name: Prisma generate types
-        run: pnpx prisma generate
+        run: pnpx prisma@6.9.0 generate
 
       - name: Run test
         run: pnpm test

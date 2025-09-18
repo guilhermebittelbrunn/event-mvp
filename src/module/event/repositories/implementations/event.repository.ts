@@ -66,6 +66,51 @@ export class EventRepository
   }
 
   async list(query: ListEventByQuery = {}): Promise<PaginatedResult<Event>> {
+    const { where, ordination, skip, take, page } = this.buildList(query);
+
+    const [events, total] = await Promise.all([
+      await this.manager().findMany({ skip, take, where, include: { file: true }, orderBy: ordination }),
+      await this.manager().count({ where }),
+    ]);
+
+    return {
+      data: events.map(this.mapper.toDomain),
+      meta: this.buildPaginationMeta(total, page, take),
+    };
+  }
+
+  async listForAdmin(query: ListEventByQuery = {}): Promise<PaginatedResult<Event>> {
+    const { where, ordination, skip, take, page } = this.buildList(query);
+
+    const [events, total] = await Promise.all([
+      await this.manager().findMany({
+        skip,
+        take,
+        where,
+        include: { file: true, user: true },
+        orderBy: ordination,
+      }),
+      await this.manager().count({ where }),
+    ]);
+
+    return {
+      data: events.map(this.mapper.toDomain),
+      meta: this.buildPaginationMeta(total, page, take),
+    };
+  }
+
+  async findBySlug(slug: string | EventSlug): Promise<Event | null> {
+    const slugRaw = slug instanceof EventSlug ? slug.value : slug;
+
+    const event = await this.manager().findUnique({
+      where: { slug: slugRaw },
+      include: { config: true, accesses: true, file: true },
+    });
+
+    return this.mapper.toDomainOrNull(event);
+  }
+
+  private buildList(query: ListEventByQuery) {
     const { userId, term, orderBy, order, dateType, startDate, endDate } = query;
     const { page, take, skip } = this.getPaginationParams(query);
 
@@ -92,25 +137,6 @@ export class EventRepository
       ordination = { ...(orderBy && order && { [orderBy]: order }) };
     }
 
-    const [events, total] = await Promise.all([
-      await this.manager().findMany({ skip, take, where, include: { file: true }, orderBy: ordination }),
-      await this.manager().count({ where }),
-    ]);
-
-    return {
-      data: events.map(this.mapper.toDomain),
-      meta: this.buildPaginationMeta(total, page, take),
-    };
-  }
-
-  async findBySlug(slug: string | EventSlug): Promise<Event | null> {
-    const slugRaw = slug instanceof EventSlug ? slug.value : slug;
-
-    const event = await this.manager().findUnique({
-      where: { slug: slugRaw },
-      include: { config: true, accesses: true, file: true },
-    });
-
-    return this.mapper.toDomainOrNull(event);
+    return { where, ordination, skip, take, page };
   }
 }

@@ -6,5 +6,6 @@ export class FakeEventRepository extends FakeBaseRepository<Event> implements IE
   save = jest.fn();
   findCompleteById = jest.fn();
   list = jest.fn();
+  listForAdmin = jest.fn();
   findBySlug = jest.fn();
 }
