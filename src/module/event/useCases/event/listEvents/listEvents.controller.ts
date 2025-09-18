@@ -31,6 +31,7 @@ export class ListEventsController {
     const result = await this.useCase.execute({
       ...query,
       ...(!isAdmin && { userId: user.id }),
+      isAdmin,
     });
 
     return {

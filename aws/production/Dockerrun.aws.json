@@ -1,0 +1,20 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "pedidos10/event-mvp-api:latest"
+  },
+  "Authentication": {
+    "bucket": "event-mvp-production-docker-cfg",
+    "key": ".dockercfg"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 80,
+      "HostPort": 80
+    },
+    {
+      "ContainerPort": 443,
+      "HostPort": 443
+    }
+  ]
+}

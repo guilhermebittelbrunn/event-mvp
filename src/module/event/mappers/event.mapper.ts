@@ -1,7 +1,7 @@
-import { EventAccessModel, EventConfigModel, EventModel, FileModel } from '@prisma/client';
+import { EventModel } from '@prisma/client';
 
-import EventAccessMapper from './eventAccess.mapper';
-import EventConfigMapper from './eventConfig.mapper';
+import EventAccessMapper, { EventAccessModelWithRelations } from './eventAccess.mapper';
+import EventConfigMapper, { EventConfigModelWithRelations } from './eventConfig.mapper';
 
 import Event from '../domain/event/event';
 import EventSlug from '../domain/event/eventSlug';
@@ -9,15 +9,18 @@ import EventStatus from '../domain/event/eventStatus';
 import { EventAccesses } from '../domain/eventAccess/eventAccesses';
 import { EventDTO } from '../dto/event.dto';
 
-import FileMapper from '@/module/shared/mappers/file.mapper';
+import FileMapper, { FileModelWithRelations } from '@/module/shared/mappers/file.mapper';
+import { UserModelWithRelations } from '@/module/user/mappers/user.mapper';
+import UserMapper from '@/module/user/mappers/user.mapper';
 import Mapper from '@/shared/core/domain/Mapper';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { EventStatusEnum } from '@/shared/types/event/event';
 
 export interface EventModelWithRelations extends EventModel {
-  config?: EventConfigModel;
-  accesses?: EventAccessModel[];
-  file?: FileModel;
+  config?: EventConfigModelWithRelations;
+  accesses?: EventAccessModelWithRelations[];
+  file?: FileModelWithRelations;
+  user?: UserModelWithRelations;
 }
 
 class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
@@ -38,6 +41,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
         config: EventConfigMapper.toDomainOrUndefined(event.config),
         accesses: EventAccesses.create(event.accesses?.map(EventAccessMapper.toDomain)),
         file: FileMapper.toDomainOrUndefined(event.file),
+        user: UserMapper.toDomainOrUndefined(event.user),
       },
       new UniqueEntityID(event.id),
     );
@@ -77,6 +81,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       config: EventConfigMapper.toDTOOrUndefined(event.config),
       guestAccess: EventAccessMapper.toDTOOrUndefined(event.guestAccess),
       file: FileMapper.toDTOOrUndefined(event.file),
+      user: UserMapper.toDTOOrUndefined(event.user),
     };
   }
 }

@@ -21,7 +21,7 @@ export class ValidateEventAccess {
       return null;
     }
 
-    const event = await this.eventRepo.findById(eventId);
+    const event = await this.eventRepo.findCompleteById(eventId);
 
     if (!event) {
       return null;

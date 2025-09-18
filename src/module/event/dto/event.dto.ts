@@ -4,6 +4,7 @@ import { EventAccessDTO } from './eventAccess.dto';
 import { EventConfigDTO } from './eventConfig.dto';
 
 import { FileDTO } from '@/module/shared/dto/file.dto';
+import { UserDTO } from '@/module/user/dto/user.dto';
 import { BaseEntityDTO } from '@/shared/core/dto/BaseEntityDTO';
 import { ApiUUIDProperty } from '@/shared/infra/docs/swagger/decorators/apiUUIDProperty.decorator';
 import { EventStatusEnum } from '@/shared/types/event/event';
@@ -41,4 +42,7 @@ export class EventDTO extends BaseEntityDTO {
 
   @ApiHideProperty()
   file?: FileDTO;
+
+  @ApiHideProperty()
+  user?: UserDTO;
 }

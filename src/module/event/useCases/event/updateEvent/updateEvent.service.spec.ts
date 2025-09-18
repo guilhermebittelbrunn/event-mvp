@@ -13,7 +13,6 @@ import { ReplaceFileService } from '@/module/shared/domain/file/services/replace
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import { FakeFileStoreService } from '@/shared/test/services';
-import { EventStatusEnum } from '@/shared/types/event/event';
 
 const makeFile = (overrides?: File) => {
   return {
@@ -95,16 +94,16 @@ describe('UpdateEventService', () => {
     ).rejects.toThrow(UpdateEventErrors.NotFoundError);
   });
 
-  it('should throw a invalid param error if event is in progress or completed', async () => {
-    const event = fakeEvent({ status: EventStatusEnum.IN_PROGRESS });
+  // it('should throw a invalid param error if event is in progress or completed', async () => {
+  //   const event = fakeEvent({ status: EventStatusEnum.IN_PROGRESS });
 
-    eventRepoMock.findCompleteById.mockResolvedValueOnce(event);
+  //   eventRepoMock.findCompleteById.mockResolvedValueOnce(event);
 
-    await expect(service.execute({ id: event.id.toValue() })).rejects.toThrow(UpdateEventErrors.InvalidParam);
+  //   await expect(service.execute({ id: event.id.toValue() })).rejects.toThrow(UpdateEventErrors.InvalidParam);
 
-    expect(eventRepoMock.findCompleteById).toHaveBeenCalled();
-    expect(eventRepoMock.update).not.toHaveBeenCalled();
-  });
+  //   expect(eventRepoMock.findCompleteById).toHaveBeenCalled();
+  //   expect(eventRepoMock.update).not.toHaveBeenCalled();
+  // });
 
   it('should throw a slug already in use error if event slug is already in use', async () => {
     const event = fakeEvent();

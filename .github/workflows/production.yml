@@ -1,0 +1,55 @@
+name: 'Production - Deploy'
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  docker_build_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/event-mvp-api:latest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker_build_push
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Declare some variables
+        id: vars
+        shell: bash
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Deploy to EBS
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: api-prod
+          environment_name: event-mvp-api-prod-v1
+          version_label: 'prod-source-event-mvp-api-${{ steps.vars.outputs.sha_short }}'
+          region: sa-east-1
+          deployment_package: ./aws/production/Dockerrun.aws.json
+          wait_for_environment_recovery: 300

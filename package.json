@@ -10,7 +10,7 @@
     "start": "nest start",
     "dev": "nest start --watch & BROWSER=none prisma studio --port 5555",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "dotenv -e .env -- node -r newrelic dist/main.js",
+    "start:prod": "dotenv -e .env -- node -r newrelic dist/src/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "typechecks": "tsc --noEmit",
     "test": "jest",
