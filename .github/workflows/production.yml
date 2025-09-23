@@ -9,6 +9,7 @@ on:
 jobs:
   docker_build_push:
     runs-on: ubuntu-latest
+    environment: event-mvp
 
     steps:
       - name: Checkout
@@ -32,6 +33,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: docker_build_push
+    environment: event-mvp
 
     steps:
       - uses: actions/checkout@v4
