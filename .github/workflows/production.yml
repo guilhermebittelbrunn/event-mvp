@@ -52,6 +52,6 @@ jobs:
           application_name: event-mvp
           environment_name: event-mvp-env
           version_label: 'prod-source-event-mvp-${{ steps.vars.outputs.sha_short }}'
-          region: us-east-2
+          region: us-east-1
           deployment_package: ./aws/production/Dockerrun.aws.json
           wait_for_environment_recovery: 300
