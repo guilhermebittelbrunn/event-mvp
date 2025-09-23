@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "pedidos10/event-mvp-api:latest"
+    "Name": "guilhermebittelbrunn/event-mvp:latest"
   },
   "Authentication": {
     "bucket": "event-mvp-production-docker-cfg",
