@@ -16,6 +16,6 @@ COPY --from=build_server /usr/src/app/dist ./dist
 COPY --from=build_server /usr/src/app/package.json ./package.json
 COPY --from=build_server /usr/src/app/prisma ./prisma
 COPY --from=build_server /usr/src/app/node_modules ./node_modules
-EXPOSE ${PORT} 80
+EXPOSE 80
 
 CMD ["sh", "-c", "pnpx prisma@6.9.0 migrate deploy && pnpm tsx prisma/seed.ts && pnpm start:prod"]
