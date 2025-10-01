@@ -100,7 +100,7 @@ describe('DownloadMemoriesService', () => {
 
   it('should throw error when too many memory ids are provided', async () => {
     const payload = makePayload({
-      memoryIds: Array(31).fill(faker.string.uuid()),
+      memoryIds: Array(11).fill(faker.string.uuid()),
     });
 
     await expect(service.execute(payload)).rejects.toThrow(
