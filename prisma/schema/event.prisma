@@ -3,7 +3,7 @@ model EventModel {
   userId      String   @map("user_id") @db.Uuid
   fileId      String?  @unique @map("file_id") @db.Uuid
   name        String
-  slug        String   @unique
+  slug        String
   status      String   @default("draft")
   description String?
   startAt     DateTime @map("start_at")
@@ -21,6 +21,10 @@ model EventModel {
   accesses EventAccessModel[]
   memories MemoryModel[]
 
+  @@unique([slug], map: "event_slug_unique_active")
+  @@index([userId])
+  @@index([slug])
+  @@index([createdAt])
   @@map("event")
 }
 
@@ -43,6 +47,7 @@ model EventConfigModel {
 
   event EventModel @relation(fields: [eventId], references: [id])
 
+  @@index([eventId, deletedAt])
   @@map("event_config")
 }
 
@@ -58,5 +63,7 @@ model EventAccessModel {
 
   event EventModel @relation(fields: [eventId], references: [id])
 
+  @@index([eventId])
+  @@index([eventId, type])
   @@map("event_access")
 }

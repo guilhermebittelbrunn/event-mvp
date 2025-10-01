@@ -15,7 +15,7 @@ import {
   IFileStoreServiceSymbol,
 } from '@/shared/services/fileStore/fileStore.service.interface';
 
-const MAX_MEMORY_IDS_TO_DOWNLOAD = 30;
+const MAX_MEMORY_IDS_TO_DOWNLOAD = 10;
 
 @Injectable()
 export class DownloadMemoriesService {
