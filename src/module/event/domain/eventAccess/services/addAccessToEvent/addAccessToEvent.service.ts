@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { AddAccessToEventDTO } from './addAccessToEvent.dto';
 
 import Event from '../../../event/event';
@@ -9,13 +11,15 @@ import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
 import { EventAccessTypeEnum } from '@/shared/types/event/event';
 
+@Injectable()
 export class AddAccessToEvent {
   execute({ event, type }: AddAccessToEventDTO): EventAccess | undefined {
     if (isEmpty(event?.slug?.value)) return;
 
-    const accessId = UniqueEntityID.create();
-
     const eventType = EventAccessType.create(type ?? EventAccessTypeEnum.GUEST);
+    const access = event.accesses.find(eventType.value);
+
+    const accessId = access ? access.id : UniqueEntityID.create();
 
     const eventUrl = EventAccessUrl.create(this.generateAccessUrl(event, accessId));
 

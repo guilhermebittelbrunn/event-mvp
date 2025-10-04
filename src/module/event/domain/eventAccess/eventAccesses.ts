@@ -12,6 +12,10 @@ export class EventAccesses extends Aggregate<EventAccess> {
     return a.equals(b);
   }
 
+  find(type: EventAccessTypeEnum): EventAccess | undefined {
+    return this.items.find((access) => access.type.value === type);
+  }
+
   add(...items: Array<EventAccess>): void {
     for (const item of items) {
       const guestAccess = this.guestAccess;

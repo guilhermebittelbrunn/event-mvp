@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { CreateEventController } from './createEvent.controller';
 import { CreateEventService } from './createEvent.service';
 
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent.service';
 import { EventRepositoryFactory } from '@/module/event/repositories/implementations/factories/event.repository.module';
 import { MemoryRepository } from '@/module/event/repositories/implementations/memory.repository';
 import { IMemoryRepositorySymbol } from '@/module/event/repositories/memory.repository.interface';
