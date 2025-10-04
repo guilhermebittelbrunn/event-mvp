@@ -6,7 +6,7 @@ import { CreateEventDTO } from './dto/createEvent.dto';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
-import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent';
+import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent.service';
 import EventConfig from '@/module/event/domain/eventConfig';
 import {
   IEventRepository,

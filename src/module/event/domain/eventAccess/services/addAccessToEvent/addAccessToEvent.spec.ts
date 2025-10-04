@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AddAccessToEvent } from './addAccessToEvent';
 import { AddAccessToEventDTO } from './addAccessToEvent.dto';
+import { AddAccessToEvent } from './addAccessToEvent.service';
 
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { EventAccessTypeEnum } from '@/shared/types/event/event';
