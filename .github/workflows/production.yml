@@ -49,9 +49,9 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: qinstante-prod
-          environment_name: qinstante-prod-env
-          version_label: 'prod-source-qinstante-prod-${{ steps.vars.outputs.sha_short }}'
+          application_name: qinstante-api-prod
+          environment_name: qinstante-api-prod-env
+          version_label: 'prod-source-qinstante-api-prod-${{ steps.vars.outputs.sha_short }}'
           region: us-east-1
           deployment_package: ./aws/production/Dockerrun.aws.json
           wait_for_environment_recovery: 300
