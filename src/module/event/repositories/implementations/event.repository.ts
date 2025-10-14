@@ -111,7 +111,7 @@ export class EventRepository
   }
 
   private buildList(query: ListEventByQuery) {
-    const { userId, term, orderBy, order, dateType, startDate, endDate } = query;
+    const { userId, term, orderBy, order, dateType, startDate, endDate, statuses } = query;
     const { page, take, skip } = this.getPaginationParams(query);
 
     const filterDate = dateType && Object.keys(Prisma.EventModelScalarFieldEnum).includes(dateType);
@@ -129,12 +129,13 @@ export class EventRepository
         ...(startDate && { [dateType]: { gte: startDate } }),
         ...(endDate && { [dateType]: { lte: endDate } }),
       }),
+      ...(!isEmpty(statuses) && { status: { in: statuses } }),
     };
 
     let ordination: Prisma.EventModelOrderByWithRelationInput;
 
-    if (orderBy && Object.keys(Prisma.EventModelScalarFieldEnum).includes(orderBy)) {
-      ordination = { ...(orderBy && order && { [orderBy]: order }) };
+    if (orderBy && order && Object.keys(Prisma.EventModelScalarFieldEnum).includes(orderBy)) {
+      ordination = { [orderBy]: order };
     }
 
     return { where, ordination, skip, take, page };
