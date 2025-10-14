@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { endOfDay } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 
 import { NestJwtService } from './nestJwt.service';
@@ -121,14 +122,16 @@ describe('NestJwtService', () => {
   });
 
   describe('generateEventToken', () => {
-    it('should generate event token with expiration based on event end time + 8 hours', async () => {
+    it('should generate event token with expiration based on end of event end date', async () => {
       const now = Date.now();
       const tokenId = uuid();
+      // Event ends in 2 days
+      const eventEndDate = now + 2 * 24 * 60 * 60 * 1000;
       const mockPayload = {
         id: uuid(),
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
-        expiresAt: now + 24 * 60 * 60 * 1000, // 24 hours from now
+        expiresAt: eventEndDate,
         tokenId,
       };
 
@@ -150,9 +153,9 @@ describe('NestJwtService', () => {
         }),
       );
 
-      // Verify the expiration calculation with some tolerance
-      const eightHoursInMs = 8 * 60 * 60 * 1000;
-      const expectedExpirationTime = mockPayload.expiresAt + eightHoursInMs - now;
+      // Calculate expected expiration (end of day of event end date)
+      const endOfEventDay = endOfDay(eventEndDate).getTime();
+      const expectedExpirationTime = endOfEventDay - now;
       const expectedExpirationSeconds = Math.floor(expectedExpirationTime / 1000);
 
       expect(jwtService.signAsync).toHaveBeenCalledWith(
@@ -162,7 +165,7 @@ describe('NestJwtService', () => {
         }),
       );
 
-      // Verify the expiresIn is within a reasonable range (within 1 second)
+      // Verify the expiresIn is within a reasonable range (within 1 second tolerance)
       const actualCall = (jwtService.signAsync as jest.Mock).mock.calls[0];
       const actualExpiresIn = actualCall[1].expiresIn;
       expect(actualExpiresIn).toBeGreaterThanOrEqual(expectedExpirationSeconds - 1);
@@ -171,7 +174,7 @@ describe('NestJwtService', () => {
       expect(result).toEqual({
         accessToken: mockAccessToken,
         expiresIn: expect.any(Number),
-        expiresAt: mockPayload.expiresAt + eightHoursInMs,
+        expiresAt: endOfEventDay,
       });
 
       // Verify expiresIn is calculated correctly (within 1 second tolerance)
@@ -181,11 +184,13 @@ describe('NestJwtService', () => {
 
     it('should ensure minimum expiration time of 1 minute', async () => {
       const now = Date.now();
+      // Event ended 2 days ago (well in the past)
+      const eventEndDate = now - 2 * 24 * 60 * 60 * 1000;
       const mockPayload = {
         id: uuid(),
         slug: faker.internet.url(),
         type: EventAccessTypeEnum.GUEST,
-        expiresAt: now - 10 * 60 * 60 * 1000, // Event ended 10 hours ago
+        expiresAt: eventEndDate,
         tokenId: uuid(),
       };
 
@@ -206,34 +211,7 @@ describe('NestJwtService', () => {
       );
 
       expect(result.expiresIn).toBe(60 * 1000); // 1 minute in milliseconds
-      expect(result.expiresAt).toBe(mockPayload.expiresAt + 8 * 60 * 60 * 1000); // 8 hours after event end
-    });
-
-    it('should handle event that ends in the future', async () => {
-      const now = Date.now();
-      const mockPayload = {
-        id: uuid(),
-        slug: faker.internet.url(),
-        type: EventAccessTypeEnum.GUEST,
-        expiresAt: now + 2 * 60 * 60 * 1000, // 2 hours from now
-        tokenId: uuid(),
-      };
-
-      const mockAccessToken = 'mock.event.token';
-      const mockJwtSecret = 'jwt-secret';
-
-      jest.spyOn(configService, 'getOrThrow').mockReturnValue(mockJwtSecret);
-      jest.spyOn(jwtService, 'signAsync').mockResolvedValue(mockAccessToken);
-
-      const result = await service.generateEventToken(mockPayload);
-
-      const eightHoursInMs = 8 * 60 * 60 * 1000;
-      const expectedExpirationTime = mockPayload.expiresAt + eightHoursInMs - now;
-
-      // Verify with tolerance for timing differences
-      expect(result.expiresIn).toBeGreaterThanOrEqual(expectedExpirationTime - 1000);
-      expect(result.expiresIn).toBeLessThanOrEqual(expectedExpirationTime + 1000);
-      expect(result.expiresAt).toBe(mockPayload.expiresAt + eightHoursInMs);
+      expect(result.expiresAt).toBe(endOfDay(eventEndDate).getTime());
     });
 
     it('should handle config service errors', async () => {
