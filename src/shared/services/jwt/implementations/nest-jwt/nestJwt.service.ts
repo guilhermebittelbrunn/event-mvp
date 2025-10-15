@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { endOfDay } from 'date-fns';
 
 import { IGenerateEventTokenPayload, IGenerateTokenPayload, IJwtService } from '../../jwt.interface';
 
@@ -42,10 +43,8 @@ export class NestJwtService implements IJwtService {
       ...rest,
     };
 
-    // calculate expiration time based on event end time + 8 hours
     const now = new Date().getTime();
-    const eightHoursInMs = 8 * 60 * 60 * 1000;
-    const eventExpirationTime = expiresAt + eightHoursInMs - now;
+    const eventExpirationTime = endOfDay(expiresAt).getTime() - now;
 
     // ensure minimum expiration time (at least 1 minute)
     const minExpirationTime = 60 * 1000;
@@ -57,7 +56,7 @@ export class NestJwtService implements IJwtService {
         secret: this.configService.getOrThrow('jwt.eventSecret'),
       }),
       expiresIn: finalExpirationTime,
-      expiresAt: expiresAt + eightHoursInMs,
+      expiresAt: endOfDay(expiresAt).getTime(),
     };
   }
 }

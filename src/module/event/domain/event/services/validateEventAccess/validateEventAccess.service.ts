@@ -16,6 +16,8 @@ export class ValidateEventAccess {
     @Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository,
   ) {}
 
+  /** @note don't validate event end date, it's validated in event token expiration time */
+
   async execute(eventId?: string): Promise<Event | null> {
     if (isEmpty(eventId)) {
       return null;
@@ -24,10 +26,6 @@ export class ValidateEventAccess {
     const event = await this.eventRepo.findCompleteById(eventId);
 
     if (!event) {
-      return null;
-    }
-
-    if (event.endAt < new Date()) {
       return null;
     }
 
