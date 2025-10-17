@@ -2,6 +2,7 @@ import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 import { EventAccessDTO } from './eventAccess.dto';
 import { EventConfigDTO } from './eventConfig.dto';
+import { MemoryDTO } from './memory.dto';
 
 import { FileDTO } from '@/module/shared/dto/file.dto';
 import { UserDTO } from '@/module/user/dto/user.dto';
@@ -34,6 +35,9 @@ export class EventDTO extends BaseEntityDTO {
   @ApiProperty()
   endAt: Date;
 
+  @ApiProperty()
+  totalMemories: number;
+
   @ApiHideProperty()
   config?: EventConfigDTO;
 
@@ -45,4 +49,7 @@ export class EventDTO extends BaseEntityDTO {
 
   @ApiHideProperty()
   user?: UserDTO;
+
+  @ApiHideProperty()
+  memories?: MemoryDTO[];
 }
