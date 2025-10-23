@@ -4,6 +4,7 @@ import { AddFileDTO } from './addFile.dto';
 
 import { IFileRepository, IFileRepositorySymbol } from '../../../../repositories/file.repository.interface';
 import File from '../../file';
+import { BuildPathService } from '../buildPath/buildPath';
 
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import {
@@ -18,16 +19,21 @@ export class AddFileService {
     private readonly fileRepository: IFileRepository,
     @Inject(IFileStoreServiceSymbol)
     private readonly fileStoreService: IFileStoreService,
+    private readonly buildPathService: BuildPathService,
   ) {}
 
   async execute(dto: AddFileDTO) {
     const file = File.create({
       name: dto.file.originalname,
-      path: '', // will be set by makePath() method
+      path: '', // will be set by makePath() method or buildPathService
       url: '', // will be set after upload
       size: dto.file.size,
       file: dto.file,
     });
+
+    if (dto.event) {
+      file.path = this.buildPathService.execute({ file, event: dto.event });
+    }
 
     try {
       const url = await this.fileStoreService.upload({
