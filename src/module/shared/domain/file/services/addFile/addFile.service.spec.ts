@@ -4,6 +4,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AddFileService } from './addFile.service';
 
+import { BuildPathService } from '../buildPath/buildPath';
+
 import { IFileRepositorySymbol } from '@/module/shared/repositories/file.repository.interface';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
@@ -41,6 +43,7 @@ describe('AddFileService', () => {
           provide: IFileStoreServiceSymbol,
           useValue: fileStoreServiceMock,
         },
+        BuildPathService,
       ],
     }).compile();
 

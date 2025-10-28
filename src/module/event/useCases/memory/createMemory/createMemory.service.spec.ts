@@ -9,6 +9,7 @@ import { IMemoryRepositorySymbol } from '@/module/event/repositories/memory.repo
 import { fakeMemory } from '@/module/event/repositories/tests/entities/fakeMemory';
 import { FakeMemoryRepository } from '@/module/event/repositories/tests/repositories/fakeMemory.repository';
 import { AddFileService } from '@/module/shared/domain/file/services/addFile/addFile.service';
+import { BuildPathService } from '@/module/shared/domain/file/services/buildPath/buildPath';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import GenericErrors from '@/shared/core/logic/genericErrors';
@@ -45,7 +46,9 @@ describe('CreateMemoryService', () => {
   const fileRepoMock = new FakeFileRepository();
   const fileStoreServiceMock = new FakeFileStoreService();
 
-  const addFileService = new AddFileService(fileRepoMock, fileStoreServiceMock);
+  const buildPathServiceMock = new BuildPathService();
+
+  const addFileService = new AddFileService(fileRepoMock, fileStoreServiceMock, buildPathServiceMock);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
