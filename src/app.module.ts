@@ -6,6 +6,7 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthApplicationModule } from './module/auth/authApplication.module';
 import { EventApplicationModule } from './module/event/useCases/eventApplication.module';
 import { RegisterLogModule } from './module/shared/domain/log/service/registerLog/registerLog.module';
 import { ValidateUserAccessModule } from './module/user/domain/user/services/validateUserAccess/validateUserAccess.module';
@@ -65,6 +66,7 @@ import { JwtRefreshStrategy } from './shared/strategies/jwtRefresh.strategy';
     // modules
     UserApplicationModule,
     EventApplicationModule,
+    AuthApplicationModule,
   ],
   controllers: [AppController],
   providers: [

@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import UserPassword from '@/module/user/domain/user/userPassword';
 import { insertFakeUser } from '@/module/user/repositories/tests/entities/fakeUser';
-import SignInErrors from '@/module/user/useCases/auth/signIn/signIn.error';
+import SignInErrors from '@/module/auth/useCases/signIn/signIn.error';
 import { request } from '@/shared/test/utils';
 
 describe('SignInController (e2e)', () => {
