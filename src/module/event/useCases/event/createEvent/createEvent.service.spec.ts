@@ -12,6 +12,7 @@ import { IEventRepositorySymbol } from '@/module/event/repositories/event.reposi
 import { fakeEvent } from '@/module/event/repositories/tests/entities/fakeEvent';
 import { FakeEventRepository } from '@/module/event/repositories/tests/repositories/fakeEvent.repository';
 import { AddFileService } from '@/module/shared/domain/file/services/addFile/addFile.service';
+import { BuildPathService } from '@/module/shared/domain/file/services/buildPath/buildPath';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import GenericErrors from '@/shared/core/logic/genericErrors';
@@ -50,8 +51,9 @@ describe('CreateEventService', () => {
   const eventRepoMock = new FakeEventRepository();
   const fileRepoMock = new FakeFileRepository();
   const fileStoreServiceMock = new FakeFileStoreService();
+  const buildPathServiceMock = new BuildPathService();
 
-  const addFileService = new AddFileService(fileRepoMock, fileStoreServiceMock);
+  const addFileService = new AddFileService(fileRepoMock, fileStoreServiceMock, buildPathServiceMock);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

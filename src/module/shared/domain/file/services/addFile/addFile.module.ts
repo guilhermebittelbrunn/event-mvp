@@ -4,6 +4,7 @@ import { AddFileService } from './addFile.service';
 
 import { IFileRepositorySymbol } from '../../../../repositories/file.repository.interface';
 import { FileRepository } from '../../../../repositories/implementations/file.repository';
+import { BuildPathService } from '../buildPath/buildPath';
 
 import { IFileStoreServiceSymbol } from '@/shared/services/fileStore/fileStore.service.interface';
 import { S3StorageService } from '@/shared/services/fileStore/implementations/aws-s3/s3-storage.service';
@@ -19,6 +20,7 @@ import { S3StorageService } from '@/shared/services/fileStore/implementations/aw
       provide: IFileStoreServiceSymbol,
       useClass: S3StorageService,
     },
+    BuildPathService,
   ],
   exports: [AddFileService],
 })

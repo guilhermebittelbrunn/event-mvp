@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 
+import { RefreshModule } from './refresh/refresh.module';
+import { SignInModule } from './signIn/signIn.module';
 import { SignInByTokenModule } from './signInByToken/signInByToken.module';
-
-import { RefreshModule } from '../auth/refresh/refresh.module';
-import { SignInModule } from '../auth/signIn/signIn.module';
-import { SignUpModule } from '../auth/signUp/signUp.module';
+import { SignUpModule } from './signUp/signUp.module';
 
 @Module({
   imports: [SignUpModule, SignInModule, RefreshModule, SignInByTokenModule],

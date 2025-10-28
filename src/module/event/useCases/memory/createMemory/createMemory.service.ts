@@ -25,15 +25,15 @@ export class CreateMemoryService {
       throw new GenericErrors.InvalidParam('Nenhuma imagem enviada');
     }
 
-    const ipAddress = IpAddress.create(dto.ipAddress);
-
     const memory = Memory.create({
-      ...dto,
       eventId: UniqueEntityID.create(dto.eventId),
-      ipAddress,
+      description: dto.description,
+      message: dto.message,
+      identifier: dto.identifier,
+      ipAddress: IpAddress.create(dto.ipAddress),
     });
 
-    const file = await this.addFileService.execute({ file: dto.image });
+    const file = await this.addFileService.execute({ file: dto.image, event: dto.event });
 
     memory.fileId = file.id;
 

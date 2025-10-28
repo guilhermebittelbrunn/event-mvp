@@ -69,7 +69,13 @@ export class EventRepository
     const { where, ordination, skip, take, page } = this.buildList(query);
 
     const [events, total] = await Promise.all([
-      await this.manager().findMany({ skip, take, where, include: { file: true }, orderBy: ordination }),
+      await this.manager().findMany({
+        skip,
+        take,
+        where,
+        include: { file: true, memories: true },
+        orderBy: ordination,
+      }),
       await this.manager().count({ where }),
     ]);
 
@@ -79,6 +85,7 @@ export class EventRepository
     };
   }
 
+  /** @todo create a new query only to "dashboard" and not to the list */
   async listForAdmin(query: ListEventByQuery = {}): Promise<PaginatedResult<Event>> {
     const { where, ordination, skip, take, page } = this.buildList(query);
 
@@ -87,7 +94,7 @@ export class EventRepository
         skip,
         take,
         where,
-        include: { file: true, user: true },
+        include: { file: true, user: true, memories: true },
         orderBy: ordination,
       }),
       await this.manager().count({ where }),

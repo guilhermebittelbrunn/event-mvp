@@ -2,11 +2,13 @@ import { EventModel } from '@prisma/client';
 
 import EventAccessMapper, { EventAccessModelWithRelations } from './eventAccess.mapper';
 import EventConfigMapper, { EventConfigModelWithRelations } from './eventConfig.mapper';
+import MemoryMapper, { MemoryModelWithRelations } from './memory.mapper';
 
 import Event from '../domain/event/event';
 import EventSlug from '../domain/event/eventSlug';
 import EventStatus from '../domain/event/eventStatus';
 import { EventAccesses } from '../domain/eventAccess/eventAccesses';
+import { Memories } from '../domain/memory/memories';
 import { EventDTO } from '../dto/event.dto';
 
 import FileMapper, { FileModelWithRelations } from '@/module/shared/mappers/file.mapper';
@@ -21,6 +23,7 @@ export interface EventModelWithRelations extends EventModel {
   accesses?: EventAccessModelWithRelations[];
   file?: FileModelWithRelations;
   user?: UserModelWithRelations;
+  memories?: MemoryModelWithRelations[];
 }
 
 class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
@@ -42,6 +45,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
         accesses: EventAccesses.create(event.accesses?.map(EventAccessMapper.toDomain)),
         file: FileMapper.toDomainOrUndefined(event.file),
         user: UserMapper.toDomainOrUndefined(event.user),
+        memories: Memories.create(event.memories?.map(MemoryMapper.toDomain)),
       },
       new UniqueEntityID(event.id),
     );
@@ -75,6 +79,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       description: event.description,
       startAt: event.startAt,
       endAt: event.endAt,
+      totalMemories: event.totalMemories,
       createdAt: event.createdAt,
       updatedAt: event.updatedAt,
       deletedAt: event.deletedAt,
@@ -82,6 +87,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       guestAccess: EventAccessMapper.toDTOOrUndefined(event.guestAccess),
       file: FileMapper.toDTOOrUndefined(event.file),
       user: UserMapper.toDTOOrUndefined(event.user),
+      memories: event.memories.items.map(MemoryMapper.toDTO),
     };
   }
 }

@@ -92,7 +92,7 @@ export default class File extends Entity<IFileProps> {
 
     const file = new File(props, id);
 
-    if (props.file) {
+    if (props.file && !props.path) {
       file.makePath();
     }
 
