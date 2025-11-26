@@ -8,6 +8,7 @@ import { IMemoryRepository, ListMemoriesWithFilesByQuery } from '../memory.repos
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { PaginatedResult } from '@/shared/core/infra/pagination.interface';
 import { BaseRepository } from '@/shared/core/infra/prisma/base.repository';
+import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
 import { PrismaService } from '@/shared/infra/database/prisma/prisma.service';
 import { Als } from '@/shared/services/als/als.interface';
 import { GenericId } from '@/shared/types/common';
@@ -45,11 +46,12 @@ export class MemoryRepository
     eventId: GenericId,
     query?: ListMemoriesWithFilesByQuery,
   ): Promise<PaginatedResult<Memory>> {
-    const { orderBy, order } = query;
+    const { orderBy, order, hidden } = query;
     const { page, take, skip } = this.getPaginationParams(query);
 
     const where: Prisma.MemoryModelWhereInput = {
       eventId: UniqueEntityID.raw(eventId),
+      ...(!isEmpty(hidden) && { hidden }),
     };
 
     let ordination: Prisma.MemoryModelOrderByWithRelationInput;

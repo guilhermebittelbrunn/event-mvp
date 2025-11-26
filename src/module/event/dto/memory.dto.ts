@@ -20,6 +20,9 @@ export class MemoryDTO extends BaseEntityDTO {
   @ApiProperty()
   message?: string;
 
+  @ApiProperty()
+  hidden?: boolean;
+
   @ApiHideProperty()
   file?: FileDTO;
 }

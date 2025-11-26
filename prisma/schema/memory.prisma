@@ -6,6 +6,7 @@ model MemoryModel {
   description String?
   ipAddress   String  @map("ip_address")
   message     String?
+  hidden      Boolean @default(false)
   // @TODO: implement status to check if the memory is valid or not after implement queue system
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()

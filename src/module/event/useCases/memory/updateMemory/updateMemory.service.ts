@@ -34,6 +34,7 @@ export class UpdateMemoryService {
         message: coalesce(dto.message, currentMemory.message),
         identifier: coalesce(dto.identifier, currentMemory.identifier),
         description: coalesce(dto.description, currentMemory.description),
+        hidden: coalesce(dto.hidden, currentMemory.hidden),
       },
       currentMemory.id,
     );
