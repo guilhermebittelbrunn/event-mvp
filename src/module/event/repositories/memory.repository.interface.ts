@@ -10,7 +10,9 @@ import {
 } from '@/shared/core/infra/repository.interface';
 import { GenericId } from '@/shared/types/common';
 
-export interface ListMemoriesWithFilesByQuery extends PaginationOrderQuery<MemoryModel> {}
+export interface ListMemoriesWithFilesByQuery extends PaginationOrderQuery<MemoryModel> {
+  hidden?: boolean;
+}
 
 export interface IMemoryRepository extends IBaseRepository<Memory> {
   findAllByIds(ids: GenericId[]): MultiEntityResponse<Memory>;

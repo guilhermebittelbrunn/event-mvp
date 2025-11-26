@@ -23,5 +23,6 @@ import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManage
       useClass: TransactionManagerService,
     },
   ],
+  exports: [UpdateMemoryService],
 })
 export class UpdateMemoryModule {}
