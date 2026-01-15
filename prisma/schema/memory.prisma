@@ -10,7 +10,7 @@ model MemoryModel {
   // @TODO: implement status to check if the memory is valid or not after implement queue system
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
   event EventModel @relation(fields: [eventId], references: [id])

@@ -10,7 +10,7 @@ model EventModel {
   endAt       DateTime @map("end_at")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
   config EventConfigModel?
@@ -42,7 +42,7 @@ model EventConfigModel {
   welcomeMessage     String @default("Bem-vindo ao nosso evento!") @map("welcome_message")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
   event EventModel @relation(fields: [eventId], references: [id])
@@ -58,7 +58,7 @@ model EventAccessModel {
   type    String @default("guest")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
   event EventModel @relation(fields: [eventId], references: [id])
