@@ -43,5 +43,8 @@ export class CreateEventDTO {
   userId: string;
 
   @ApiHideProperty()
+  isAdmin?: boolean;
+
+  @ApiHideProperty()
   image?: File;
 }

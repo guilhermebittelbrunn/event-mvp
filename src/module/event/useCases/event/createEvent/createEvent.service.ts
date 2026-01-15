@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { differenceInDays } from 'date-fns';
 
 import CreateEventErrors from './createEvent.error';
 import { CreateEventDTO } from './dto/createEvent.dto';
@@ -16,6 +17,7 @@ import { AddFileService } from '@/module/shared/domain/file/services/addFile/add
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
 import { EventStatusEnum } from '@/shared/types/event/event';
+import { MAX_EVENT_DAYS_RANGE } from '@/shared/utils';
 
 @Injectable()
 export class CreateEventService {
@@ -26,7 +28,23 @@ export class CreateEventService {
   ) {}
 
   async execute(dto: CreateEventDTO) {
-    const { slug, status, userId } = dto;
+    await this.validatePayload(dto);
+
+    const event = await this.createEventAndRelations(dto);
+
+    return this.eventRepo.save(event);
+  }
+
+  private async validatePayload(dto: CreateEventDTO) {
+    const { slug, endAt, startAt, isAdmin } = dto;
+
+    if (!isAdmin) {
+      const daysRange = differenceInDays(new Date(endAt), new Date(startAt));
+
+      if (daysRange > MAX_EVENT_DAYS_RANGE) {
+        throw new CreateEventErrors.InvalidEventDaysRange(MAX_EVENT_DAYS_RANGE);
+      }
+    }
 
     const eventSlug = EventSlug.create(slug);
 
@@ -35,13 +53,21 @@ export class CreateEventService {
     if (existingEvent) {
       throw new CreateEventErrors.SlugAlreadyInUse(eventSlug);
     }
+  }
 
-    const eventStatus = EventStatus.create(status ?? EventStatusEnum.DRAFT);
+  private async createEventAndRelations(dto: CreateEventDTO) {
+    const { slug, status, userId, isAdmin } = dto;
+
+    let eventStatus = EventStatus.create(EventStatusEnum.PENDING_PAYMENT);
+
+    if (status && isAdmin) {
+      eventStatus = EventStatus.create(status);
+    }
 
     const event = Event.create({
       ...dto,
       userId: UniqueEntityID.create(userId),
-      slug: eventSlug,
+      slug: EventSlug.create(slug),
       status: eventStatus,
     });
 
@@ -57,6 +83,6 @@ export class CreateEventService {
       event.fileId = file.id;
     }
 
-    return this.eventRepo.save(event);
+    return event;
   }
 }

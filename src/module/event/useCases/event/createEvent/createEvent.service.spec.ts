@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { File } from '@nest-lab/fastify-multer';
 import { Test, TestingModule } from '@nestjs/testing';
+import { addDays } from 'date-fns';
 
 import CreateEventErrors from './createEvent.error';
 import { CreateEventService } from './createEvent.service';
@@ -105,7 +106,7 @@ describe('CreateEventService', () => {
   });
 
   it('should throw an error if the event status is not valid', async () => {
-    const payload = makePayload({ status: 'invalid' as EventStatusEnum });
+    const payload = makePayload({ status: 'invalid' as EventStatusEnum, isAdmin: true });
 
     await expect(service.execute(payload)).rejects.toThrow(GenericErrors.InvalidParam);
 
@@ -136,6 +137,14 @@ describe('CreateEventService', () => {
     await expect(service.execute(payload)).rejects.toThrow(CreateEventErrors.SlugAlreadyInUse);
 
     expect(eventRepoMock.findBySlug).toHaveBeenCalledWith(EventSlug.create(payload.slug));
+    expect(eventRepoMock.save).not.toHaveBeenCalled();
+  });
+
+  it('should throw an error if the event days range is greater than the maximum allowed', async () => {
+    const payload = makePayload({ startAt: new Date(), endAt: addDays(new Date(), 8) });
+
+    await expect(service.execute(payload)).rejects.toThrow(CreateEventErrors.InvalidEventDaysRange);
+
     expect(eventRepoMock.save).not.toHaveBeenCalled();
   });
 });

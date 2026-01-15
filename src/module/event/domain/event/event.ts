@@ -66,6 +66,10 @@ export default class Event extends Entity<IEventProps> {
     return this.props.status;
   }
 
+  set status(status: EventStatus) {
+    this.props.status = status;
+  }
+
   get name(): string {
     return this.props.name;
   }
