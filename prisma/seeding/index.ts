@@ -2,6 +2,7 @@
 
 import { PrismaClient } from '@prisma/client';
 
+import { planSeeding } from './plan';
 import { getUserSeeding } from './user';
 
 export async function runSeeding(prisma: PrismaClient) {
@@ -18,5 +19,11 @@ export async function runSeeding(prisma: PrismaClient) {
         create: user,
       }),
     ),
+  );
+
+  /** Plan */
+
+  await Promise.all(
+    planSeeding.map((plan) => prisma.planModel.upsert({ where: { id: plan.id }, update: {}, create: plan })),
   );
 }
