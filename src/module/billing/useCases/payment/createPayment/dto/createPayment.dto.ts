@@ -1,6 +1,7 @@
-import { ValidatedNumber } from '@/shared/decorators';
+import { ValidatedEnum } from '@/shared/decorators';
+import { PlanTypeEnum } from '@/shared/types/billing/plan';
 
 export class CreatePaymentDTO {
-  @ValidatedNumber('valor')
-  amount: number;
+  @ValidatedEnum('tipo de plano', PlanTypeEnum)
+  planType: PlanTypeEnum;
 }

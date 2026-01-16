@@ -4,24 +4,41 @@ import { CreatePaymentDTO } from './dto/createPayment.dto';
 
 import Payment from '@/module/billing/domain/payment/payment';
 import PaymentStatus from '@/module/billing/domain/payment/paymentStatus';
+import PlanType from '@/module/billing/domain/plan/planType';
 import {
   IPaymentRepository,
   IPaymentRepositorySymbol,
 } from '@/module/billing/repositories/payment.repository.interface';
+import {
+  IPlanRepository,
+  IPlanRepositorySymbol,
+} from '@/module/billing/repositories/plan.repository.interface';
 import { makePaymentGatewayByType } from '@/shared/infra/paymentGateway/factories/paymentGateway';
 import { PaymentIntegratorEnum, PaymentStatusEnum } from '@/shared/types';
 
 @Injectable()
 export class CreatePaymentService {
-  constructor(@Inject(IPaymentRepositorySymbol) private readonly paymentRepository: IPaymentRepository) {}
+  constructor(
+    @Inject(IPaymentRepositorySymbol) private readonly paymentRepository: IPaymentRepository,
+    @Inject(IPlanRepositorySymbol) private readonly planRepository: IPlanRepository,
+  ) {}
 
-  async execute({ amount }: CreatePaymentDTO) {
+  async execute({ planType }: CreatePaymentDTO) {
+    const planTypeEntity = PlanType.create(planType);
+
+    const plan = await this.planRepository.findByType(planTypeEntity.value);
+
+    if (!plan || !plan.price || plan.price <= 0) {
+      return null;
+    }
+
     const paymentGateway = makePaymentGatewayByType(PaymentIntegratorEnum.STRIPE);
 
-    const { integratorId, paymentUrl } = await paymentGateway.createPaymentLink({ amount });
+    const { integratorId, paymentUrl } = await paymentGateway.createPaymentLink({ amount: plan.price });
 
     const payment = Payment.create({
-      amount,
+      planId: plan.id,
+      amount: plan.price,
       paymentUrl,
       integratorId,
       status: PaymentStatus.create(PaymentStatusEnum.PENDING),

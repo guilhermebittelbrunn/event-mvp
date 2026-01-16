@@ -2,8 +2,7 @@ import { File } from '@nest-lab/fastify-multer';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { IsOptional, ValidateIf, Validate } from 'class-validator';
 
-import { ValidatedDateString, ValidatedEnum, ValidatedString } from '@/shared/decorators';
-import { EventStatusEnum } from '@/shared/types/event/event';
+import { ValidatedDateString, ValidatedString } from '@/shared/decorators';
 
 export class CreateEventDTO {
   @ValidatedString('nome')
@@ -11,10 +10,6 @@ export class CreateEventDTO {
 
   @ValidatedString('link de acesso')
   slug: string;
-
-  @IsOptional()
-  @ValidatedEnum('status', EventStatusEnum)
-  status?: EventStatusEnum;
 
   @IsOptional()
   @ValidatedString('descrição')

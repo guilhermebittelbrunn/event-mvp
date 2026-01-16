@@ -17,6 +17,7 @@ import {
 import { AddFileService } from '@/module/shared/domain/file/services/addFile/addFile.service';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
+import { PlanTypeEnum } from '@/shared/types/billing/plan';
 import { EventStatusEnum } from '@/shared/types/event/event';
 import { MAX_EVENT_DAYS_RANGE } from '@/shared/utils';
 
@@ -30,11 +31,34 @@ export class CreateEventService {
   ) {}
 
   async execute(dto: CreateEventDTO) {
-    await this.validatePayload(dto);
+    const { slug, userId, isAdmin } = await this.validatePayload(dto);
 
-    const event = await this.createEventAndRelations(dto);
+    const status = EventStatus.create(isAdmin ? EventStatusEnum.PUBLISHED : EventStatusEnum.PENDING_PAYMENT);
 
-    await this.createPaymentService.execute({ amount: 100 });
+    const event = Event.create({
+      ...dto,
+      userId: UniqueEntityID.create(userId),
+      slug: EventSlug.create(slug),
+      status,
+    });
+
+    event.config = EventConfig.create({ eventId: event.id });
+
+    this.addAccessToEvent.execute({ event });
+
+    if (!isEmpty(dto.image)) {
+      const file = await this.addFileService.execute({ file: dto.image });
+
+      event.fileId = file.id;
+    }
+
+    if (!isAdmin) {
+      const payment = await this.createPaymentService.execute({ planType: PlanTypeEnum.EVENT_BASIC });
+
+      if (!payment) {
+        event.status = EventStatus.create(EventStatusEnum.PUBLISHED);
+      }
+    }
 
     return this.eventRepo.save(event);
   }
@@ -57,36 +81,7 @@ export class CreateEventService {
     if (existingEvent) {
       throw new CreateEventErrors.SlugAlreadyInUse(eventSlug);
     }
-  }
 
-  private async createEventAndRelations(dto: CreateEventDTO) {
-    const { slug, status, userId, isAdmin } = dto;
-
-    let eventStatus = EventStatus.create(EventStatusEnum.PENDING_PAYMENT);
-
-    if (status && isAdmin) {
-      eventStatus = EventStatus.create(status);
-    }
-
-    const event = Event.create({
-      ...dto,
-      userId: UniqueEntityID.create(userId),
-      slug: EventSlug.create(slug),
-      status: eventStatus,
-    });
-
-    event.config = EventConfig.create({
-      eventId: event.id,
-    });
-
-    this.addAccessToEvent.execute({ event });
-
-    if (!isEmpty(dto.image)) {
-      const file = await this.addFileService.execute({ file: dto.image });
-
-      event.fileId = file.id;
-    }
-
-    return event;
+    return dto;
   }
 }
