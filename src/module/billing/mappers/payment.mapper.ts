@@ -15,6 +15,7 @@ class BasePaymentMapper extends Mapper<Payment, PaymentModelWithRelations, Payme
   toDomain(payment: PaymentModelWithRelations): Payment {
     return Payment.create(
       {
+        planId: new UniqueEntityID(payment.planId),
         integrator: PaymentIntegrator.create(payment.integrator as PaymentIntegratorEnum),
         status: PaymentStatus.create(payment.status as PaymentStatusEnum),
         integratorId: payment.integratorId,
@@ -35,6 +36,7 @@ class BasePaymentMapper extends Mapper<Payment, PaymentModelWithRelations, Payme
       id: payment.id.toValue(),
       integrator: payment.integrator.value,
       integratorId: payment.integratorId,
+      planId: payment.planId.toValue(),
       status: payment.status.value,
       amount: payment.amount,
       currency: payment.currency,
