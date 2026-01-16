@@ -4,6 +4,7 @@ import { differenceInDays } from 'date-fns';
 import CreateEventErrors from './createEvent.error';
 import { CreateEventDTO } from './dto/createEvent.dto';
 
+import { CreatePaymentService } from '@/module/billing/useCases/payment/createPayment/createPayment.service';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
@@ -25,12 +26,15 @@ export class CreateEventService {
     @Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository,
     private readonly addAccessToEvent: AddAccessToEvent,
     private readonly addFileService: AddFileService,
+    private readonly createPaymentService: CreatePaymentService,
   ) {}
 
   async execute(dto: CreateEventDTO) {
     await this.validatePayload(dto);
 
     const event = await this.createEventAndRelations(dto);
+
+    await this.createPaymentService.execute({ amount: 100 });
 
     return this.eventRepo.save(event);
   }

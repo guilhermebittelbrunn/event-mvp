@@ -59,7 +59,7 @@ export class EventRepository
   async findCompleteById(id: GenericId): Promise<Event | null> {
     const event = await this.manager().findUnique({
       where: { id: UniqueEntityID.raw(id) },
-      include: { config: true, accesses: true, file: true },
+      include: { config: true, accesses: true, file: true, payment: true },
     });
 
     return this.mapper.toDomainOrNull(event);
