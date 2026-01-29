@@ -45,6 +45,10 @@ export default class Payment extends Entity<IPaymentProps> {
     return this.props.status;
   }
 
+  set status(status: PaymentStatus) {
+    this.props.status = status;
+  }
+
   get amount(): number {
     return this.props.amount;
   }

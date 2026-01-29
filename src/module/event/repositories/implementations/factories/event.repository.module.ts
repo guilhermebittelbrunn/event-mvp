@@ -7,6 +7,8 @@ import { EventRepository } from '../event.repository';
 import { EventAccessRepository } from '../eventAccess.repository';
 import { EventConfigRepository } from '../eventConfig.repository';
 
+import { PaymentRepository } from '@/module/billing/repositories/implementations/payment.repository';
+import { IPaymentRepositorySymbol } from '@/module/billing/repositories/payment.repository.interface';
 import { PrismaModule } from '@/shared/infra/database/prisma/prisma.module';
 import { AlsModule } from '@/shared/services/als/als.module';
 
@@ -24,6 +26,10 @@ import { AlsModule } from '@/shared/services/als/als.module';
     {
       provide: IEventRepositorySymbol,
       useClass: EventRepository,
+    },
+    {
+      provide: IPaymentRepositorySymbol,
+      useClass: PaymentRepository,
     },
   ],
   exports: [IEventRepositorySymbol],

@@ -169,6 +169,10 @@ export default class Event extends Entity<IEventProps> {
     return this.props.payment;
   }
 
+  set payment(payment: Payment) {
+    this.props.payment = payment;
+  }
+
   public static create(props: IEventProps, id?: UniqueEntityID) {
     const guardedProps = Guard.againstNullOrUndefinedBulk([
       { argument: props.name, argumentName: 'nome' },
