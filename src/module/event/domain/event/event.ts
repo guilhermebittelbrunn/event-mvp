@@ -65,6 +65,10 @@ export default class Event extends Entity<IEventProps> {
     return this.props.paymentId;
   }
 
+  set paymentId(paymentId: UniqueEntityID | undefined) {
+    this.props.paymentId = paymentId;
+  }
+
   get slug(): EventSlug {
     return this.props.slug;
   }

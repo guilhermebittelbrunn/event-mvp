@@ -1,6 +1,9 @@
+import Event from '@/module/event/domain/event/event';
+
 export interface CreatePaymentLinkRequest {
   /** amount in cents */
   amount: number;
+  event?: Event;
 }
 
 export interface CreatePaymentLinkResponse {

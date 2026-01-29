@@ -17,7 +17,6 @@ import {
 import { AddFileService } from '@/module/shared/domain/file/services/addFile/addFile.service';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
-import { PlanTypeEnum } from '@/shared/types/billing/plan';
 import { EventStatusEnum } from '@/shared/types/event/event';
 import { MAX_EVENT_DAYS_RANGE } from '@/shared/utils';
 
@@ -53,11 +52,12 @@ export class CreateEventService {
     }
 
     if (!isAdmin) {
-      const payment = await this.createPaymentService.execute({ planType: PlanTypeEnum.EVENT_BASIC });
+      const payment = await this.createPaymentService.execute({ event });
 
       if (!payment) {
         event.status = EventStatus.create(EventStatusEnum.PUBLISHED);
       }
+      event.paymentId = payment?.id;
     }
 
     return this.eventRepo.save(event);

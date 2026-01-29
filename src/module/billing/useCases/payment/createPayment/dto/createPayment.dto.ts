@@ -1,7 +1,8 @@
-import { ValidatedEnum } from '@/shared/decorators';
-import { PlanTypeEnum } from '@/shared/types/billing/plan';
+import { IsOptional } from 'class-validator';
+
+import Event from '@/module/event/domain/event/event';
 
 export class CreatePaymentDTO {
-  @ValidatedEnum('tipo de plano', PlanTypeEnum)
-  planType: PlanTypeEnum;
+  @IsOptional()
+  event?: Event;
 }

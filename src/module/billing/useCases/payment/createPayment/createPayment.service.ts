@@ -4,7 +4,6 @@ import { CreatePaymentDTO } from './dto/createPayment.dto';
 
 import Payment from '@/module/billing/domain/payment/payment';
 import PaymentStatus from '@/module/billing/domain/payment/paymentStatus';
-import PlanType from '@/module/billing/domain/plan/planType';
 import {
   IPaymentRepository,
   IPaymentRepositorySymbol,
@@ -15,6 +14,7 @@ import {
 } from '@/module/billing/repositories/plan.repository.interface';
 import { makePaymentGatewayByType } from '@/shared/infra/paymentGateway/factories/paymentGateway';
 import { PaymentIntegratorEnum, PaymentStatusEnum } from '@/shared/types';
+import { PlanTypeEnum } from '@/shared/types/billing/plan';
 
 @Injectable()
 export class CreatePaymentService {
@@ -23,10 +23,13 @@ export class CreatePaymentService {
     @Inject(IPlanRepositorySymbol) private readonly planRepository: IPlanRepository,
   ) {}
 
-  async execute({ planType }: CreatePaymentDTO) {
-    const planTypeEntity = PlanType.create(planType);
+  async execute({ event }: CreatePaymentDTO) {
+    if (!event) {
+      return null;
+    }
 
-    const plan = await this.planRepository.findByType(planTypeEntity.value);
+    /** @todo: validate the enum by the payload, for now is hardcoded because this service only will work with the event basic plan */
+    const plan = await this.planRepository.findByType(PlanTypeEnum.EVENT_BASIC);
 
     if (!plan || !plan.price || plan.price <= 0) {
       return null;
@@ -34,7 +37,7 @@ export class CreatePaymentService {
 
     const paymentGateway = makePaymentGatewayByType(PaymentIntegratorEnum.STRIPE);
 
-    const { integratorId, paymentUrl } = await paymentGateway.createPaymentLink({ amount: plan.price });
+    const { integratorId, paymentUrl } = await paymentGateway.createPaymentLink({ amount: plan.price, event });
 
     const payment = Payment.create({
       planId: plan.id,
