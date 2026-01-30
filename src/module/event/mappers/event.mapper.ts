@@ -11,6 +11,7 @@ import { EventAccesses } from '../domain/eventAccess/eventAccesses';
 import { Memories } from '../domain/memory/memories';
 import { EventDTO } from '../dto/event.dto';
 
+import PaymentMapper, { PaymentModelWithRelations } from '@/module/billing/mappers/payment.mapper';
 import FileMapper, { FileModelWithRelations } from '@/module/shared/mappers/file.mapper';
 import { UserModelWithRelations } from '@/module/user/mappers/user.mapper';
 import UserMapper from '@/module/user/mappers/user.mapper';
@@ -24,6 +25,7 @@ export interface EventModelWithRelations extends EventModel {
   file?: FileModelWithRelations;
   user?: UserModelWithRelations;
   memories?: MemoryModelWithRelations[];
+  payment?: PaymentModelWithRelations;
 }
 
 class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
@@ -33,6 +35,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
         name: event.name,
         userId: new UniqueEntityID(event.userId),
         fileId: UniqueEntityID.createOrUndefined(event.fileId),
+        paymentId: UniqueEntityID.createOrUndefined(event.paymentId),
         slug: EventSlug.create(event.slug),
         status: EventStatus.create(event.status as EventStatusEnum),
         description: event.description,
@@ -46,6 +49,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
         file: FileMapper.toDomainOrUndefined(event.file),
         user: UserMapper.toDomainOrUndefined(event.user),
         memories: Memories.create(event.memories?.map(MemoryMapper.toDomain)),
+        payment: PaymentMapper.toDomainOrUndefined(event.payment),
       },
       new UniqueEntityID(event.id),
     );
@@ -56,6 +60,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       id: event.id.toValue(),
       userId: event.userId.toValue(),
       fileId: event.fileId?.toValue(),
+      paymentId: event.paymentId?.toValue(),
       name: event.name,
       slug: event.slug.value,
       status: event.status.value,
@@ -73,6 +78,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       id: event.id.toValue(),
       userId: event.userId.toValue(),
       fileId: event.fileId?.toValue(),
+      paymentId: event.paymentId?.toValue(),
       name: event.name,
       slug: event.slug.value,
       status: event.status.value,
@@ -88,6 +94,7 @@ class BaseEventMapper extends Mapper<Event, EventModelWithRelations, EventDTO> {
       file: FileMapper.toDTOOrUndefined(event.file),
       user: UserMapper.toDTOOrUndefined(event.user),
       memories: event.memories.items.map(MemoryMapper.toDTO),
+      payment: PaymentMapper.toDTOOrUndefined(event.payment),
     };
   }
 }

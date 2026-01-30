@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { CreateEventController } from './createEvent.controller';
 import { CreateEventService } from './createEvent.service';
 
+import { CreatePaymentModule } from '@/module/billing/useCases/payment/createPayment/createPayment.module';
+import { PaymentModule } from '@/module/billing/useCases/payment/payment.module';
 import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent.service';
 import { EventRepositoryFactory } from '@/module/event/repositories/implementations/factories/event.repository.module';
 import { MemoryRepository } from '@/module/event/repositories/implementations/memory.repository';
@@ -14,10 +16,11 @@ import { TransactionManagerService } from '@/shared/core/infra/prisma/transactio
 import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManager.interface';
 
 @Module({
-  imports: [AddFileModule, EventRepositoryFactory],
+  imports: [AddFileModule, EventRepositoryFactory, CreatePaymentModule, PaymentModule],
   controllers: [CreateEventController],
   providers: [
     CreateEventService,
+    AddAccessToEvent,
     {
       provide: IFileRepositorySymbol,
       useClass: FileRepository,
@@ -30,7 +33,6 @@ import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManage
       provide: ITransactionManagerSymbol,
       useClass: TransactionManagerService,
     },
-    AddAccessToEvent,
   ],
 })
 export class CreateEventModule {}

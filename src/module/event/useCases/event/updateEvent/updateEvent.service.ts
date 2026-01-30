@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { differenceInDays } from 'date-fns';
 
 import { UpdateEventDTO } from './dto/updateEvent.dto';
 import UpdateEventErrors from './updateEvent.error';
@@ -12,7 +13,8 @@ import {
   IEventRepositorySymbol,
 } from '@/module/event/repositories/event.repository.interface';
 import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
-import { coalesce, isEmpty } from '@/shared/core/utils/undefinedHelpers';
+import { coalesce } from '@/shared/core/utils/undefinedHelpers';
+import { MAX_EVENT_DAYS_RANGE } from '@/shared/utils';
 
 @Injectable()
 export class UpdateEventService {
@@ -51,11 +53,19 @@ export class UpdateEventService {
     let eventStatus: EventStatus | undefined;
     let eventSlug: EventSlug | undefined;
 
-    if (!isEmpty(dto.status)) {
+    if (dto.status && dto.isAdmin) {
       eventStatus = EventStatus.create(dto.status);
     }
 
-    if (!isEmpty(dto.slug)) {
+    if (dto.startAt && dto.endAt) {
+      const daysRange = differenceInDays(new Date(dto.endAt), new Date(dto.startAt));
+
+      if (daysRange > MAX_EVENT_DAYS_RANGE) {
+        throw new UpdateEventErrors.InvalidEventDaysRange(MAX_EVENT_DAYS_RANGE);
+      }
+    }
+
+    if (dto.slug) {
       eventSlug = EventSlug.create(dto.slug);
 
       const existingEvent = await this.eventRepo.findBySlug(eventSlug);
@@ -82,7 +92,7 @@ export class UpdateEventService {
 
     this.addAccessToEvent.execute({ event });
 
-    if (!isEmpty(dto.image)) {
+    if (dto.image) {
       const oldFileId = currentEvent.file?.id.toValue();
 
       const { id } = await this.replaceFileService.execute({ oldFileId, file: dto.image });

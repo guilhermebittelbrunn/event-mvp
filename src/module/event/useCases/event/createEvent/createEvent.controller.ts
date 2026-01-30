@@ -15,7 +15,6 @@ import { ValidatedBody } from '@/shared/decorators';
 import { GetUser } from '@/shared/decorators/getUser.decorator';
 import { JwtAuthGuard } from '@/shared/guards/jwtAuth.guard';
 import { FileValidatorInterceptor } from '@/shared/interceptors/fileValidator.interceptor';
-import { EventStatusEnum } from '@/shared/types/event/event';
 import { UserTypeEnum } from '@/shared/types/user';
 
 @Controller('/event')
@@ -42,7 +41,7 @@ export class CreateEventController {
       ...body,
       userId: user.id.toValue(),
       image: file?.image?.[0],
-      ...(!isAdmin && { status: EventStatusEnum.PENDING_PAYMENT }),
+      isAdmin,
     };
 
     const result = await this.transactionManager.run(() => this.useCase.execute(payload));

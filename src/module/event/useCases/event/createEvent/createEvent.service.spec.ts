@@ -1,11 +1,13 @@
 import { faker } from '@faker-js/faker';
 import { File } from '@nest-lab/fastify-multer';
 import { Test, TestingModule } from '@nestjs/testing';
+import { addDays } from 'date-fns';
 
 import CreateEventErrors from './createEvent.error';
 import { CreateEventService } from './createEvent.service';
 import { CreateEventDTO } from './dto/createEvent.dto';
 
+import { CreatePaymentService } from '@/module/billing/useCases/payment/createPayment/createPayment.service';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent.service';
 import { IEventRepositorySymbol } from '@/module/event/repositories/event.repository.interface';
@@ -17,14 +19,12 @@ import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import { FakeFileStoreService } from '@/shared/test/services';
-import { EventStatusEnum } from '@/shared/types/event/event';
 
 const makePayload = (overrides?: Partial<CreateEventDTO>): CreateEventDTO => {
   return {
     userId: faker.string.uuid(),
     name: faker.person.fullName(),
     slug: faker.string.uuid(),
-    status: EventStatusEnum.DRAFT,
     startAt: new Date(),
     endAt: new Date(),
     image: makeFile(),
@@ -68,6 +68,13 @@ describe('CreateEventService', () => {
           useValue: addFileService,
         },
         AddAccessToEvent,
+        {
+          provide: CreatePaymentService,
+          useValue: {
+            /**@todo: create a instance of the create payment service and create tests scenes for the payment service */
+            execute: jest.fn().mockResolvedValue(null),
+          },
+        },
       ],
     }).compile();
 
@@ -86,7 +93,7 @@ describe('CreateEventService', () => {
   });
 
   it('should create a event successfully', async () => {
-    const payload = makePayload({ status: EventStatusEnum.COMPLETED });
+    const payload = makePayload();
 
     const event = fakeEvent(payload);
 
@@ -99,17 +106,7 @@ describe('CreateEventService', () => {
     expect(eventRepoMock.save).toHaveBeenCalled();
     expect(result.userId.toValue()).toEqual(event.userId.toValue());
     expect(result.slug.value).toEqual(event.slug.value);
-    expect(result.status.value).toEqual(event.status.value);
-    expect(result.status.value).toEqual(EventStatusEnum.COMPLETED);
     expect(spyAccessService).toHaveBeenCalled();
-  });
-
-  it('should throw an error if the event status is not valid', async () => {
-    const payload = makePayload({ status: 'invalid' as EventStatusEnum });
-
-    await expect(service.execute(payload)).rejects.toThrow(GenericErrors.InvalidParam);
-
-    expect(eventRepoMock.save).not.toHaveBeenCalled();
   });
 
   it('should throw an error if the event slug is not valid', async () => {
@@ -136,6 +133,14 @@ describe('CreateEventService', () => {
     await expect(service.execute(payload)).rejects.toThrow(CreateEventErrors.SlugAlreadyInUse);
 
     expect(eventRepoMock.findBySlug).toHaveBeenCalledWith(EventSlug.create(payload.slug));
+    expect(eventRepoMock.save).not.toHaveBeenCalled();
+  });
+
+  it('should throw an error if the event days range is greater than the maximum allowed', async () => {
+    const payload = makePayload({ startAt: new Date(), endAt: addDays(new Date(), 8) });
+
+    await expect(service.execute(payload)).rejects.toThrow(CreateEventErrors.InvalidEventDaysRange);
+
     expect(eventRepoMock.save).not.toHaveBeenCalled();
   });
 });

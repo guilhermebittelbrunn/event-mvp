@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { differenceInDays } from 'date-fns';
 
 import CreateEventErrors from './createEvent.error';
 import { CreateEventDTO } from './dto/createEvent.dto';
 
+import { CreatePaymentService } from '@/module/billing/useCases/payment/createPayment/createPayment.service';
 import Event from '@/module/event/domain/event/event';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import EventStatus from '@/module/event/domain/event/eventStatus';
@@ -16,6 +18,7 @@ import { AddFileService } from '@/module/shared/domain/file/services/addFile/add
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { isEmpty } from '@/shared/core/utils/undefinedHelpers';
 import { EventStatusEnum } from '@/shared/types/event/event';
+import { MAX_EVENT_DAYS_RANGE } from '@/shared/utils';
 
 @Injectable()
 export class CreateEventService {
@@ -23,31 +26,24 @@ export class CreateEventService {
     @Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository,
     private readonly addAccessToEvent: AddAccessToEvent,
     private readonly addFileService: AddFileService,
+    private readonly createPaymentService: CreatePaymentService,
   ) {}
 
   async execute(dto: CreateEventDTO) {
-    const { slug, status, userId } = dto;
+    const { slug, userId, isAdmin } = await this.validatePayload(dto);
 
-    const eventSlug = EventSlug.create(slug);
-
-    const existingEvent = await this.eventRepo.findBySlug(eventSlug);
-
-    if (existingEvent) {
-      throw new CreateEventErrors.SlugAlreadyInUse(eventSlug);
-    }
-
-    const eventStatus = EventStatus.create(status ?? EventStatusEnum.DRAFT);
+    const status = EventStatus.create(
+      isAdmin && dto?.isForTesting ? EventStatusEnum.PUBLISHED : EventStatusEnum.PENDING_PAYMENT,
+    );
 
     const event = Event.create({
       ...dto,
       userId: UniqueEntityID.create(userId),
-      slug: eventSlug,
-      status: eventStatus,
+      slug: EventSlug.create(slug),
+      status,
     });
 
-    event.config = EventConfig.create({
-      eventId: event.id,
-    });
+    event.config = EventConfig.create({ eventId: event.id });
 
     this.addAccessToEvent.execute({ event });
 
@@ -57,6 +53,39 @@ export class CreateEventService {
       event.fileId = file.id;
     }
 
+    if (event.status.value === EventStatusEnum.PENDING_PAYMENT) {
+      const payment = await this.createPaymentService.execute({ event });
+
+      if (!payment) {
+        event.status = EventStatus.create(EventStatusEnum.PUBLISHED);
+      }
+      event.paymentId = payment?.id;
+    }
+
     return this.eventRepo.save(event);
+  }
+
+  private async validatePayload(dto: CreateEventDTO) {
+    const { slug, endAt, startAt, isAdmin } = dto;
+
+    if (!isAdmin) {
+      dto.isForTesting = false;
+
+      const daysRange = differenceInDays(new Date(endAt), new Date(startAt));
+
+      if (daysRange > MAX_EVENT_DAYS_RANGE) {
+        throw new CreateEventErrors.InvalidEventDaysRange(MAX_EVENT_DAYS_RANGE);
+      }
+    }
+
+    const eventSlug = EventSlug.create(slug);
+
+    const existingEvent = await this.eventRepo.findBySlug(eventSlug);
+
+    if (existingEvent) {
+      throw new CreateEventErrors.SlugAlreadyInUse(eventSlug);
+    }
+
+    return dto;
   }
 }

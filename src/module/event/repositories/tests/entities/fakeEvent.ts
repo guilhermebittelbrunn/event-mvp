@@ -15,6 +15,7 @@ export function fakeEvent(overrides?: Partial<EventModel>): Event {
   const status = EventStatus.create((overrides?.status as EventStatusEnum) ?? EventStatusEnum.DRAFT);
   const userId = new UniqueEntityID(overrides?.userId ?? faker.string.uuid());
   const fileId = overrides?.fileId ? new UniqueEntityID(overrides.fileId) : undefined;
+  const paymentId = overrides?.paymentId ? new UniqueEntityID(overrides.paymentId) : undefined;
 
   return Event.create(
     {
@@ -27,6 +28,7 @@ export function fakeEvent(overrides?: Partial<EventModel>): Event {
       slug,
       status,
       fileId,
+      paymentId,
     },
     UniqueEntityID.create(),
   );

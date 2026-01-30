@@ -7,10 +7,12 @@ import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthApplicationModule } from './module/auth/authApplication.module';
+import { BillingApplicationModule } from './module/billing/useCases/billingApplication.module';
 import { EventApplicationModule } from './module/event/useCases/eventApplication.module';
 import { RegisterLogModule } from './module/shared/domain/log/service/registerLog/registerLog.module';
 import { ValidateUserAccessModule } from './module/user/domain/user/services/validateUserAccess/validateUserAccess.module';
 import { UserApplicationModule } from './module/user/useCases/userApplication.module';
+import { WebhookApplicationModule } from './module/webhook/useCases/webhookApplication.module';
 import configuration from './shared/config/configuration';
 import { DiscordModule } from './shared/core/infra/messageLogger/implementations/discord/discord.module';
 import { MessageLoggerModule } from './shared/core/infra/messageLogger/messageLogger.module';
@@ -67,6 +69,8 @@ import { JwtRefreshStrategy } from './shared/strategies/jwtRefresh.strategy';
     UserApplicationModule,
     EventApplicationModule,
     AuthApplicationModule,
+    WebhookApplicationModule,
+    BillingApplicationModule,
   ],
   controllers: [AppController],
   providers: [

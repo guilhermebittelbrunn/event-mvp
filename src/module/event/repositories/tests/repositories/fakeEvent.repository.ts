@@ -8,4 +8,5 @@ export class FakeEventRepository extends FakeBaseRepository<Event> implements IE
   list = jest.fn();
   listForAdmin = jest.fn();
   findBySlug = jest.fn();
+  findByPaymentIntegratorId = jest.fn();
 }

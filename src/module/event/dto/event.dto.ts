@@ -4,6 +4,7 @@ import { EventAccessDTO } from './eventAccess.dto';
 import { EventConfigDTO } from './eventConfig.dto';
 import { MemoryDTO } from './memory.dto';
 
+import { PaymentDTO } from '@/module/billing/dto/payment.dto';
 import { FileDTO } from '@/module/shared/dto/file.dto';
 import { UserDTO } from '@/module/user/dto/user.dto';
 import { BaseEntityDTO } from '@/shared/core/dto/BaseEntityDTO';
@@ -16,6 +17,9 @@ export class EventDTO extends BaseEntityDTO {
 
   @ApiUUIDProperty()
   fileId?: string | null;
+
+  @ApiUUIDProperty()
+  paymentId?: string | null;
 
   @ApiProperty()
   slug: string;
@@ -52,4 +56,7 @@ export class EventDTO extends BaseEntityDTO {
 
   @ApiHideProperty()
   memories?: MemoryDTO[];
+
+  @ApiHideProperty()
+  payment?: PaymentDTO;
 }

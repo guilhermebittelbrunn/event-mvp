@@ -16,9 +16,10 @@ export interface ListEventByQuery extends PaginationOrderDateQuery<EventModel> {
 export interface IEventRepository extends IBaseRepository<Event> {
   save(domain: Event): Promise<Event>;
   findCompleteById(id: GenericId): SingleEntityResponse<Event>;
+  findBySlug(slug: string | EventSlug): SingleEntityResponse<Event>;
+  findByPaymentIntegratorId(integratorId: string): SingleEntityResponse<Event>;
   list(query?: ListEventByQuery): Promise<PaginatedResult<Event>>;
   listForAdmin(query?: ListEventByQuery): Promise<PaginatedResult<Event>>;
-  findBySlug(slug: string | EventSlug): SingleEntityResponse<Event>;
 }
 
 export const IEventRepositorySymbol = Symbol('IEventRepository');

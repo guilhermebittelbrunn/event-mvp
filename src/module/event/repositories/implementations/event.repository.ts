@@ -9,9 +9,14 @@ import { IEventRepository, ListEventByQuery } from '../event.repository.interfac
 import { IEventAccessRepository, IEventAccessRepositorySymbol } from '../eventAccess.repository.interface';
 import { IEventConfigRepository, IEventConfigRepositorySymbol } from '../eventConfig.repository.interface';
 
+import {
+  IPaymentRepository,
+  IPaymentRepositorySymbol,
+} from '@/module/billing/repositories/payment.repository.interface';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { PaginatedResult } from '@/shared/core/infra/pagination.interface';
 import { BaseRepository } from '@/shared/core/infra/prisma/base.repository';
+import { filledArray } from '@/shared/core/utils/undefinedHelpers';
 import { PrismaService } from '@/shared/infra/database/prisma/prisma.service';
 import { Als } from '@/shared/services/als/als.interface';
 import { GenericId } from '@/shared/types/common';
@@ -27,6 +32,7 @@ export class EventRepository
   constructor(
     @Inject(IEventConfigRepositorySymbol) private readonly eventConfigRepo: IEventConfigRepository,
     @Inject(IEventAccessRepositorySymbol) private readonly eventAccessRepo: IEventAccessRepository,
+    @Inject(IPaymentRepositorySymbol) private readonly paymentRepo: IPaymentRepository,
     protected readonly prisma: PrismaService,
     als: Als,
   ) {
@@ -48,10 +54,16 @@ export class EventRepository
     return event;
   }
 
-  async update(domain: Event): Promise<string> {
-    const rawId = await super.update(domain);
+  async update(event: Event): Promise<string> {
+    const rawId = await super.update(event);
 
-    await this.eventAccessRepo.saveMany(domain.accesses);
+    if (filledArray(event.accesses.items)) {
+      await this.eventAccessRepo.saveMany(event.accesses);
+    }
+
+    if (event.payment) {
+      await this.paymentRepo.update(event.payment);
+    }
 
     return rawId;
   }
@@ -59,7 +71,7 @@ export class EventRepository
   async findCompleteById(id: GenericId): Promise<Event | null> {
     const event = await this.manager().findUnique({
       where: { id: UniqueEntityID.raw(id) },
-      include: { config: true, accesses: true, file: true },
+      include: { config: true, accesses: true, file: true, payment: true },
     });
 
     return this.mapper.toDomainOrNull(event);
@@ -73,7 +85,7 @@ export class EventRepository
         skip,
         take,
         where,
-        include: { file: true, memories: true },
+        include: { file: true, memories: true, payment: true },
         orderBy: ordination,
       }),
       await this.manager().count({ where }),
@@ -146,5 +158,14 @@ export class EventRepository
     }
 
     return { where, ordination, skip, take, page };
+  }
+
+  async findByPaymentIntegratorId(integratorId: string) {
+    const event = await this.manager().findFirst({
+      include: { payment: true },
+      where: { payment: { integratorId } },
+    });
+
+    return this.mapper.toDomainOrNull(event);
   }
 }

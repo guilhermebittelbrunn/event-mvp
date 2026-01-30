@@ -1,0 +1,36 @@
+model PaymentModel {
+  id           String    @id @default(uuid()) @db.Uuid
+  integrator   String
+  integratorId String    @map("integrator_id")
+  planId       String    @map("plan_id") @db.Uuid
+  status       String
+  amount       Int
+  currency     String    @default("BRL")
+  paymentUrl   String    @map("payment_url")
+  paidAt       DateTime? @map("paid_at") @db.Timestamptz()
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
+  event EventModel?
+  plan  PlanModel?  @relation(fields: [planId], references: [id])
+
+  @@map("payment")
+}
+
+model PlanModel {
+  id          String  @id @default(uuid()) @db.Uuid
+  type        String  @unique
+  description String?
+  price       Int
+  currency    String  @default("BRL")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
+  payments PaymentModel[]
+
+  @@map("plan")
+}

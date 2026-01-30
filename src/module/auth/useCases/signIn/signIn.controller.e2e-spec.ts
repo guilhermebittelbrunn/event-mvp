@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { HttpStatus } from '@nestjs/common';
 
+import SignInErrors from '@/module/auth/useCases/signIn/signIn.error';
 import UserPassword from '@/module/user/domain/user/userPassword';
 import { insertFakeUser } from '@/module/user/repositories/tests/entities/fakeUser';
-import SignInErrors from '@/module/auth/useCases/signIn/signIn.error';
 import { request } from '@/shared/test/utils';
 
 describe('SignInController (e2e)', () => {

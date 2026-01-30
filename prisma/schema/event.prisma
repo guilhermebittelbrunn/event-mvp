@@ -2,6 +2,7 @@ model EventModel {
   id          String   @id @default(uuid()) @db.Uuid
   userId      String   @map("user_id") @db.Uuid
   fileId      String?  @unique @map("file_id") @db.Uuid
+  paymentId   String?  @unique @map("payment_id") @db.Uuid
   name        String
   slug        String
   status      String   @default("draft")
@@ -10,13 +11,14 @@ model EventModel {
   endAt       DateTime @map("end_at")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
   config EventConfigModel?
 
-  user UserModel  @relation(fields: [userId], references: [id])
-  file FileModel? @relation(fields: [fileId], references: [id])
+  user    UserModel     @relation(fields: [userId], references: [id])
+  file    FileModel?    @relation(fields: [fileId], references: [id])
+  payment PaymentModel? @relation(fields: [paymentId], references: [id])
 
   accesses EventAccessModel[]
   memories MemoryModel[]
@@ -42,7 +44,7 @@ model EventConfigModel {
   welcomeMessage     String @default("Bem-vindo ao nosso evento!") @map("welcome_message")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
   event EventModel @relation(fields: [eventId], references: [id])
@@ -58,7 +60,7 @@ model EventAccessModel {
   type    String @default("guest")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
   event EventModel @relation(fields: [eventId], references: [id])
