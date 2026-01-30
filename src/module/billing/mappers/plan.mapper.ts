@@ -2,6 +2,7 @@ import { PlanModel } from '@prisma/client';
 
 import Plan from '../domain/plan/plan';
 import PlanType from '../domain/plan/planType';
+import { PlanDTO } from '../dto/plan.dto';
 
 import Mapper from '@/shared/core/domain/Mapper';
 import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
@@ -17,6 +18,7 @@ class BasePlanMapper extends Mapper<Plan, PlanModelWithRelations> {
         description: plan.description,
         price: plan.price,
         currency: plan.currency,
+        enabled: plan.enabled,
         createdAt: plan.createdAt,
         updatedAt: plan.updatedAt,
         deletedAt: plan.deletedAt,
@@ -32,6 +34,20 @@ class BasePlanMapper extends Mapper<Plan, PlanModelWithRelations> {
       description: plan.description,
       price: plan.price,
       currency: plan.currency,
+      enabled: plan.enabled,
+      createdAt: plan.createdAt,
+      updatedAt: plan.updatedAt,
+      deletedAt: plan.deletedAt,
+    };
+  }
+
+  toDTO(plan: Plan): PlanDTO {
+    return {
+      id: plan.id.toValue(),
+      type: plan.type.value,
+      description: plan.description,
+      price: plan.price,
+      enabled: plan.enabled,
       createdAt: plan.createdAt,
       updatedAt: plan.updatedAt,
       deletedAt: plan.deletedAt,

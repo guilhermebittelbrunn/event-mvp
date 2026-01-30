@@ -24,6 +24,7 @@ model PlanModel {
   type        String  @unique
   description String?
   price       Int
+  enabled     Boolean @default(true)
   currency    String  @default("BRL")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
