@@ -57,7 +57,7 @@ export class UpdateEventService {
       eventStatus = EventStatus.create(dto.status);
     }
 
-    if (dto.startAt && dto.endAt) {
+    if (!dto.isAdmin && dto.startAt && dto.endAt) {
       const daysRange = differenceInDays(new Date(dto.endAt), new Date(dto.startAt));
 
       if (daysRange > MAX_EVENT_DAYS_RANGE) {

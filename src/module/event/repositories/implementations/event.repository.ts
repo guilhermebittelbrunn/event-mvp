@@ -106,7 +106,7 @@ export class EventRepository
         skip,
         take,
         where,
-        include: { file: true, user: true, memories: true },
+        include: { file: true, user: true, memories: true, payment: true },
         orderBy: ordination,
       }),
       await this.manager().count({ where }),
