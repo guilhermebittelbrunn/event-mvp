@@ -3,23 +3,30 @@ import { prisma } from '@database/index';
 import { faker } from '@faker-js/faker';
 import { File } from '@nest-lab/fastify-multer';
 import { HttpStatus } from '@nestjs/common';
+import { addDays } from 'date-fns';
 
 import { CreateEventDTO } from './dto/createEvent.dto';
 
+import { StripePaymentGateway } from '@/shared/infra/paymentGateway/implementations/stripe/stripe';
 import { S3StorageService } from '@/shared/services/fileStore/implementations/aws-s3/s3-storage.service';
 import { IAuthenticatedUserData } from '@/shared/test/helpers/getAuthenticatedUser';
 import getAuthenticatedUser from '@/shared/test/helpers/getAuthenticatedUser';
 import { request } from '@/shared/test/utils';
 
-const makePayload = (overrides: Partial<CreateEventDTO> = {}): CreateEventDTO => ({
-  name: faker.lorem.words(3),
-  description: faker.lorem.paragraph(),
-  slug: faker.lorem.slug(),
-  startAt: faker.date.past(),
-  endAt: faker.date.soon(),
-  userId: faker.string.uuid(),
-  ...overrides,
-});
+const makePayload = (overrides: Partial<CreateEventDTO> = {}): CreateEventDTO => {
+  const startDate = faker.date.past();
+  const endDate = addDays(startDate, 3);
+
+  return {
+    name: faker.lorem.words(3),
+    description: faker.lorem.paragraph(),
+    slug: faker.lorem.slug(),
+    startAt: startDate,
+    endAt: endDate,
+    userId: faker.string.uuid(),
+    ...overrides,
+  };
+};
 
 const makeFile = (overrides?: File) => {
   return {
@@ -41,6 +48,11 @@ describe('CreateEventController (e2e)', () => {
 
     jest.spyOn(S3StorageService.prototype, 'upload').mockResolvedValue(faker.internet.url());
     jest.spyOn(S3StorageService.prototype, 'delete').mockResolvedValue(undefined);
+
+    jest.spyOn(StripePaymentGateway.prototype, 'createPaymentLink').mockResolvedValue({
+      integratorId: faker.string.uuid(),
+      paymentUrl: faker.internet.url(),
+    });
   });
 
   describe('POST /v1/event', () => {
@@ -58,6 +70,8 @@ describe('CreateEventController (e2e)', () => {
         .field('slug', payload.slug)
         .attach('image', file.buffer, file.originalname)
         .expect(HttpStatus.CREATED);
+
+      expect(result.status).toBe(HttpStatus.CREATED);
 
       const newEvent = await prisma.eventModel.findUnique({
         where: {
