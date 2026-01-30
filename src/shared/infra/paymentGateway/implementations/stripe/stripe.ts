@@ -7,6 +7,8 @@ import {
   IPaymentGateway,
 } from '../../paymentGateway.interface';
 
+const ONE_DAY_IN_MINUTES = 23 * 60 + 59;
+
 export class StripePaymentGateway implements IPaymentGateway {
   private stripe: Stripe;
 
@@ -19,14 +21,15 @@ export class StripePaymentGateway implements IPaymentGateway {
   }
 
   async createPaymentLink({ amount, event }: CreatePaymentLinkRequest): Promise<CreatePaymentLinkResponse> {
-    let successUrl =
-      process.env.SUCCESS_EVENT_PAYMENT_URL ?? `http://192.168.0.33:3000/painel/eventos/{eventId}/acessos`;
+    let successUrl = process.env.SUCCESS_EVENT_PAYMENT_URL;
+
+    if (!successUrl) {
+      throw new Error('SUCCESS_EVENT_PAYMENT_URL is not set');
+    }
 
     if (successUrl.includes('{eventId}') && event?.id) {
       successUrl = successUrl.replace('{eventId}', event.id.toValue());
     }
-
-    const ONE_DAY_IN_MINUTES = 23 * 60 + 59;
 
     const session = await this.stripe.checkout.sessions.create({
       line_items: [

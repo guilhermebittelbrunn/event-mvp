@@ -32,7 +32,9 @@ export class CreateEventService {
   async execute(dto: CreateEventDTO) {
     const { slug, userId, isAdmin } = await this.validatePayload(dto);
 
-    const status = EventStatus.create(isAdmin ? EventStatusEnum.PUBLISHED : EventStatusEnum.PENDING_PAYMENT);
+    const status = EventStatus.create(
+      isAdmin && dto?.isForTesting ? EventStatusEnum.PUBLISHED : EventStatusEnum.PENDING_PAYMENT,
+    );
 
     const event = Event.create({
       ...dto,
@@ -51,7 +53,7 @@ export class CreateEventService {
       event.fileId = file.id;
     }
 
-    if (!isAdmin) {
+    if (event.status.value === EventStatusEnum.PENDING_PAYMENT) {
       const payment = await this.createPaymentService.execute({ event });
 
       if (!payment) {
@@ -67,6 +69,8 @@ export class CreateEventService {
     const { slug, endAt, startAt, isAdmin } = dto;
 
     if (!isAdmin) {
+      dto.isForTesting = false;
+
       const daysRange = differenceInDays(new Date(endAt), new Date(startAt));
 
       if (daysRange > MAX_EVENT_DAYS_RANGE) {
