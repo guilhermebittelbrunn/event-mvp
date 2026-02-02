@@ -30,10 +30,10 @@ export class CreateEventService {
   ) {}
 
   async execute(dto: CreateEventDTO) {
-    const { slug, userId, isAdmin } = await this.validatePayload(dto);
+    const { slug, userId } = await this.validatePayload(dto);
 
     const status = EventStatus.create(
-      isAdmin && dto?.isForTesting ? EventStatusEnum.PUBLISHED : EventStatusEnum.PENDING_PAYMENT,
+      dto?.isForTesting ? EventStatusEnum.PUBLISHED : EventStatusEnum.PENDING_PAYMENT,
     );
 
     const event = Event.create({
