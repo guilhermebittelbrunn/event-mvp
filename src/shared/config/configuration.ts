@@ -35,4 +35,9 @@ export default () => ({
     key: process.env.NEW_RELIC_LICENSE_KEY,
     logUrl: process.env.NEW_RELIC_LOG_URL,
   },
+  stripe: {
+    secretKey: process.env.STRIPE_SECRET_KEY,
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    successUrl: process.env.SUCCESS_EVENT_PAYMENT_URL,
+  },
 });
