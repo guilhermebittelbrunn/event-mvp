@@ -1,13 +1,14 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, HttpException } from '@nestjs/common';
 import { AxiosError } from 'axios';
 
+import { API_VERSION } from '../core/utils/consts';
+
 import LogError from '@/module/shared/domain/log/logError';
 import { RegisterLogService } from '@/module/shared/domain/log/service/registerLog/registerLog.service';
 import GenericAppError from '@/shared/core/logic/genericAppError';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 
 const isTestEnvironment = process.env.NODE_ENV === 'test';
-const shouldLogError = !isTestEnvironment;
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -16,6 +17,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
   async catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
+    const request = ctx.getRequest();
+    const url = request.url;
+
+    const shouldLogError =
+      !isTestEnvironment && String(url).startsWith(`/v${API_VERSION}`) && !isTestEnvironment;
 
     let message: string | object = 'Erro interno do servidor';
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
