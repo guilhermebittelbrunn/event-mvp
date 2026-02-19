@@ -13,6 +13,8 @@ import {
   IEventRepositorySymbol,
 } from '@/module/event/repositories/event.repository.interface';
 import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
+import { IUserRepository, IUserRepositorySymbol } from '@/module/user/repositories/user.repository.interface';
+import UniqueEntityID from '@/shared/core/domain/UniqueEntityID';
 import { coalesce } from '@/shared/core/utils/undefinedHelpers';
 import { MAX_EVENT_DAYS_RANGE } from '@/shared/utils';
 
@@ -20,33 +22,33 @@ import { MAX_EVENT_DAYS_RANGE } from '@/shared/utils';
 export class UpdateEventService {
   constructor(
     @Inject(IEventRepositorySymbol) private readonly eventRepo: IEventRepository,
+    @Inject(IUserRepositorySymbol) private readonly userRepo: IUserRepository,
     private readonly replaceFileService: ReplaceFileService,
     private readonly addAccessToEvent: AddAccessToEvent,
   ) {}
 
   async execute(dto: UpdateEventDTO) {
-    const currentEvent = await this.validateAndFetchData(dto);
-
-    const event = await this.buildEvent(dto, currentEvent);
-
-    return this.eventRepo.update(event);
-  }
-
-  private async validateAndFetchData({ id }: UpdateEventDTO) {
-    const currentEvent = await this.eventRepo.findCompleteById(id);
+    const currentEvent = await this.eventRepo.findCompleteById(dto.id);
 
     if (!currentEvent) {
       throw new UpdateEventErrors.NotFoundError();
     }
 
-    /**
-     * @note: for now, we are not allowing to update the status of an event that is in progress or completed
-     */
-    // if ([EventStatusEnum.IN_PROGRESS, EventStatusEnum.COMPLETED].includes(currentEvent.status.value)) {
-    //   throw new UpdateEventErrors.InvalidParam(currentEvent.status);
-    // }
+    if (!dto.isAdmin) {
+      dto.userId = undefined;
+    }
 
-    return currentEvent;
+    if (dto.userId) {
+      const user = await this.userRepo.findById(dto.userId);
+
+      if (!user) {
+        throw new UpdateEventErrors.UserNotFound();
+      }
+    }
+
+    const event = await this.buildEvent(dto, currentEvent);
+
+    return this.eventRepo.update(event);
   }
 
   private async buildEvent(dto: UpdateEventDTO, currentEvent: Event) {
@@ -77,7 +79,7 @@ export class UpdateEventService {
 
     const event = Event.create(
       {
-        userId: currentEvent.userId,
+        userId: coalesce(UniqueEntityID.createOrUndefined(dto.userId), currentEvent.userId),
         name: coalesce(dto.name, currentEvent.name),
         description: coalesce(dto.description, currentEvent.description),
         status: coalesce(eventStatus, currentEvent.status),

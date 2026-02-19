@@ -123,7 +123,7 @@ export class EventRepository
 
     const event = await this.manager().findUnique({
       where: { slug: slugRaw },
-      include: { config: true, accesses: true, file: true },
+      include: { file: true },
     });
 
     return this.mapper.toDomainOrNull(event);

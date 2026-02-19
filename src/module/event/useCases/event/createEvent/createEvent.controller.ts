@@ -36,10 +36,15 @@ export class CreateEventController {
     @UploadedFiles() file: { image?: File[] },
   ): Promise<EventDTO> {
     const isAdmin = user.type.value === UserTypeEnum.ADMIN;
+    let userId = body.userId || user.id.toValue();
+
+    if (!isAdmin) {
+      userId = user.id.toValue();
+    }
 
     const payload: CreateEventDTO = {
       ...body,
-      userId: user.id.toValue(),
+      userId,
       image: file?.image?.[0],
       isAdmin,
     };
