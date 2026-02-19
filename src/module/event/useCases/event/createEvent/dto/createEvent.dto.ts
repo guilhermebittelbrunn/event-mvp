@@ -2,7 +2,7 @@ import { File } from '@nest-lab/fastify-multer';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { IsOptional, ValidateIf, Validate } from 'class-validator';
 
-import { ValidatedBoolean, ValidatedDateString, ValidatedString } from '@/shared/decorators';
+import { ValidatedBoolean, ValidatedDateString, ValidatedString, ValidatedUUID } from '@/shared/decorators';
 
 export class CreateEventDTO {
   @ValidatedString('nome')
@@ -38,8 +38,9 @@ export class CreateEventDTO {
   @ValidatedBoolean('é para testes')
   isForTesting?: boolean;
 
-  @ApiHideProperty()
-  userId: string;
+  @IsOptional()
+  @ValidatedUUID('usuário')
+  userId?: string;
 
   @ApiHideProperty()
   isAdmin?: boolean;

@@ -4,3 +4,4 @@ dist
 build
 .env
 !.github/**
+.DS_Store

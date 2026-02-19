@@ -13,6 +13,8 @@ import { FakeEventRepository } from '@/module/event/repositories/tests/repositor
 import { ReplaceFileService } from '@/module/shared/domain/file/services/replaceFile/replaceFile.service';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
+import { FakeUserRepository } from '@/module/user/repositories/tests/repositories/fakeUser.repository';
+import { IUserRepositorySymbol } from '@/module/user/repositories/user.repository.interface';
 import { FakeFileStoreService } from '@/shared/test/services';
 import { EventStatusEnum } from '@/shared/types';
 
@@ -33,6 +35,7 @@ describe('UpdateEventService', () => {
   let replaceFileService: ReplaceFileService;
 
   const eventRepoMock = new FakeEventRepository();
+  const userRepoMock = new FakeUserRepository();
 
   const fileRepoMock = new FakeFileRepository();
   const fileStoreServiceMock = new FakeFileStoreService();
@@ -46,6 +49,10 @@ describe('UpdateEventService', () => {
         {
           provide: IEventRepositorySymbol,
           useValue: eventRepoMock,
+        },
+        {
+          provide: IUserRepositorySymbol,
+          useValue: userRepoMock,
         },
         {
           provide: ReplaceFileService,

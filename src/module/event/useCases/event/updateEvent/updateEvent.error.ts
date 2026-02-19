@@ -26,6 +26,12 @@ export namespace UpdateEventErrors {
       super(`O evento deve ter no máximo ${daysRange} dias de duração`);
     }
   }
+
+  export class UserNotFound extends GenericErrors.NotFound {
+    constructor() {
+      super(`Usuário não encontrado`);
+    }
+  }
 }
 
 export default UpdateEventErrors;
