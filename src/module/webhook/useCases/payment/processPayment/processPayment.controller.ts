@@ -3,10 +3,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ProcessPaymentDTO } from './dto/processPayment.dto';
 import { ProcessPaymentService } from './processPayment.service';
 
-// import { StripeWebhookGuard } from '@/shared/guards/stripeWebhook.guard';
-
 @Controller('/webhook/payment/process-payment')
-// @UseGuards(StripeWebhookGuard)
 export class ProcessPaymentController {
   constructor(private readonly useCase: ProcessPaymentService) {}
 
