@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { CreateEventController } from './createEvent.controller';
 import { CreateEventService } from './createEvent.service';
 
+import { PlanRepository } from '@/module/billing/repositories/implementations/plan.repository';
+import { IPlanRepositorySymbol } from '@/module/billing/repositories/plan.repository.interface';
 import { CreatePaymentModule } from '@/module/billing/useCases/payment/createPayment/createPayment.module';
 import { PaymentModule } from '@/module/billing/useCases/payment/payment.module';
 import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent.service';
@@ -12,6 +14,8 @@ import { IMemoryRepositorySymbol } from '@/module/event/repositories/memory.repo
 import { AddFileModule } from '@/module/shared/domain/file/services/addFile/addFile.module';
 import { IFileRepositorySymbol } from '@/module/shared/repositories/file.repository.interface';
 import { FileRepository } from '@/module/shared/repositories/implementations/file.repository';
+import { UserRepository } from '@/module/user/repositories/implementations/user.repository';
+import { IUserRepositorySymbol } from '@/module/user/repositories/user.repository.interface';
 import { TransactionManagerService } from '@/shared/core/infra/prisma/transactionManager/transactionManager.service';
 import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManager.interface';
 
@@ -28,6 +32,14 @@ import { ITransactionManagerSymbol } from '@/shared/core/infra/transactionManage
     {
       provide: IMemoryRepositorySymbol,
       useClass: MemoryRepository,
+    },
+    {
+      provide: IUserRepositorySymbol,
+      useClass: UserRepository,
+    },
+    {
+      provide: IPlanRepositorySymbol,
+      useClass: PlanRepository,
     },
     {
       provide: ITransactionManagerSymbol,

@@ -40,6 +40,9 @@ export class EventDTO extends BaseEntityDTO {
   endAt: Date;
 
   @ApiProperty()
+  availableUntil: Date;
+
+  @ApiProperty()
   totalMemories: number;
 
   @ApiHideProperty()

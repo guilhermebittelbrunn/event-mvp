@@ -46,6 +46,7 @@ export default async function getAuthenticatedEvent(): Promise<IAuthenticatedEve
       status: EventStatusEnum.IN_PROGRESS,
       startAt: subDays(new Date(), 1),
       endAt: addDays(new Date(), 1),
+      availableUntil: addDays(new Date(), 30),
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,

@@ -7,6 +7,9 @@ import CreateEventErrors from './createEvent.error';
 import { CreateEventService } from './createEvent.service';
 import { CreateEventDTO } from './dto/createEvent.dto';
 
+import { IPlanRepositorySymbol } from '@/module/billing/repositories/plan.repository.interface';
+import { fakePlan } from '@/module/billing/repositories/tests/entities/fakePlan';
+import { FakePlanRepository } from '@/module/billing/repositories/tests/repositories/fakePlan.repository';
 import { CreatePaymentService } from '@/module/billing/useCases/payment/createPayment/createPayment.service';
 import EventSlug from '@/module/event/domain/event/eventSlug';
 import { AddAccessToEvent } from '@/module/event/domain/eventAccess/services/addAccessToEvent/addAccessToEvent.service';
@@ -17,6 +20,9 @@ import { AddFileService } from '@/module/shared/domain/file/services/addFile/add
 import { BuildPathService } from '@/module/shared/domain/file/services/buildPath/buildPath';
 import { fakeFile } from '@/module/shared/repositories/tests/entities/fakeFile';
 import { FakeFileRepository } from '@/module/shared/repositories/tests/repositories/fakeFile.repository';
+import { fakeUser } from '@/module/user/repositories/tests/entities/fakeUser';
+import { FakeUserRepository } from '@/module/user/repositories/tests/repositories/fakeUser.repository';
+import { IUserRepositorySymbol } from '@/module/user/repositories/user.repository.interface';
 import GenericErrors from '@/shared/core/logic/genericErrors';
 import { FakeFileStoreService } from '@/shared/test/services';
 
@@ -49,6 +55,9 @@ describe('CreateEventService', () => {
   let addAccessToEvent: AddAccessToEvent;
 
   const eventRepoMock = new FakeEventRepository();
+  const userRepoMock = new FakeUserRepository();
+  const planRepoMock = new FakePlanRepository();
+
   const fileRepoMock = new FakeFileRepository();
   const fileStoreServiceMock = new FakeFileStoreService();
   const buildPathServiceMock = new BuildPathService();
@@ -67,6 +76,14 @@ describe('CreateEventService', () => {
           provide: AddFileService,
           useValue: addFileService,
         },
+        {
+          provide: IUserRepositorySymbol,
+          useValue: userRepoMock,
+        },
+        {
+          provide: IPlanRepositorySymbol,
+          useValue: planRepoMock,
+        },
         AddAccessToEvent,
         {
           provide: CreatePaymentService,
@@ -79,6 +96,8 @@ describe('CreateEventService', () => {
     }).compile();
 
     eventRepoMock.findBySlug.mockResolvedValue(null);
+    userRepoMock.findById.mockResolvedValue(fakeUser());
+    planRepoMock.findByType.mockResolvedValue(fakePlan());
 
     service = module.get<CreateEventService>(CreateEventService);
     addAccessToEvent = module.get<AddAccessToEvent>(AddAccessToEvent);

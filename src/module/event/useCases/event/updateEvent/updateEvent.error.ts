@@ -32,6 +32,12 @@ export namespace UpdateEventErrors {
       super(`Usuário não encontrado`);
     }
   }
+
+  export class InvalidAvailableUntil extends GenericErrors.InvalidParam {
+    constructor() {
+      super(`A data de disponibilidade não pode ser anterior ao dia final do evento`);
+    }
+  }
 }
 
 export default UpdateEventErrors;

@@ -13,12 +13,13 @@ import ITransactionManager, {
 } from '@/shared/core/infra/transactionManager.interface';
 import { ValidatedBody } from '@/shared/decorators';
 import { GetEvent } from '@/shared/decorators/getEvent.decorator';
+import { EventEndAtGuard } from '@/shared/guards/eventEndAt.guard';
 import { JwtEventAuthGuard } from '@/shared/guards/jwtEventAuth.guard';
 import { FileValidatorInterceptor } from '@/shared/interceptors/fileValidator.interceptor';
 
 @Controller('/memory')
 @ApiTags('memory')
-@UseGuards(JwtEventAuthGuard)
+@UseGuards(JwtEventAuthGuard, EventEndAtGuard)
 export class CreateMemoryController {
   constructor(
     @Inject(ITransactionManagerSymbol)
