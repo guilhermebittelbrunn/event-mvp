@@ -34,7 +34,7 @@ export class SignInByTokenService {
       tokenId: eventAccess.id.toValue(),
       slug: event.slug?.value,
       type: eventAccess.type?.value,
-      expiresAt: event.endAt?.getTime(),
+      expiresAt: event.availableUntil?.getTime(),
     });
 
     return { event, token };

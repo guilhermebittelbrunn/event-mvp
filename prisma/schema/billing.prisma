@@ -22,6 +22,7 @@ model PaymentModel {
 model PlanModel {
   id          String  @id @default(uuid()) @db.Uuid
   type        String  @unique
+  accessDays  Int?    @map("access_days")
   description String?
   price       Int
   enabled     Boolean @default(true)

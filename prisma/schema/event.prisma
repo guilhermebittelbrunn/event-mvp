@@ -1,14 +1,15 @@
 model EventModel {
-  id          String   @id @default(uuid()) @db.Uuid
-  userId      String   @map("user_id") @db.Uuid
-  fileId      String?  @unique @map("file_id") @db.Uuid
-  paymentId   String?  @unique @map("payment_id") @db.Uuid
-  name        String
-  slug        String
-  status      String   @default("draft")
-  description String?
-  startAt     DateTime @map("start_at")
-  endAt       DateTime @map("end_at")
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  fileId         String?  @unique @map("file_id") @db.Uuid
+  paymentId      String?  @unique @map("payment_id") @db.Uuid
+  name           String
+  slug           String
+  status         String   @default("draft")
+  description    String?
+  startAt        DateTime @map("start_at")
+  endAt          DateTime @map("end_at")
+  availableUntil DateTime @map("available_until")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()

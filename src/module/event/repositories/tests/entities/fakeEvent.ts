@@ -53,6 +53,7 @@ export async function insertFakeEvent(overrides: Partial<EventModel> = {}): Prom
       description: event.description,
       startAt: event.startAt,
       endAt: event.endAt,
+      availableUntil: event.availableUntil,
       ...overrides,
     },
   });

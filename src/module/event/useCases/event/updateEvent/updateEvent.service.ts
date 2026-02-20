@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { differenceInDays } from 'date-fns';
+import { differenceInDays, isBefore } from 'date-fns';
 
 import { UpdateEventDTO } from './dto/updateEvent.dto';
 import UpdateEventErrors from './updateEvent.error';
@@ -36,6 +36,11 @@ export class UpdateEventService {
 
     if (!dto.isAdmin) {
       dto.userId = undefined;
+      dto.availableUntil = undefined;
+    }
+
+    if (dto.availableUntil && isBefore(dto.availableUntil, currentEvent.endAt)) {
+      throw new UpdateEventErrors.InvalidAvailableUntil();
     }
 
     if (dto.userId) {
@@ -86,6 +91,7 @@ export class UpdateEventService {
         slug: coalesce(eventSlug, currentEvent.slug),
         startAt: coalesce(dto.startAt, currentEvent.startAt),
         endAt: coalesce(dto.endAt, currentEvent.endAt),
+        availableUntil: coalesce(dto.availableUntil, currentEvent.availableUntil),
         config: currentEvent.config,
         accesses: currentEvent.accesses,
       },

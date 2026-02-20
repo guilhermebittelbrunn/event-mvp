@@ -15,4 +15,7 @@ export class PlanDTO extends BaseEntityDTO {
 
   @ApiProperty()
   enabled: boolean;
+
+  @ApiProperty()
+  accessDays?: number | null;
 }
