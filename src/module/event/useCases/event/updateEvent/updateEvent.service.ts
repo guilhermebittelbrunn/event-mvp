@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { differenceInDays, isBefore } from 'date-fns';
+import { differenceInDays, endOfDay, isBefore, isSameDay, startOfDay } from 'date-fns';
 
 import { UpdateEventDTO } from './dto/updateEvent.dto';
 import UpdateEventErrors from './updateEvent.error';
@@ -39,10 +39,6 @@ export class UpdateEventService {
       dto.availableUntil = undefined;
     }
 
-    if (dto.availableUntil && isBefore(dto.availableUntil, currentEvent.endAt)) {
-      throw new UpdateEventErrors.InvalidAvailableUntil();
-    }
-
     if (dto.userId) {
       const user = await this.userRepo.findById(dto.userId);
 
@@ -59,6 +55,13 @@ export class UpdateEventService {
   private async buildEvent(dto: UpdateEventDTO, currentEvent: Event) {
     let eventStatus: EventStatus | undefined;
     let eventSlug: EventSlug | undefined;
+
+    const availableUntil = coalesce(dto.availableUntil, currentEvent.availableUntil);
+    const endAt = coalesce(dto.endAt, currentEvent.endAt);
+
+    if (dto.availableUntil && !isSameDay(availableUntil, endAt) && isBefore(availableUntil, endAt)) {
+      throw new UpdateEventErrors.InvalidAvailableUntil();
+    }
 
     if (dto.status && dto.isAdmin) {
       eventStatus = EventStatus.create(dto.status);
@@ -89,9 +92,9 @@ export class UpdateEventService {
         description: coalesce(dto.description, currentEvent.description),
         status: coalesce(eventStatus, currentEvent.status),
         slug: coalesce(eventSlug, currentEvent.slug),
-        startAt: coalesce(dto.startAt, currentEvent.startAt),
-        endAt: coalesce(dto.endAt, currentEvent.endAt),
-        availableUntil: coalesce(dto.availableUntil, currentEvent.availableUntil),
+        startAt: startOfDay(coalesce(dto.startAt, currentEvent.startAt)),
+        endAt: endOfDay(endAt),
+        availableUntil: endOfDay(availableUntil),
         config: currentEvent.config,
         accesses: currentEvent.accesses,
       },

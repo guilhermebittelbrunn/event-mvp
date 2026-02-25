@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as archiver from 'archiver';
 
+import { Readable } from 'stream';
+
 import DownloadMemoriesErrors from './downloadMemories.error';
 import { DownloadMemoriesDTO } from './dto/downloadMemories.dto';
 
+import Memory from '@/module/event/domain/memory/memory';
 import {
   IMemoryRepository,
   IMemoryRepositorySymbol,
@@ -17,6 +20,26 @@ import {
 
 const MAX_MEMORY_IDS_TO_DOWNLOAD = 10;
 
+const EXTENSION_TO_MIME: Record<string, string> = {
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  pdf: 'application/pdf',
+};
+
+function getContentTypeFromFilename(filename: string): string {
+  const ext = filename.split('.').pop()?.toLowerCase();
+  return (ext && EXTENSION_TO_MIME[ext]) || 'application/octet-stream';
+}
+
+export interface DownloadMemoriesResult {
+  stream: Readable;
+  contentType: string;
+  filename: string;
+}
+
 @Injectable()
 export class DownloadMemoriesService {
   constructor(
@@ -25,7 +48,7 @@ export class DownloadMemoriesService {
     private readonly registerLogService: RegisterLogService,
   ) {}
 
-  async execute(dto: DownloadMemoriesDTO): Promise<archiver.Archiver> {
+  async execute(dto: DownloadMemoriesDTO): Promise<DownloadMemoriesResult> {
     const { memoryIds } = dto;
 
     if (memoryIds.length > MAX_MEMORY_IDS_TO_DOWNLOAD) {
@@ -38,6 +61,32 @@ export class DownloadMemoriesService {
       throw new DownloadMemoriesErrors.MemoriesNotFound();
     }
 
+    if (memories.length === 1) {
+      return this.handleUniqueMemory(memories[0]);
+    }
+
+    return this.handleMultipleMemories(memories, dto);
+  }
+
+  async handleUniqueMemory(memory: Memory): Promise<DownloadMemoriesResult> {
+    if (!memory.file) {
+      throw new DownloadMemoriesErrors.NoFilesToDownload();
+    }
+
+    const fileStream = await this.fileStoreService.getFile(memory.file.path);
+
+    if (!fileStream) {
+      throw new DownloadMemoriesErrors.NoFilesToDownload();
+    }
+
+    return {
+      stream: fileStream,
+      contentType: getContentTypeFromFilename(memory.file.name),
+      filename: memory.file.name,
+    };
+  }
+
+  async handleMultipleMemories(memories: Memory[], dto: DownloadMemoriesDTO): Promise<DownloadMemoriesResult> {
     const archive = archiver('zip', { zlib: { level: 9 } });
 
     let filesAdded = 0;
@@ -71,6 +120,10 @@ export class DownloadMemoriesService {
 
     archive.finalize();
 
-    return archive;
+    return {
+      stream: archive,
+      contentType: 'application/zip',
+      filename: 'memories.zip',
+    };
   }
 }

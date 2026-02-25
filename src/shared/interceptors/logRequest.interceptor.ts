@@ -1,4 +1,10 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+  StreamableFile,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -46,12 +52,15 @@ export class LogRequestInterceptor implements NestInterceptor {
     return next.handle().pipe(
       // log all success responses, errors are logged in the httpException.filter
       map(async (response) => {
-        if (shouldLogRequest && method !== 'GET')
+        if (shouldLogRequest && method !== 'GET') {
+          const payload =
+            response instanceof StreamableFile ? { streamResponse: true } : response;
           await this.registerLogService.execute({
             ...commonPayload,
-            payload: response,
+            payload,
             service: 'LogRequestInterceptorResponse',
           });
+        }
 
         return response;
       }),

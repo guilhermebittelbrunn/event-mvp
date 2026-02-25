@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { addDays, differenceInDays } from 'date-fns';
+import { addDays, differenceInDays, endOfDay, startOfDay } from 'date-fns';
 
 import CreateEventErrors from './createEvent.error';
 import { CreateEventDTO } from './dto/createEvent.dto';
@@ -46,6 +46,8 @@ export class CreateEventService {
 
     const event = Event.create({
       ...dto,
+      startAt: startOfDay(dto.startAt),
+      endAt: endOfDay(dto.endAt),
       userId: UniqueEntityID.create(userId),
       slug: EventSlug.create(slug),
       status,
@@ -59,7 +61,7 @@ export class CreateEventService {
 
     if (plan) {
       if (plan.accessDays > 0) {
-        event.availableUntil = addDays(event.endAt, plan.accessDays);
+        event.availableUntil = endOfDay(addDays(event.endAt, plan.accessDays));
       }
 
       if (event.status.value === EventStatusEnum.PENDING_PAYMENT) {
