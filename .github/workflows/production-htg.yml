@@ -1,4 +1,4 @@
-name: 'Production - Deploy'
+name: 'Production - Deploy (Hostinger) [M]'
 
 on:
   workflow_dispatch:
@@ -45,14 +45,11 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Deploy to EBS
-        uses: einaregilsson/beanstalk-deploy@v22
+      - name: Deploy to Hostinger VPS
+        uses: hostinger/deploy-on-vps@v2
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: qinstante-api-prod
-          environment_name: qinstante-api-prod-env
-          version_label: 'prod-source-qinstante-api-prod-${{ steps.vars.outputs.sha_short }}'
-          region: us-east-1
-          deployment_package: ./aws/production/Dockerrun.aws.json
-          wait_for_environment_recovery: 300
+          api-key: ${{ secrets.HOSTINGER_API_KEY }}
+          virtual-machine: ${{ vars.HOSTINGER_VM_ID }}
+          docker-compose-path: docker-compose.yml
+          # environment-variables: |   
+          #   NODE_ENV=production
